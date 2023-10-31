@@ -1,0 +1,4 @@
+﻿attributeName,attributeDefinition,formatString,definition,unit,numberType,type,factor,comment
+age,age of individuals of Acacia suaveolens,NA,NA,nominalYear,integer,numeric,NA,NA
+number,number of individuals,NA,NA,dimensionless,integer,numeric,NA,NA
+seeds,seeds per plant,NA,NA,dimensionless,integer,numeric,NA,NA
