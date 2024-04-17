@@ -1,0 +1,4 @@
+﻿attributeName,attributeDefinition,formatString,definition,unit,numberType,type,comment
+name,botanical species name related to the name ID in the file data_raw_traits,NA,botanical species name,NA,NA,character,NA
+L1_01_2018,"abundance of species in the plot L1_01_2018 (landside, site, plot, survey year) after Braun-Blanquet (1964) refined by Londo (1976)",NA,NA,percent,real,numeric,"Braun-Blanquet J (1964) Pﬂanzensoziologie: Grundzüge der Vegetationskunde (3rd ed.). Wien-New York: Springer (Original work published 1928) / Londo G (1976) The decimal scale for releves of permanent quadrats. Vegetatio 33, 61-64. DOI: 10.1007/BF00055300"
+L1_01_seeded,"abundance of species in the plot L1_01_seeded (landside, site, plot, weight ratio of seed mixture) after Braun-Blanquet (1964) refined by Londo (1976)",NA,NA,percent,real,numeric,NA

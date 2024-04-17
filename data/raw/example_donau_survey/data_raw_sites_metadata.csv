@@ -1,0 +1,52 @@
+attributeName,attributeDefinition,formatString,definition,unit,numberType,type,factor,comment
+id,Serial number and position on the dike (m = middle part/o = upper part of the dike side),NA,serial number and position on the dike,NA,NA,character,NA,NA
+block,Serial numer of a pair of plots (water and landside),NA,serial numer of a pair of plots (water and landside),NA,NA,character,NA,NA
+location,Nearest village of the plot,NA,block factor,NA,NA,character,NA,NA
+latitude,Coordinates Y / Hochwert (EPSG: 31468 / GK4),NA,NA,meter,integer,numeric,NA,NA
+longitude,Coordinates X / Rechtswert (EPSG: 31468 / GK4),NA,NA,meter,integer,numeric,NA,NA
+river_km,Ifficial km of river Danube taken from the BayernAtlas.de,NA,NA,kilometer,integer,numeric,NA,NA
+river_distance,Orthogonal distance to center of the river bed of River Danube,NA,NA,meter,real,numeric,NA,NA
+orientation,Is the plot on the slope oriented to the water or to the land?,NA,NA,NA,NA,factor,water / land,NA
+exposition,Slope aspect of the plots,NA,NA,NA,NA,factor,north / south / east / west,NA
+construction_year,Year in which the dike was constructed and seeded,YYYY,NA,NA,NA,Date,NA,NA
+survey_date.2017,Date of the first vegetation survey 2017,YYYY-mm-dd,NA,NA,NA,Date,NA,NA
+survey_date.2018,Date of the second vegetation survey 2018,YYYY-mm-dd,NA,NA,NA,Date,NA,NA
+survey_date.2019,Date of the third vegetation survey 2019,YYYY-mm-dd,NA,NA,NA,Date,NA,NA
+survey_date.2021,Date of the third vegetation survey 2019,YYYY-mm-dd,NA,NA,NA,Date,NA,NA
+botanist.2017,Person who surveyed the vegetation 2017,NA,person who surveyed the vegetation 2017,NA,NA,character,NA,NA
+botanist.2018,Person who surveyed the vegetation 2018,NA,person who surveyed the vegetation 2018,NA,NA,character,NA,NA
+botanist.2019,Person who surveyed the vegetation 2019,NA,person who surveyed the vegetation 2019,NA,NA,character,NA,NA
+botanist.2021,Person who surveyed the vegetation 2019,NA,person who surveyed the vegetation 2019,NA,NA,character,NA,NA
+opensoil_cover.2017,Coverage of the open soil 2017,NA,NA,percent,integer,numeric,NA,NA
+opensoil_cover.2018,Coverage of the open soil 2018,NA,NA,percent,integer,numeric,NA,NA
+opensoil_cover.2019,Coverage of the open soil 2019,NA,NA,percent,integer,numeric,NA,NA
+opensoil_cover.2021,Coverage of the open soil 2019,NA,NA,percent,integer,numeric,NA,NA
+moss_cover.2017,Coverage of the moss layer 2017,NA,NA,percent,integer,numeric,NA,NA
+moss_cover.2018,Coverage of the moss layer 2018,NA,NA,percent,integer,numeric,NA,NA
+moss_cover.2019,Coverage of the moss layer 2019,NA,NA,percent,integer,numeric,NA,NA
+moss_cover.2021,Coverage of the moss layer 2019,NA,NA,percent,integer,numeric,NA,NA
+litter_cover.2017,Coverage of the litter layer 2017,NA,NA,percent,integer,numeric,NA,NA
+litter_cover.2018,Coverage of the litter layer 2018,NA,NA,percent,integer,numeric,NA,NA
+litter_cover.2019,Coverage of the litter layer 2019,NA,NA,percent,integer,numeric,NA,NA
+litter_cover.2021,Coverage of the litter layer 2019,NA,NA,percent,integer,numeric,NA,NA
+vegetation_cover.2017,Coverage of the herb layer 2017,NA,NA,percent,integer,numeric,NA,NA
+vegetation_cover.2018,Coverage of the herb layer 2018,NA,NA,percent,integer,numeric,NA,NA
+vegetation_cover.2019,Coverage of the herb layer 2019,NA,NA,percent,integer,numeric,NA,NA
+vegetation_cover.2021,Coverage of the herb layer 2019,NA,NA,percent,integer,numeric,NA,NA
+vegetation_height.2017,Average height of the vegetation (measured in the field) 2017,NA,NA,centimeter,integer,numeric,NA,NA
+vegetation_height.2018,Average height of the vegetation (measured in the field) 2018,NA,NA,centimeter,integer,numeric,NA,NA
+vegetation_height.2019,Average height of the vegetation (measured in the field) 2019,NA,NA,centimeter,integer,numeric,NA,NA
+vegetation_height.2021,Average height of the vegetation (measured in the field) 2019,NA,NA,centimeter,integer,numeric,NA,NA
+calciumcarbonat,Percentage of calcium carbonate (CaCO3) in fine soil (C550Perc * 8.33) (weight percent),NA,NA,percent,real,numeric,NA,NA
+c_organic,Percentage of organic carbon (weight percent) = C (total) - C550Perc,NA,NA,percent,real,numeric,NA,NA
+n_total_ratio,Total nitrogen percentage (weight percent) from CN analyzer by engineering office Dr. Haeusler 2017-11-28,NA,NA,percent,real,numeric,NA,NA
+cn_ratio,CorgPerc / NtotalPerc (14 is normal for agricultural land and 11 for grassland (lkonline (2022)),NA,NA,dimensionless,real,numeric,NA,Landwirtschaftskammer Oberösterreich (lkonline) (2022) C/N-Verhältnis: Was ist das und wozu brauche ich das? URL: https://ooe.lko.at/c-n-verh%C3%A4ltnis-was-ist-das-und-wozu-brauche-ich-das+2400+3529195 (accessed 2022-02-16)
+ph,pH measured in 0.01 M CaCl2 with VDLUFA method A 5.1.1 by engineering office Dr. Haeusler 2017-11-28,NA,NA,dimensionless,real,numeric,NA,VDLUFA (Verband Deutscher Landwirtschaftlicher Untersuchungs- und Forschungsanstalten) (1991) VDLUFA-Methodenhandbuch. Die Untersuchung von Böden. Band I. URL: https://www.vdlufa.de/Methodenbuch/index.php?option=com_content&view=article&id=7&Itemid=108&lang=de
+sand,Percentage of sand (2-0.063mm) in the fine soil sample (fine soil <2mm) (weight percent): DIN ISO 11277 by engineering office Dr. Haeusler 2017-11-28,NA,NA,percent,real,numeric,NA,DIN ISO 11277: https://dx.doi.org/10.31030/9283499 
+silt,Percentage of silt (0.063-0.002mm) in the fine soil sample (fine soil <2mm) (weight percent): DIN ISO 11277 by engineering office Dr. Haeusler 2017-11-28,NA,NA,percent,real,numeric,NA,DIN ISO 11277: https://dx.doi.org/10.31030/9283499 
+clay,Percentage of clay (<0.002mm) in the fine soil sample (fine soil <2mm) (weight percent): DIN ISO 11277 by engineering office Dr. Haeusler 2017-11-28,NA,NA,percent,real,numeric,NA,DIN ISO 11277: https://dx.doi.org/10.31030/9283499 
+phosporus,CAL extract (Calcium-acetat lactat) of phosphorus (P2O5) (mg per 100g soil) with VDLUFA method A 6.3.1.1 (2002) by engineering office Dr. Haeusler 2017-11-28,NA,NA,milligramPerDezigram,NA,numeric,NA,VDLUFA (Verband Deutscher Landwirtschaftlicher Untersuchungs- und Forschungsanstalten) (1991) VDLUFA-Methodenhandbuch. Die Untersuchung von Böden. Band I. URL: https://www.vdlufa.de/Methodenbuch/index.php?option=com_content&view=article&id=7&Itemid=108&lang=de
+potassium,CAL extract (Calcium-acetat lactat) of potassium (K2O) (mg per 100g soil) with VDLUFA method A 6.2.1.1 (2002) by engineering office Dr. Haeusler 2017-11-28,NA,NA,milligramPerDezigram,NA,numeric,NA,VDLUFA (Verband Deutscher Landwirtschaftlicher Untersuchungs- und Forschungsanstalten) (1991) VDLUFA-Methodenhandbuch. Die Untersuchung von Böden. Band I. URL: https://www.vdlufa.de/Methodenbuch/index.php?option=com_content&view=article&id=7&Itemid=108&lang=de
+magnesium,CaCl2 extract of magnesium (Mg) (mg per 100g soil) with VDLUFA method A 6.2.4.1 by engineering office Dr. Haeusler 2017-11-28,NA,NA,milligramPerDezigram,NA,numeric,NA,VDLUFA (Verband Deutscher Landwirtschaftlicher Untersuchungs- und Forschungsanstalten) (1991) VDLUFA-Methodenhandbuch. Die Untersuchung von Böden. Band I. URL: https://www.vdlufa.de/Methodenbuch/index.php?option=com_content&view=article&id=7&Itemid=108&lang=de
+topsoil_depth,Measured depth of topsoil but if necessary taken from plans,NA,NA,centimeter,integer,numeric,NA,NA
+skeleton_ratio_vol,Volume ratio of sceleton of total topsoil (volume percent),NA,NA,percent,integer,numeric,NA,NA

@@ -1,0 +1,162 @@
+﻿Art;Pflanzenfamilie;RL_DE;RL_BY;Bluehpflanze;Farbe;Flower_class;flowertype;Bluehstart;Bluehende;Wuchshoehe_min;Wuchshoehe_max;Raupenpflanze;Voegel;N_Zeigerwerte;rel_HFG
+Acer_campestre;Sapindaceae;*;*;1;gelb;nectar present;disk;5;6;;;m, g;0;6;
+Achillea_millefolium;Asteraceae;*;*;1;weiß;nectar present;head;6;10;0.3;0.6;m, g;0;5;78.25
+Acinos_arvensis;Lamiaceae;V;V;1;blau;nectar present;lip;6;9;0.1;0.3;NA;0;1;33.95
+Aegopodium_podagraria;Apiaceae;*;*;1;weiß;nectar present;disk;6;7;0.5;0.9;x;0;8;95.51
+Agrimonia_eupatoria;Rosaceae;*;*;1;gelb;pollen plenty;disk;6;9;0.3;1;NA;0;4;72.75
+Agrostis_gigantea;Poaceae;*;*;0;NA;nectar none;NA;6;7;0.4;1.2;x;0;6;41.33
+Agrostis_stolonifera;Poaceae;*;*;0;NA;nectar none;NA;6;7;0.1;0.7;x;0;5;74.21
+Alnus_glutinosa;Betulaceae;*;*;0;NA;nectar none;NA;3;4;;;g;0;;
+Alopecurus_myosuroides;Poaceae;*;V;0;NA;nectar none;NA;5;10;0.2;0.45;NA;0;6;38.56
+Alopecurus_pratensis;Poaceae;*;*;0;NA;nectar none;NA;5;6;0.4;1;g;0;7;93.06
+Amaranthus_retroflexus;Amaranthaceae;NA;*;0;NA;nectar none;NA;7;9;0.15;1;NA;3;7;46.81
+Ambrosia_artemisiifolia;Asteraceae;NA;*;0;NA;pollen plenty;NA;8;10;0.5;1;NA;0;6;8.83
+Anthriscus_sylvestris;Apiaceae;*;*;1;weiß;nectar present;disk;5;8;0.6;1.5;x;0;8;94.69
+Arctium_lappa;Asteraceae;*;*;1;pink;nectar present;head;7;8;0.8;1.5;x;2;9;62.76
+Arctium_minus;Asteraceae;*;*;1;pink;k.A.;head;7;9;0.5;1.3;x;2;8;70.12
+Arctium_tomentosum;Asteraceae;*;*;1;pink;nectar present;head;7;9;0.6;1.2;NA;2;9;45.6
+Arenaria_serpyllifolia;Caryophyllaceae;*;*;1;weiß;nectar present;disk;5;9;0.03;0.3;NA;0;;87.51
+Arrhenatherum_elatius;Poaceae;*;*;0;NA;nectar none;NA;6;10;0.6;1.2;x;0;7;94.72
+Artemisia_vulgaris;Asteraceae;*;*;0;gelb;nectar none;NA;7;11;0.6;1.5;g;0;8;93.21
+Atriplex_patula;Chenopodiaceae;*;*;0;andere;k.A.;NA;7;10;0.3;1.2;x;0;7;84.98
+Avena_fatua;Poaceae;*;*;0;NA;nectar none;NA;6;8;0.6;1.2;NA;0;;53.01
+Bellis_perennis;Asteraceae;*;*;1;weiß;nectar present;head;1;11;0.03;0.15;g;0;6;94.94
+Brassica_napus;Brassicaceae;NA;*;1;gelb;nectar present;disk;4;9;1;1.4;x;3;;
+Bromus_hordeaceus;Poaceae;*;*;0;NA;nectar none;NA;5;8;0.05;0.8;NA;0;3;87.41
+Bromus_inermis;Poaceae;*;*;0;NA;nectar none;NA;6;7;0.3;1;NA;0;5;75.03
+Bromus_sterilis;Poaceae;*;*;0;NA;nectar none;NA;5;6;0.15;1;NA;0;5;69.67
+Bunias_orientalis;Brassicaceae;NA;*;1;gelb;nectar present;disk;5;8;0.25;1.2;NA;0;5;21.21
+Calamagrostis_epigejos;Poaceae;*;*;0;NA;nectar none;NA;7;8;0.6;1.5;m, g;0;6;87.74
+Calystegia_sepium;Convolvulaceae;*;*;1;weiß;nectar present;funnel;6;9;1;3;m, x;0;9;85.51
+Capsella_bursa-pastoris;Brassicaceae;*;*;1;weiß;nectar present;disk;1;12;0.1;0.7;x;2;6;95.66
+Carduus_crispus;Asteraceae;*;*;1;pink;nectar present;head;7;9;0.6;1.8;x;1;9;63.83
+Centaurea_jacea;Asteraceae;*;*;1;pink;nectar present;head;6;11;0.15;0.6;g;1;;86.21
+Cerastium_holosteoides;Caryophyllaceae;*;*;1;weiß;nectar present;disk;3;6;0.05;0.5;x;2;5;72.52
+Chenopodium_album;Chenopodiaceae;*;*;0;andere;pollen plenty;NA;7;10;0.2;1.5;x;3;7;71.89
+Cichorium_intybus;Asteraceae;*;*;1;blau;nectar present;head;7;10;0.3;1.2;g;0;5;67.23
+Cirsium_arvense;Asteraceae;*;*;1;pink;nectar plenty;head;7;9;0.6;1.2;x;2;7;95.88
+Cirsium_vulgare;Asteraceae;*;*;1;pink;nectar present;head;6;9;0.6;1.5;x;2;8;93.57
+Convolvulus_arvensis;Convolvulaceae;*;*;1;weiß;nectar present;funnel;6;9;0.2;0.8;m, g;2;;86.36
+Cornus_sanguinea;Cornaceae;*;*;1;weiß;nectar present;disk;5;6;;;m, g;0;;
+Cota_tinctoria;Asteraceae;*;V;1;gelb;nectar present;head;6;9;0.3;0.6;g;0;4;33.45
+Crepis_biennis;Asteraceae;*;*;1;gelb;nectar present;head;5;8;0.5;1.2;x;1;5;66.69
+Dactylis_glomerata;Poaceae;*;*;0;NA;nectar none;NA;5;7;0.5;1.5;g;2;6;96.3
+Daucus_carota;Asteraceae;*;*;1;weiß;nectar present;disk;6;9;0.3;1;g;0;4;89.77
+Dipsacus_fullonum;Caprifoliaceae;*;*;1;pink;nectar present;head;7;8;0.7;2;x;1;7;51.86
+Dipsacus_pilosus;Caprifoliaceae;*;3;1;weiß;k.A.;head;7;8;0.6;1.2;NA;1;7;12.36
+Echinochloa_crus-galli;Poaceae;*;*;0;NA;nectar none;NA;7;10;0.3;0.9;NA;1;8;62.67
+Elymus_repens;Poaceae;*;*;0;NA;nectar none;NA;6;8;0.6;1.2;g;0;7;94.42
+Equisetum_arvense;Equisetaceae;*;*;0;NA;nectar none;NA;3;4;0.15;0.5;x;0;3;93.12
+Eragrostis_pilosa;Poaceae;NA;NA;0;NA;nectar none;NA;7;8;0.1;0.3;NA;0;;
+Erigeron_annuus;Asteraceae;NA;NA;1;weiß;k.A.;head;6;9;0.5;1;NA;0;8;39.71
+Erigeron_canadensis;Asteraceae;NA;*;0;weiß;k.A.;head;7;10;0.2;0.75;NA;0;5;86.99
+Erodium_cicutarium;Geraniaceae;*;*;1;pink;nectar present;disk;4;10;0.1;0.3;g;0;;74.77
+Ervilia_hirsuta;Fabaceae;*;*;1;weiß;nectar present;flag;6;7;0.15;0.6;x;0;4;86.32
+Euonymus_europaeus;Celastraceae;*;*;1;andere;nectar present;disk;5;6;;;m, g;0;5;
+Euphorbia_helioscopia;Euphorbiaceae;*;*;1;andere;nectar present;disk;6;9;0.1;0.3;NA;1;7;83.68
+Euphorbia_peplus;Euphorbiaceae;*;*;1;andere;nectar present;disk;7;10;0.1;0.3;g;1;7;72.67
+Fallopia_convolvulus;Polygonaceae;*;*;1;andere;nectar little;bell;7;10;0.2;1.5;x;3;6;91.86
+Festuca_arundinacea;Poaceae;*;*;0;NA;nectar none;NA;6;7;0.6;1.8;m, g;1;;66.56
+Festuca_guestfalica;Poaceae;*;NA;0;NA;nectar none;NA;5;8;0.25;0.5;NA;1;7;10.63
+Festuca_pratensis;Poaceae;*;*;0;NA;nectar none;NA;6;7;0.4;1;x;1;6;89.9
+Festuca_rubra;Poaceae;*;*;0;NA;nectar none;NA;6;7;0.25;0.8;g;1;;91.01
+Foeniculum_vulgare;Apiaceae;NA;*;1;gelb;nectar present;disk;7;9;0.8;1.8;g;0;;3.56
+Fraxinus_excelsior;Oleaceae;*;*;0;NA;nectar none;NA;4;5;;;g;0;7;
+Fumaria_officinalis;Papaveraceae;*;*;1;pink;nectar present;flag;5;10;0.15;0.3;NA;1;7;22.76
+Galeopsis_tetrahit;Lamiaceae;*;*;1;pink;nectar present;lip;6;10;0.1;0.8;x;1;6;83.97
+Galinsoga_parviflora;Asteraceae;NA;*;1;weiß;k.A.;head;5;10;0.1;0.6;NA;0;8;67.46
+Galinsoga_quadriradiata;Asteraceae;NA;*;1;weiß;k.A.;head;5;10;0.1;0.8;NA;0;7;74.76
+Galium_aparine;Rubiaceae;*;*;1;weiß;k.A.;disk;6;10;0.3;2;x;0;8;93.12
+Galium_mollugo;Rubiaceae;*;*;1;weiß;nectar present;disk;5;7;0.3;0.9;g;0;;95.43
+Galium_verum;Rubiaceae;*;*;1;gelb;k.A.;disk;5;9;0.2;0.7;g;0;3;47.23
+Geranium_dissectum;Geraniaceae;*;*;1;pink;nectar present;disk;5;8;0.1;0.6;g;0;5;59.82
+Geranium_molle;Geraniaceae;*;V;1;pink;nectar present;disk;5;10;0.1;0.3;g;0;4;65.35
+Geranium_pusillum;Geraniaceae;*;*;1;pink;nectar present;disk;5;10;0.15;0.3;g;0;7;81.77
+Geranium_pyrenaicum;Geraniaceae;NA;*;1;pink;nectar present;disk;5;10;0.25;0.7;NA;0;8;46.49
+Geum_urbanum;Rosaceae;*;*;1;gelb;nectar present;disk;5;10;0.3;1.2;x;1;7;92.33
+Glechoma_hederacea;Lamiaceae;*;*;1;blau;nectar present;lip;4;6;0.1;0.4;NA;0;7;94.31
+Heracleum_sphondylium;Apiaceae;*;*;1;weiß;nectar present;disk;6;9;0.5;1.5;g;0;8;94.23
+Holcus_lanatus;Poaceae;*;*;0;NA;nectar none;NA;6;8;0.3;1;g;0;4;94.47
+Hordeum_vulgare;Poaceae;NA;NA;0;NA;nectar none;NA;5;7;1;1.3;NA;0;;
+Hypericum_perforatum;Hypericaceae;*;*;1;gelb;pollen plenty;disk;7;8;0.15;0.6;m, g;0;3;95.13
+Impatiens_glandulifera;Balsaminaceae;NA;*;1;pink;nectar present;lip;7;8;0.5;2.5;x;0;7;56.06
+Jacobaea_vulgaris;Asteraceae;*;*;1;gelb;nectar present;head;7;9;0.3;1.5;g;0;5;73.43
+Lactuca_serriola;Asteraceae;*;*;1;gelb;k.A.;head;7;9;0.6;1.2;g;0;4;69.1
+Lamium_album;Lamiaceae;*;*;1;weiß;nectar present;lip;4;10;0.2;0.5;g;2;9;91.02
+Lamium_purpureum;Lamiaceae;*;*;1;blau;nectar present;lip;3;10;0.1;0.4;x;2;7;90.35
+Lapsana_communis;Asteraceae;*;*;1;gelb;nectar present;head;6;9;0.3;1;NA;0;7;91.66
+Lathyrus_oleraceus;Fabaceae;NA;NA;1;weiß;nectar present;flag;5;7;0.3;1;g;0;;
+Lathyrus_tuberosus;Fabaceae;*;*;1;pink;nectar present;flag;6;8;0.3;1;g;0;4;34.42
+Leontodon_hispidus;Asteraceae;*;*;1;gelb;nectar present;head;6;10;0.1;0.6;x;2;6;64.21
+Leucanthemum_vulgare;Asteraceae;*;*;1;weiß;nectar present;head;6;10;0.2;0.8;g;0;3;88.95
+Lolium_multiflorum;Poaceae;NA;*;0;NA;nectar none;NA;6;8;0.1;0.6;NA;1;6;67.18
+Lolium_perenne;Poaceae;*;*;0;NA;nectar none;NA;5;10;0.3;1;g;1;7;95.17
+Lotus_corniculatus;Fabaceae;*;*;1;gelb;nectar present;flag;6;8;0.2;0.3;m, g;0;3;88.73
+Malva_sylvestris;Malvaceae;*;3;1;pink;nectar present;disk;6;10;0.3;1;x;0;8;48.08
+Matricaria_discoidea;Asteraceae;NA;*;1;gelb;nectar present;head;6;8;0.05;0.3;NA;0;8;93.02
+Medicago_lupulina;Fabaceae;*;*;1;gelb;nectar present;flag;5;10;0.15;0.6;g;0;;92.25
+Medicago_sativa;Fabaceae;NA;*;0;pink;k.A.;NA;k.A.;k.A.;k.A.;k.A.;g;2;;24.1
+Myosotis_arvensis;Boraginaceae;*;*;1;blau;nectar present;stalk_disc;4;9;0.1;0.4;NA;1;6;91.85
+Onobrychis_viciifolia;Fabaceae;NA;*;1;pink;nectar present;flag;5;7;0.3;0.6;m, g;0;3;32.71
+Panicum_dichotomiflorum;Poaceae;NA;*;0;NA;nectar none;NA;7;9;0.4;1.3;NA;0;;
+Papaver_rhoeas;Papaveraceae;*;*;1;pink;pollen plenty;disk;5;7;0.3;0.9;NA;0;6;76.31
+Persicaria_amphibia;Polygonaceae;*;*;1;pink;nectar present;bell;6;9;0.3;1;NA;0;4;76.78
+Phleum_nodosum;Poaceae;*;NA;0;NA;nectar none;NA;6;8;0.1;0.3;g;0;5;16.86
+Phleum_pratense;Poaceae;*;*;0;NA;nectar none;NA;6;8;0.4;1;g;0;6;73.61
+Picris_hieracioides;Asteraceae;*;V;1;gelb;nectar present;head;7;10;0.3;0.8;x;0;4;48.48
+Plantago_lanceolata;Plantaginaceae;*;*;0;andere;pollen plenty;NA;5;10;0.1;0.5;g;0;;96.17
+Plantago_major;Plantaginaceae;*;*;0;gelb;pollen plenty;NA;6;10;0.05;0.4;g;0;;96.09
+Poa_angustifolia;Poaceae;*;*;0;NA;nectar none;NA;5;6;0.2;1;NA;3;3;41.34
+Poa_annua;Poaceae;*;*;0;NA;nectar none;NA;1;12;0.02;0.5;x;3;8;90.25
+Poa_nemoralis;Poaceae;*;*;0;NA;nectar none;NA;6;7;0.3;0.8;g;3;4;88.44
+Poa_pratensis;Poaceae;*;*;0;NA;nectar none;NA;5;6;0.1;1;x;3;6;93.97
+Poa_trivialis;Poaceae;*;*;0;NA;nectar none;NA;6;7;0.5;0.9;x;3;7;91.54
+Polygonum_aviculare;Polygonaceae;*;*;1;pink;nectar none;bell;5;11;0.1;1;m, g;3;6;29.78
+Potentilla_anserina;Rosaceae;*;*;1;gelb;nectar present;disk;5;8;0.1;0.2;g;0;7;93.26
+Potentilla_reptans;Rosaceae;*;*;1;gelb;nectar present;disk;6;8;0.1;0.2;g;0;5;77.68
+Prunus_spinosa;Rosaceae;*;*;1;weiß;nectar plenty;disk;4;5;;;m, g;0;;
+Ranunculus_acris;Ranunculaceae;*;*;1;gelb;pollen & nectar;disk;5;9;0.3;1.2;NA;2;;95.35
+Ranunculus_repens;Ranunculaceae;*;*;1;gelb;pollen & nectar;disk;5;8;0.15;0.4;NA;2;;96
+Raphanus_sativus;Brassicaceae;NA;NA;1;pink;nectar present;disk;5;6;0.3;1;NA;0;;
+Rhinanthus_alectorolophus;Orobanchaceae;*;V;1;gelb;nectar present;lip;5;8;0.05;0.8;NA;0;3;18.74
+Rubus_fruticosus;Rosaceae;NA;*;0;weiß;k.A.;NA;k.A.;k.A.;k.A.;k.A.;g;1;;
+Rumex_crispus;Polygonaceae;*;*;0;andere;nectar none;NA;6;8;0.3;1.5;g;2;5;91.37
+Rumex_obtusifolius;Polygonaceae;*;*;0;andere;nectar none;NA;7;8;0.5;1.2;g;2;9;93.61
+Salix_spec.;Salicaceae;NA;NA;0;NA;k.A.;NA;k.A.;k.A.;;;NA;0;;
+Sanguisorba_minor;Rosaceae;*;*;0;pink;nectar none;NA;5;8;0.15;0.5;m, g;0;2;58.99
+Secale_cereale;Poaceae;NA;NA;0;NA;nectar none;NA;5;6;0.7;2;NA;3;;
+Setaria_pumila;Poaceae;*;*;0;NA;nectar none;NA;7;10;0.1;0.6;NA;2;6;27.74
+Setaria_verticilliformis;Poaceae;*;NA;0;NA;nectar none;NA;6;9;0.3;0.6;NA;2;6;
+Setaria_viridis;Poaceae;*;*;0;NA;nectar none;NA;6;10;0.05;0.6;NA;2;7;56.01
+Silene_latifolia;Caryophyllaceae;*;*;1;weiß;nectar present;stalk_disc;6;9;0.3;1;g;0;7;85.36
+Silene_noctiflora;Caryophyllaceae;3;V;1;pink;nectar present;stalk_disc;6;9;0.15;0.4;NA;0;5;27.85
+Silene_vulgaris;Caryophyllaceae;*;*;1;weiß;nectar present;stalk_disc;5;9;0.1;0.6;g;0;2;73.52
+Sisymbrium_officinale;Brassicaceae;*;*;1;gelb;nectar present;disk;5;10;0.3;0.6;g;0;7;86.27
+Solanum_tuberosum;Solanaceae;NA;NA;1;weiß;pollen little;disk;7;10;0.4;1;g;0;;
+Sonchus_arvensis;Asteraceae;*;*;1;gelb;nectar present;head;7;10;0.5;1.5;x;2;;86
+Sonchus_asper;Asteraceae;*;*;1;gelb;nectar present;head;6;10;0.3;0.8;x;2;7;86.94
+Stellaria_media;Caryophyllaceae;*;*;1;weiß;k.A.;disk;1;12;0.03;0.4;g;3;8;81.87
+Symphytum_officinale;Boraginaceae;*;*;1;pink;nectar present;bell;5;7;0.5;1;x;0;8;36.84
+Taraxacum_sect.;Asteraceae;*;*;1;gelb;nectar present;head;3;10;0.15;0.4;x;2;7;94.29
+Thalictrum_aquilegiifolium;Ranunculaceae;*;V;1;pink;pollen plenty;brush;5;7;0.4;1.2;g;0;7;13.78
+Thlaspi_arvense;Brassicaceae;*;*;1;weiß;nectar present;disk;4;8;0.1;0.5;x;0;6;81.53
+Trifolium_campestre;Fabaceae;*;*;1;gelb;nectar present;flag;6;9;0.15;0.3;NA;2;3;76.3
+Trifolium_dubium;Fabaceae;*;*;1;gelb;nectar present;flag;5;9;0.1;0.25;NA;2;5;86.07
+Trifolium_hybridum;Fabaceae;NA;*;1;weiß;nectar present;flag;5;9;0.3;0.5;NA;2;5;75.14
+Trifolium_pratense;Fabaceae;*;*;1;pink;nectar present;flag;6;9;0.05;0.8;g;2;;95.62
+Trifolium_repens;Fabaceae;*;*;1;weiß;nectar present;flag;5;9;0.15;0.5;x;2;6;95.94
+Tripleurospermum_inodorum;Asteraceae;*;*;1;weiß;nectar present;head;6;11;0.3;0.6;NA;0;6;84.17
+Trisetum_flavescens;Poaceae;*;*;0;NA;nectar none;NA;5;6;0.3;0.8;NA;0;5;59.23
+Triticum_aestivum;Poaceae;NA;NA;0;NA;nectar none;NA;6;7;1;1.5;NA;3;;
+Urtica_dioica;Urticaceae;*;*;0;andere;nectar none;NA;7;10;0.3;1.5;m, g;2;8;96.42
+Verbascum_nigrum;Scrophulariaceae;*;V;1;gelb;pollen & nectar;lip;6;9;0.5;1.2;x;0;7;68.28
+Verbascum_spec.;Scrophulariaceae;NA;NA;1;gelb;k.A.;lip;k.A.;k.A.;k.A.;k.A.;NA;0;;
+Verbascum_thapsus;Scrophulariaceae;*;*;0;gelb;pollen plenty;lip;7;9;0.3;1.7;x;0;7;60.69
+Veronica_arvensis;Plantaginaceae;*;*;1;blau;nectar present;lip;3;10;0.03;0.25;NA;0;;90.57
+Veronica_persica;Plantaginaceae;NA;*;1;blau;nectar present;lip;1;12;0.03;0.15;NA;0;7;81.96
+Veronica_verna;Plantaginaceae;V;3;1;blau;nectar present;lip;4;5;0.03;0.15;NA;0;1;
+Vicia_angustifolia;Fabaceae;*;NA;0;pink;nectar present;flag;5;7;0.15;0.5;NA;0;;75.64
+Vicia_cracca;Fabaceae;*;*;1;pink;nectar present;flag;6;8;0.3;1.2;g;0;;87.21
+Vicia_sativa;Fabaceae;*;NA;1;blau;nectar present;flag;5;7;0.3;1;NA;0;;
+Vicia_sepium;Fabaceae;*;*;1;pink;nectar present;flag;5;6;0.3;0.6;x;0;5;82.39
+Viola_arvensis;Violaceae;*;*;1;weiß;nectar present;lip;4;10;0.05;0.2;x;2;;88.42
