@@ -1,0 +1,61 @@
+---
+title: "R Einführung"
+output: html_document
+date: "23.09.2024"
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+
+##Infos zu RMarkdown:http://rmarkdown.rstudio.com
+```
+
+## Praktischer Teil {.tabset}
+
+### RStudio
+#### Aufbau RStudio
+
+
+Erläuterungen 
+
+```{Uebung 1}
+#Skript fuer die Uebung
+```
+
+#### Überschrift
+
+Text
+
+```{Uebung 2}
+#Skript fuer die Uebung
+```
+
+
+
+
+
+### R Grundlagen
+#### Überschrift
+
+
+
+
+### ggplot2
+#### Überschrift
+
+
+
+
+### dplyr
+#### Überschrift
+
+
+
+
+### tidyr
+#### Überschrift
+
+
+
+
+
