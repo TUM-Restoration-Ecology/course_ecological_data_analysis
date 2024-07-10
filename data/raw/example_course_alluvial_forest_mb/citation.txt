@@ -1,0 +1,7 @@
+Publication
+
+Bauer M, Dorbath K, Kollmann J (2018). Alluvial forest vegetation in an active and inactive alpine floodplain – a case study from River Ammer (Bavaria). – Tuexenia 38, 43-60. DOI: 10.14471/2018.38.006
+
+Dataset
+
+Bauer M, Dorbath K & Kollmann J (2022) Data and code for Bauer et al. (2018) Tuexenia (v1.1.0) [Data set]. – Zenodo. DOI: 10.5281/zenodo.6054867

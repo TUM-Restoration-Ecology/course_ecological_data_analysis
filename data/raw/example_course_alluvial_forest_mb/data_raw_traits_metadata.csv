@@ -1,0 +1,21 @@
+﻿Variable,Definition,Source,Unit,Type,Levels,Comment
+name,botanical species name,see column nomenclature,NA,character,NA,NA
+nomenclature,nomenclature used for the species name,World Flora Online,NA,character,NA,NA
+nameTraits,species names for getting functional plant traits,NA,NA,character,NA,NA
+layer,layer of vegetation,NA,NA,factor,tree / shrub / herb,NA
+lifeform,simplification of lifeformEllenberg,lifeformEllenberg,NA,factor,wood / perannial / perannial_annual,NA
+lifeformEllenberg,lifeform of species,Ellenberg et al. 2001,NA,character,NA,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18 / 9-166. ISBN 3884525182
+ldmc,leaf dry matter content,LEDA traitbase,milligramPerGram,numeric,NA,Kleyer et al. (2008) https://doi.org/10.1111/j.1365-2745.2008.01430.x
+height,canopy height,LEDA traitbase,meter,numeric,NA,Kleyer et al. (2008) https://doi.org/10.1111/j.1365-2745.2008.01430.x
+seedmass,seed mass,LEDA traitbase,milligram,numeric,NA,Kleyer et al. (2008) https://doi.org/10.1111/j.1365-2745.2008.01430.x
+l,Ellenberg L value,Ellenberg et al. 2001,dimensionless,numeric,NA,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18 / 9-166. ISBN 3884525182
+f,Ellenberg F value,Ellenberg et al. 2001,dimensionless,numeric,NA,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18 / 9-166. ISBN 3884525182
+n,Ellenberg N value,Ellenberg et al. 2001,dimensionless,numeric,NA,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18 / 9-166. ISBN 3884525182
+flood,Ellenberg flooding indicator,Ellenberg et al. 2001,NA,factor,yes / no,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18 / 9-166. ISBN 3884525182
+chwet,Ellenberg changing wetness indicator,Ellenberg et al. 2001,NA,factor,yes / no,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18 / 9-166. ISBN 3884525182
+legal,legally protected in Germany,BArtSchV 2005,NA,factor,BG = besonders geschützt / SG = streng geschützt,"BArtSchV (2005) Bundesartenschutzverordnung vom 16. Februar 2005 (BGBl. I S. 258, 896), die zuletzt durch Artikel 10 des Gesetzes vom 21. Januar 2013 (BGBl. I S. 95) geändert worden ist"
+rlg,Red list Germany,Ludwig & Schnittler (1996),NA,factor,NA = not threatened,"BfN (Bundesamt fuer Naturschutz) (2018) Rote Liste gefährdeter Tiere, Pflanzen und Pilze Deutschlands. Band 7: Pflanzen. ISBN 978-3-7843-5612-9"
+rlb,Red list Bavaria,StMUGV 2005,NA,factor,NA = not threatened,"StMUGV (Bayerisches Staatsministerium für Umwelt, Gesundheit und Verbraucherschutz) (2005) Rote Liste der gefährdeten Tiere und Gefäßpflanzen Bayerns. Kurzfassung."
+neophyte,is the species a neophyte,FloraWeb (www.floraweb.de),NA,factor,yes / no,NA
+continuity,number of plots in which the species occur,NA,dimensionless,numeric,NA,NA
+sociality,Location in plant sociology,Ellenberg et al. 2001,dimensionless,numeric,NA,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18 / 9-166. ISBN 3884525182

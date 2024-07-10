@@ -1,0 +1,5 @@
+﻿variable,definition,unit,type,levels,"comment					"
+name,botanical species name,NA,character,NA,"NA					"
+layer,layer of vegetation,NA,factor,"t = tree	/ s = shrub / h = herb",NA
+IN1,abundance of species in the plot IN1 after Braun-Blanquet (1964) refined by Pfadenhauer et al. (1986),NA,numeric,NA,Braun-Blanquet J (1964) Pﬂanzensoziologie: Grundzüge der Vegetationskunde (3rd ed.). Wien-New York: Springer (Original work published 1928) / Pfadenhauer J / Poschlod P / Buchwald R (1986) Überlegungen zu einem Konzept geobotanischer Dauerbeobachtungsflächen für Bayern. Berichte der ANL 10: 41-60.
+etc.,,,,,"		"
