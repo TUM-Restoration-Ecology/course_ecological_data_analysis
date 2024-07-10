@@ -1,30 +1,109 @@
 ---
-title: "Analysis of ecological data: 3.1 Functional traits"
-author: "Markus Bauer"
-date: "`r Sys.Date()`"
-output: html_document
+title: "Analysis of Ecological Data <br> 3.2 Select and prepare traits"
+author: "<b>Markus Bauer</b> <br>"
+date: "<b>`r format(Sys.time(), '%Y-%m-%d')`</b>"
+output:
+  github_document:
+    toc: true
+    toc_depth: 3
+    dev: png
+    fig_width: 7
+    fig_height: 5
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  echo = TRUE
+  )
 ```
 
-## R Markdown
+**Markus Bauer**
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Technichal University of Munich, TUM School of Life Sciences, Chair of
+Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+[markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
 
-```{r cars}
-summary(cars)
+<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/> <https://orcid.org/0000-0001-5372-4174>
+
+[![Google
+Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
+
+# 1 Preparation
+
+Load the libraries. You can always install missing libraries by
+`install.packages("tidyverse")` for the tidyverse packages.
+
+```{r libraries, message = FALSE}
+library(here)
+library(tidyverse)
+rm(list = ls())
 ```
 
-## Including Plots
+## 1.1 The example data set
 
-You can also embed plots, for example:
+A study in the Ammer valley before and after the weir in the [floodplain
+Schnalz](https://www.openstreetmap.org/#map=16/47.7737/10.9615).
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+Normally there are alluvial grey alder forests (Alnetum incanae,
+alliance [Alnion
+incanae](https://floraveg.eu/vegetation/overview/Alnion%20incanae),
+EUNIS habitat [T12](https://floraveg.eu/habitat/overview/T12))
+
+Due to the dam along the Ammer and the weir in the Ammer the flood
+regime changed and the vegetation could have developed to a maple-ash
+forest ('Edellaubholzwald') (Adoxo-Aceretum, alliance
+[Tilio-Acerion](https://floraveg.eu/vegetation/overview/Tilio-Acerion),
+EUNIS habitat type [T1F](https://floraveg.eu/habitat/overview/T1F%3E))
+
+The dataset is also available on GitHub (Bauer et al. 2018)
+
+[![DOI:10.14471/2018.38.006](http://img.shields.io/badge/DOI-10.14471/2018.38.006-informational.svg)](https://doi.org/10.14471/2018.38.006)
+
+<https://github.com/markus1bauer/2018_alluvial_forest_river_ammer/tree/main>
+
+## 1.2 Load data
+
+```{r load-data}
+data_species <- read_csv(
+  here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_species.csv"),
+  col_names = TRUE, col_types = cols(
+    .default = "?",
+    name = "f",
+    layer = "f"
+    )
+  ) %>%
+  select(-contains("Extra")) %>% # exclude some plots
+  filter(layer == "h") %>% # filter only species of the herbal layer
+  group_by(name) %>%
+  mutate(
+    sum = sum(c_across(IN1:AC6)),
+    presence = if_else(sum > 0, 1, 0)
+    ) %>%
+  filter(presence == 1) %>% # exclude species which are not present in the remaining plots
+  ungroup() %>%
+  select(-sum, -presence, -layer)
+
+data_traits <- read_csv(
+  here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_traits.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+  ) %>%
+  select(name, lifeform) %>%
+  filter(!str_detect(lifeform, "wood"))
+
+species <- data_species %>%
+  semi_join(data_traits, by = "name") # only herbal species
+traits <- data_traits %>%
+  semi_join(species, by = "name") # only species which occur in the plots
+
+rm(list = setdiff(ls(), c("species", "traits")))
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# 2 Different trait types
+
+# 3 Missing traits
+
