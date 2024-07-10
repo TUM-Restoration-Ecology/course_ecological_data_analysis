@@ -1,5 +1,5 @@
 ---
-title: "Analysis of ecological data: <br> 3.1 How to get traits?"
+title: "Analysis of Ecological Data <br> 3.1 How to get traits?"
 author: "<b>Markus Bauer</b> <br>"
 date: "<b>`r format(Sys.time(), '%Y-%m-%d')`</b>"
 output:
@@ -27,14 +27,16 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 [markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
 
-ORCiD ID: [0000-0001-5372-4174](https://orcid.org/0000-0001-5372-4174)
-<br> [Google
-Scholar](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
-<br> GitHub: [markus1bauer](https://github.com/markus1bauer)
+<a href="https://orcid.org/0000-0001-5372-4174"><img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/>
+<https://orcid.org/0000-0001-5372-4174>
+
+[![Google
+Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
 
 # 1 Preparation
 
-Load libraries. You can always install missing libraries by
+Load the libraries. You can always install missing libraries by
 `install.packages("GIFT")` for the GIFT package.
 
 ```{r libraries, message = FALSE}
@@ -42,28 +44,38 @@ library(here)
 library(tidyverse)
 library(GIFT)
 library(TNRS)
+library(naniar)
 rm(list = ls())
 ```
 
-Load the example dataset of alluvial forests along river Ammer.
+## 1.2 The example data set
 
-The location is in the Ammer valley before and after the weir.
-<https://www.openstreetmap.org/#map=16/47.7737/10.9615>
+A study in the Ammer valley before and after the weir in the [floodplain
+Schnalz](https://www.openstreetmap.org/#map=16/47.7737/10.9615).
 
 Normally there are alluvial grey alder forests (Alnetum incanae,
-alliance Alnion incanae, EUNIS habitat T12)
-<https://floraveg.eu/vegetation/overview/Alnion%20incanae>
-<https://floraveg.eu/habitat/overview/T12>
+alliance [Alnion
+incanae](https://floraveg.eu/vegetation/overview/Alnion%20incanae),
+EUNIS habitat [T12](https://floraveg.eu/habitat/overview/T12))
 
 Due to the dam along the Ammer and the weir in the Ammer the flood
 regime changed and the vegetation could have developed to a maple-ash
-forest ('Edellaubholzwald') (Adoxo-Aceretum, alliance Tilio-Acerion,
-EUNIS habitat type T1F)
-<https://floraveg.eu/vegetation/overview/Tilio-Acerion>
-<https://floraveg.eu/habitat/overview/T1F>
+forest ('Edellaubholzwald') (Adoxo-Aceretum, alliance
+[Tilio-Acerion](https://floraveg.eu/vegetation/overview/Tilio-Acerion),
+EUNIS habitat type [T1F](https://floraveg.eu/habitat/overview/T1F%3E))
+
+The dataset is also available on GitHub Bauer et al. (2018) Tuexenia
+<br>
+[![DOI:10.14471/2018.38.006](http://img.shields.io/badge/DOI-10.14471/2018.38.006-informational.svg)](https://doi.org/10.14471/2018.38.006):
+<br>
+<https://github.com/markus1bauer/2018_alluvial_forest_river_ammer/tree/main>
+
+## 1.2 Load data
+
+Load the example dataset of alluvial forests along river Ammer.
 
 ```{r load-data}
-species <- read_csv(
+data_species <- read_csv(
   here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_species.csv"),
   col_names = TRUE, col_types = cols(
     .default = "?",
@@ -82,19 +94,19 @@ species <- read_csv(
   ungroup() %>%
   select(-sum, -presence, -layer)
 
-traits <- read_csv(
+data_traits <- read_csv(
   here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_traits.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   ) %>%
   select(name, lifeform) %>%
   filter(!str_detect(lifeform, "wood"))
 
-species <- species %>%
-  semi_join(traits, by = "name") # only herbal species
-traits <- traits %>%
+species <- data_species %>%
+  semi_join(data_traits, by = "name") # only herbal species
+traits <- data_traits %>%
   semi_join(species, by = "name") # only species which occur in the plots
 
-
+rm(list = setdiff(ls(), c("species", "traits")))
 ```
 
 # 2 Metadata of plant traits of GIFT
@@ -107,8 +119,8 @@ rely on these IDs, the first step is to call the function
 example, let’s say we want to retrieve the maximum vegetative heights of
 plant species.
 
-```{r select-plant-traits}
-trait_meta <- GIFT_traits_meta() %>% as_tibble()
+```{r select-plant-traits, message = FALSE}
+trait_meta <- GIFT::GIFT_traits_meta()
 trait_meta %>%
   filter(str_detect(Trait2, "height"))
 ```
@@ -117,46 +129,149 @@ We can see that the ID of this trait is 1.6.2. Now that we have the ID,
 we can use `GIFT_traits()` to retrieve the growth form values for
 different plant species.
 
-| Search the IDs of specific leaf area (SLA) and seed mass.
+-   Search the IDs of *mean* specific leaf area (SLA), seed mass aand
+    plant height.
 
-| Note the categories, IDs and unit for the material-and-methods section.
+-   Note the categories, IDs and unit for the material-and-methods
+    section.
 
-# 3 Use TNRS for name resolving
+# 3 Download trait values
 
-```{r}
+## 3.1 How to download traits
 
+There are two functions to access trait values. First,
+`GIFT_traits_raw()` returns all trait values for a given species and a
+given trait. These trait values can then vary. Second, GIFT_traits()
+returns an aggregated trait value at the species level. The aggregation
+simply takes the mean for continuous traits or the most frequent entry
+for categorical traits. However, for some specific cases, the
+aggregation takes either the minimum or the maximum, as for the trait we
+chose. Let’s retrieve the raw and aggregated values for the maximum
+vegetative height of plants (trait_ID 1.6.2).
+
+```{r download-traits-example, results = FALSE}
+height <- GIFT_traits(
+  trait_IDs = c("1.6.2"), agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
+  )
+
+height_raw <- GIFT_traits_raw(trait_IDs = c("1.6.2"))
+
+# Raw values
+height_raw %>%
+  select(work_species, trait_ID, trait_value) %>%
+  filter(work_species == "Fagus sylvatica")
+
+# Aggregated value
+height %>%
+  filter(work_species == "Fagus sylvatica")
 ```
 
-# 4 Download trait values
+There were three maximum heights for Fagus sylvatica, 30, 35, and 50
+meters, which led to an aggregated value of 50 meters. And if you want
+to look up the references that led to the aggregated trait value, you
+can run this chunk:
 
-## 4.1 Species level
+```{r trait-references}
+references <- GIFT_references(GIFT_version = "beta")
 
-```{r}
+unique(unlist(strsplit(height$references_1.6.2, ",")))
 
+references <- references[
+  which(references$ref_ID %in% 
+          unique(unlist(strsplit(height$references_1.6.2, ",")))), ]
+references[1:2, ]
 ```
 
-## 4.2 Taxonomic level
+## 3.2 Download traits of SLA, height, seed mass
 
-```{r}
+-   Get the aggregated trait values of the mean SLA, plant height and
+    seed mass.
 
+Here an example how to download several traits:
+
+```{r get-traits}
+data_gift <- GIFT_traits(
+  trait_IDs = c("1.6.2", "1.6.3"), agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
+  )
+
+rm(list = setdiff(ls(), c("species", "traits", "data_gift")))
 ```
 
-# 5 Merge your dataset with GIFT traits
+# 4 Use TNRS for name resolving
 
-## 5.1 Merge dataset
+## 4.1 Resolve species names of species table
 
-```{r}
+```{r resolve-names-species}
+metadata <- TNRS::TNRS_metadata()
 
+data <- species %>%
+  rowid_to_column("id") %>%
+  select(id, name) %>%
+  TNRS::TNRS(
+    sources = c("wcvp", "wfo"),
+    classification = "wfo",
+    mode = "resolve"
+  )
+names <- data %>%
+  select(
+    Name_submitted, Taxonomic_status, Accepted_name, Accepted_name_url,
+    Accepted_family
+    ) %>%
+  rename_with(tolower) %>%
+  rename(name = name_submitted)
 ```
 
-## 5.1 Check completeness
+-   Note the version of the database from metadata\$version and the
+    sources of the names with metadata\$citations for the
+    material-and-methods section
 
-```{r}
+-   Note the range of Overall_score for your submitted species names.
+
+## 4.2 Merge species names to species and traits table
+
+```{r merge-resolved-names}
+data <- species %>%
+  full_join(names %>% select(name, accepted_name), by = "name") %>%
+  select(-name)
+species <- data
+
+data <- names %>%
+  full_join(traits, by = "name") %>%
+  left_join(data_gift %>% rename(accepted_name = work_species), by = "accepted_name")
+traits <- data %>%
+  select(-work_ID, -work_author, -starts_with(references))
+
+rm(list = setdiff(ls(), c("species", "traits")))
+```
+
+# 5 Check completeness
+
+```{r check-completeness}
+traits %>%
+  select(trait_value_1.6.2, trait_value_1.6.3) %>%
+  naniar::miss_var_summary(order = TRUE)
+traits %>%
+  select(trait_value_1.6.2, trait_value_1.6.3) %>%
+  naniar::vis_miss(cluster = FALSE, sort_miss = TRUE)
+traits %>%
+  select(accepted_name, trait_value_1.6.2, trait_value_1.6.3) %>%
+  filter(is.na(trait_value_1.6.2) | is.na(trait_value_1.6.3))
+```
+
+-   Note the number of missing traits and calculate the ratio.
+
+Check for synonyms
+
+```{r lookup-synonyms}
+GIFT_species_lookup(genus = "Aconitum", epithet = "lycoctonum")
+GIFT_species_lookup(genus = "Molinia", epithet = "arundinacea")
 
 ```
 
 # 6 Save your traits table
 
-```{r}
+```{r save-files}
 
+write_csv(species, here("data", "processed", "data_processed_species.csv"))
+write_csv(traits, here("data", "processed", "data_processed_traits.csv"))
 ```
