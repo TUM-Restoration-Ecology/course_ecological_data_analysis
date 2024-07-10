@@ -48,7 +48,7 @@ library(naniar)
 rm(list = ls())
 ```
 
-## 1.2 The example data set
+## 1.1 The example data set
 
 A study in the Ammer valley before and after the weir in the [floodplain
 Schnalz](https://www.openstreetmap.org/#map=16/47.7737/10.9615).
@@ -71,8 +71,6 @@ The dataset is also available on GitHub Bauer et al. (2018) Tuexenia
 <https://github.com/markus1bauer/2018_alluvial_forest_river_ammer/tree/main>
 
 ## 1.2 Load data
-
-Load the example dataset of alluvial forests along river Ammer.
 
 ```{r load-data}
 data_species <- read_csv(
@@ -135,7 +133,11 @@ different plant species.
 -   Note the categories, IDs and unit for the material-and-methods
     section.
 
-# 3 Download trait values
+# 3 Download trait values from GIFT
+
+[Original
+vignette](https://biogeomacro.github.io/GIFT/articles/GIFT.html#trait-data)
+(Denelle & Weigelt 2024)
 
 ## 3.1 How to download traits
 
@@ -172,7 +174,7 @@ to look up the references that led to the aggregated trait value, you
 can run this chunk:
 
 ```{r trait-references}
-references <- GIFT_references(GIFT_version = "beta")
+references <- GIFT_references(GIFT_version = "latest")
 
 unique(unlist(strsplit(height$references_1.6.2, ",")))
 
@@ -189,7 +191,7 @@ references[1:2, ]
 
 Here an example how to download several traits:
 
-```{r get-traits}
+```{r get-traits, results = FALSE, message = FALSE}
 data_gift <- GIFT_traits(
   trait_IDs = c("1.6.2", "1.6.3"), agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
   )
@@ -199,7 +201,11 @@ rm(list = setdiff(ls(), c("species", "traits", "data_gift")))
 
 # 4 Use TNRS for name resolving
 
-## 4.1 Resolve species names of species table
+[Original
+vignette](https://cran.r-project.org/web/packages/TNRS/vignettes/TNRS_vignette.html)
+(Maitner 2024)
+
+## 4.1 Resolve species names of the species table
 
 ```{r resolve-names-species}
 metadata <- TNRS::TNRS_metadata()
@@ -239,14 +245,14 @@ data <- names %>%
   full_join(traits, by = "name") %>%
   left_join(data_gift %>% rename(accepted_name = work_species), by = "accepted_name")
 traits <- data %>%
-  select(-work_ID, -work_author, -starts_with(references))
+  select(-work_ID, -work_author, -starts_with("references"))
 
 rm(list = setdiff(ls(), c("species", "traits")))
 ```
 
 # 5 Check completeness
 
-```{r check-completeness}
+```{r check-completeness, reults = FALSE}
 traits %>%
   select(trait_value_1.6.2, trait_value_1.6.3) %>%
   naniar::miss_var_summary(order = TRUE)
@@ -262,7 +268,7 @@ traits %>%
 
 Check for synonyms
 
-```{r lookup-synonyms}
+```{r lookup-synonyms, results = FALSE}
 GIFT_species_lookup(genus = "Aconitum", epithet = "lycoctonum")
 GIFT_species_lookup(genus = "Molinia", epithet = "arundinacea")
 
