@@ -29,36 +29,27 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 <img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/><https://orcid.org/0000-0001-5372-4174>
 
-[![Google
-Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
+[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
 [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
 
 # 1 Preparation
 
-Load the libraries. You can always install missing libraries by
-`install.packages("tidyverse")` for the tidyverse packages.
+Load the libraries. You can always install missing libraries by `install.packages("tidyverse")` for the tidyverse packages.
 
 ```{r libraries, message = FALSE}
 library(here)
 library(tidyverse)
+library(GIFT)
 rm(list = ls())
 ```
 
 ## 1.1 The example data set
 
-A study in the Ammer valley before and after the weir in the [floodplain
-Schnalz](https://www.openstreetmap.org/#map=16/47.7737/10.9615).
+A study in the Ammer valley before and after the weir in the [floodplain Schnalz](https://www.openstreetmap.org/#map=16/47.7737/10.9615).
 
-Normally there are alluvial grey alder forests (Alnetum incanae,
-alliance [Alnion
-incanae](https://floraveg.eu/vegetation/overview/Alnion%20incanae),
-EUNIS habitat [T12](https://floraveg.eu/habitat/overview/T12))
+Normally there are alluvial grey alder forests (Alnetum incanae, alliance [Alnion incanae](https://floraveg.eu/vegetation/overview/Alnion%20incanae), EUNIS habitat [T12](https://floraveg.eu/habitat/overview/T12))
 
-Due to the dam along the Ammer and the weir in the Ammer the flood
-regime changed and the vegetation could have developed to a maple-ash
-forest ('Edellaubholzwald') (Adoxo-Aceretum, alliance
-[Tilio-Acerion](https://floraveg.eu/vegetation/overview/Tilio-Acerion),
-EUNIS habitat type [T1F](https://floraveg.eu/habitat/overview/T1F%3E))
+Due to the dam along the Ammer and the weir in the Ammer the flood regime changed and the vegetation could have developed to a maple-ash forest ('Edellaubholzwald') (Adoxo-Aceretum, alliance [Tilio-Acerion](https://floraveg.eu/vegetation/overview/Tilio-Acerion), EUNIS habitat type [T1F](https://floraveg.eu/habitat/overview/T1F%3E))
 
 The dataset is also available on GitHub (Bauer et al. 2018)
 
@@ -89,21 +80,78 @@ data_species <- read_csv(
   select(-sum, -presence, -layer)
 
 data_traits <- read_csv(
-  here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_traits.csv"),
+  here("data", "processed", "data_processed_traits.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
-  ) %>%
-  select(name, lifeform) %>%
-  filter(!str_detect(lifeform, "wood"))
+  )
 
 species <- data_species %>%
   semi_join(data_traits, by = "name") # only herbal species
 traits <- data_traits %>%
   semi_join(species, by = "name") # only species which occur in the plots
 
-rm(list = setdiff(ls(), c("species", "traits")))
+bodysize <- c(10, 20, 30, 40, 50, NA, 70)
+carnivory <- c(1, 1, 0, 1, 0,1, 0)
+red <- c(1, 0, 0.5, 0, 0.2, 0, 1)
+yellow <- c(0, 1, 0, 0, 0.3, 1, 0)
+blue <- c(0, 0, 0.5,1, 0.5, 0, 0)
+colors.fuzzy <- cbind(red, yellow, blue)
+names <- paste("sp", 1:7, sep="")
+tall <- as_tibble(cbind(names, bodysize, carnivory, colors.fuzzy))
+tall
+
+rm(list = setdiff(ls(), c("species", "traits", "tall")))
 ```
 
 # 2 Different trait types
 
+We have categorical (binary, nominal, ordinal), continuous, proportional or circular traits.
+Reload the traits table and define the column type with
+-   "col_logical()" = binary: yes/no data or presence-absence data
+-   "col_integer()" = whole numbers: counting data or rounded data
+-   "col_double()" = continous numbers: measured values
+-   "col_character()" = text
+-   "col_factor()" or specify further "col_factor(levels, ordered)": ordinal traits are hierarchically and nominal traits not
+-   "col_date()" or specify further "col_date("%Y-%m-%d")": phenological traits are such circular traits
+
+```{r different-trait-types}
+data_traits <- read_csv(
+  here("data", "processed", "data_processed_traits.csv"),
+  col_names = TRUE, col_types = cols(
+    .default = "?",
+    name = col_character()#,
+    # go on here
+    )
+  )
+```
+
+Fuzzy coding: Different individaulas of the same species belong to different levels of a factor
+
+
 # 3 Missing traits
 
+Identify missing traits.
+
+```{r identify-missing-traits}
+traits %>%
+  select(accepted_name, starts_with("trait_value")) %>%
+  filter(is.na(trait_value_1.6.2) | is.na(trait_value_1.6.3))
+```
+Possibility 1: Remove the row.
+
+Possibility 2: Use the sample average
+
+Possibility 3: Measure yourself in the field
+
+Possibility 4: Use trait values from phylogenetically close species. (Recommended)
+
+Download the trait values and search for closely related species:
+
+```{r get-traits, results = FALSE, message = FALSE}
+data_gift <- GIFT_traits(
+  trait_IDs = c("1.2.2", "1.6.3","3.7.1", "3.21.1", "4.5.1"),
+  agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
+  )
+
+(data <- data_gift %>%
+  filter(str_detect(work_species, "Aconitum")))
+```
