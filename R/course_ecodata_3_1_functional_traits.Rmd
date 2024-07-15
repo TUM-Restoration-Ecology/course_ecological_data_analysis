@@ -168,7 +168,8 @@ Here is an example how to download several traits:
 
 ```{r get-traits, results = FALSE, message = FALSE}
 data_gift <- GIFT_traits(
-  trait_IDs = c("1.6.2", "1.6.3"), agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
+  trait_IDs = c("1.2.2", "1.6.2", "1.6.3","3.7.1", "3.21.1", "4.5.1"),
+  agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
   )
 
 rm(list = setdiff(ls(), c("species", "traits", "data_gift")))
@@ -229,14 +230,14 @@ rm(list = setdiff(ls(), c("species", "traits")))
 
 ```{r check-completeness, results = FALSE, fig.show = 'hide', message = FALSE}
 traits %>%
-  select(trait_value_1.6.2, trait_value_1.6.3) %>%
+  select(starts_with("trait_value")) %>%
   naniar::miss_var_summary(order = TRUE)
 traits %>%
-  select(trait_value_1.6.2, trait_value_1.6.3) %>%
+  select(starts_with("trait_value")) %>%
   naniar::vis_miss(cluster = FALSE, sort_miss = TRUE)
 traits %>%
-  select(accepted_name, trait_value_1.6.2, trait_value_1.6.3) %>%
-  filter(is.na(trait_value_1.6.2) | is.na(trait_value_1.6.3))
+  select(accepted_name, starts_with("trait_value")) %>%
+  filter(if_any(-accepted_name, is.na))
 ```
 
 -   Note the number of missing traits and calculate the ratio.
