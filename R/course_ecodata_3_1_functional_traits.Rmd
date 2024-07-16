@@ -32,6 +32,10 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 [![GoogleScholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
 [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
 
+# Tasks
+
+* Test script
+
 # 1 Preparation
 
 Load the libraries. You can always install missing libraries by
@@ -40,9 +44,6 @@ Load the libraries. You can always install missing libraries by
 ```{r libraries, message = FALSE}
 library(here)
 library(tidyverse)
-library(GIFT)
-library(TNRS)
-library(naniar)
 rm(list = ls())
 ```
 
@@ -109,11 +110,8 @@ trait_meta %>%
 
 We can see that the ID of this trait is 1.6.2. Now that we have the ID, we can use `GIFT_traits()` to retrieve the growth form values for different plant species.
 
--   Search the IDs of *mean* specific leaf area (SLA), seed mass aand
-    plant height.
-
--   Note the categories, IDs and unit for the material-and-methods
-    section.
+* Search the IDs of *mean* specific leaf area (SLA), seed mass and plant height.
+* Note the categories, IDs and unit for the material-and-methods section.
 
 # 3 Get trait values
 
@@ -126,11 +124,11 @@ Get the functional trait values from the database GIFT ([Weigelt et al. 2023](ht
 There are two functions to access trait values. First, `GIFT_traits_raw()` returns all trait values for a given species and a given trait. These trait values can then vary. Second, `GIFT_traits()` returns an aggregated trait value at the species level. The aggregation simply takes the mean for continuous traits or the most frequent entry for categorical traits. However, for some specific cases, the aggregation takes either the minimum or the maximum, as for the trait we chose. Let’s retrieve the raw and aggregated values for the maximum vegetative height of plants (trait_ID 1.6.2).
 
 ```{r download-traits-example, results = FALSE, message = FALSE}
-height <- GIFT_traits(
+height <- GIFT::GIFT_traits(
   trait_IDs = c("1.6.2"), agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
   )
 
-height_raw <- GIFT_traits_raw(trait_IDs = c("1.6.2"))
+height_raw <- GIFT::GIFT_traits_raw(trait_IDs = c("1.6.2"))
 
 # Raw values
 height_raw %>%
@@ -149,7 +147,7 @@ There were three maximum heights for Fagus sylvatica, 30, 35, and 50 meters, whi
 If you want to look up the references that led to the aggregated trait value, you can run this chunk:
 
 ```{r trait-references, results = FALSE, message = FALSE}
-references <- GIFT_references(GIFT_version = "latest")
+references <- GIFT::GIFT_references(GIFT_version = "latest")
 
 unique(unlist(strsplit(height$references_1.6.2, ",")))
 
@@ -167,7 +165,7 @@ references[1:2, ]
 Here is an example how to download several traits:
 
 ```{r get-traits, results = FALSE, message = FALSE}
-data_gift <- GIFT_traits(
+data_gift <- GIFT::GIFT_traits(
   trait_IDs = c("1.2.2", "1.6.2", "1.6.3","3.7.1", "3.21.1", "4.5.1"),
   agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
   )
@@ -226,31 +224,7 @@ traits <- data %>%
 rm(list = setdiff(ls(), c("species", "traits")))
 ```
 
-# 6 Check completeness
-
-```{r check-completeness, results = FALSE, fig.show = 'hide', message = FALSE}
-traits %>%
-  select(starts_with("trait_value")) %>%
-  naniar::miss_var_summary(order = TRUE)
-traits %>%
-  select(starts_with("trait_value")) %>%
-  naniar::vis_miss(cluster = FALSE, sort_miss = TRUE)
-traits %>%
-  select(accepted_name, starts_with("trait_value")) %>%
-  filter(if_any(-accepted_name, is.na))
-```
-
--   Note the number of missing traits and calculate the ratio.
-
-Check for synonyms
-
-```{r lookup-synonyms, results = FALSE, message = FALSE}
-GIFT_species_lookup(genus = "Aconitum", epithet = "lycoctonum")
-GIFT_species_lookup(genus = "Molinia", epithet = "arundinacea")
-
-```
-
-# 7 Save
+# 6 Save
 
 ```{r save-files}
 

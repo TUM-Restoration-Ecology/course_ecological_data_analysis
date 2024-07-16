@@ -32,9 +32,15 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 [![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
 [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
 
+# Tasks
+
+* Introduce exercise better and write solution
+* format text
+* Test script
+
 # 1 Preparation
 
-Load the libraries. You can always install missing libraries by `install.packages("tidyverse")` for the tidyverse packages.
+Load the libraries.
 
 ```{r libraries, message = FALSE}
 library(here)
@@ -60,34 +66,19 @@ The dataset is also available on GitHub (Bauer et al. 2018)
 ## 1.2 Load data
 
 ```{r load-data}
-data_species <- read_csv(
-  here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_species.csv"),
+species <- read_csv(
+  here("data", "processed", "data_processed_species.csv"),
   col_names = TRUE, col_types = cols(
     .default = "?",
-    name = "f",
-    layer = "f"
+    name = "f"
     )
-  ) %>%
-  select(-contains("Extra")) %>% # exclude some plots
-  filter(layer == "h") %>% # filter only species of the herbal layer
-  group_by(name) %>%
-  mutate(
-    sum = sum(c_across(IN1:AC6)),
-    presence = if_else(sum > 0, 1, 0)
-    ) %>%
-  filter(presence == 1) %>% # exclude species which are not present in the remaining plots
-  ungroup() %>%
-  select(-sum, -presence, -layer)
+  )
 
-data_traits <- read_csv(
+traits <- read_csv(
   here("data", "processed", "data_processed_traits.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
 
-species <- data_species %>%
-  semi_join(data_traits, by = "name") # only herbal species
-traits <- data_traits %>%
-  semi_join(species, by = "name") # only species which occur in the plots
 
 bodysize <- c(10, 20, 30, 40, 50, NA, 70)
 carnivory <- c(1, 1, 0, 1, 0,1, 0)
@@ -97,23 +88,24 @@ blue <- c(0, 0, 0.5,1, 0.5, 0, 0)
 colors.fuzzy <- cbind(red, yellow, blue)
 names <- paste("sp", 1:7, sep="")
 tall <- as_tibble(cbind(names, bodysize, carnivory, colors.fuzzy))
-tall
 
 rm(list = setdiff(ls(), c("species", "traits", "tall")))
 ```
 
 # 2 Different trait types
 
-We have categorical (binary, nominal, ordinal), continuous, proportional or circular traits.
+We have qualitative (binary, nominal), semi-quantitative (ordinal), and quantiative data (discrete, continuous, proportional, circular traits).
 Reload the traits table and define the column type with
--   "col_logical()" = binary: yes/no data or presence-absence data
--   "col_integer()" = whole numbers: counting data or rounded data
--   "col_double()" = continous numbers: measured values
--   "col_character()" = text
--   "col_factor()" or specify further "col_factor(levels, ordered)": ordinal traits are hierarchically and nominal traits not
--   "col_date()" or specify further "col_date("%Y-%m-%d")": phenological traits are such circular traits
+* "col_logical()" = binary: yes/no data or presence-absence data
+* "col_integer()" = whole numbers: counting data or rounded data
+* "col_double()" = continous numbers: measured values
+* "col_factor()" or specify further "col_factor(levels, ordered)": ordinal traits are hierarchically and nominal traits not
+* "col_date()" or specify further "col_date("%Y-%m-%d")": phenological traits are such circular traits
+* "col_character()" = text
 
 ```{r different-trait-types}
+trait_meta <- GIFT::GIFT_traits_meta()
+
 data_traits <- read_csv(
   here("data", "processed", "data_processed_traits.csv"),
   col_names = TRUE, col_types = cols(
@@ -127,9 +119,33 @@ data_traits <- read_csv(
 Fuzzy coding: Different individaulas of the same species belong to different levels of a factor
 
 
-# 3 Missing traits
+# 3 Check completeness
 
-Identify missing traits.
+```{r check-completeness, results = FALSE, fig.show = 'hide', message = FALSE}
+traits %>%
+  select(starts_with("trait_value")) %>%
+  naniar::miss_var_summary(order = TRUE)
+traits %>%
+  select(starts_with("trait_value")) %>%
+  naniar::vis_miss(cluster = FALSE, sort_miss = TRUE)
+traits %>%
+  select(accepted_name, starts_with("trait_value")) %>%
+  filter(if_any(-accepted_name, is.na))
+```
+
+-   Note the number of missing traits and calculate the ratio.
+
+Check for synonyms
+
+```{r lookup-synonyms, results = FALSE, message = FALSE}
+GIFT::GIFT_species_lookup(genus = "Aconitum", epithet = "lycoctonum")
+GIFT::GIFT_species_lookup(genus = "Molinia", epithet = "arundinacea")
+
+```
+
+# 4 Handle missing traits
+
+Identify missing traits
 
 ```{r identify-missing-traits}
 traits %>%
@@ -144,14 +160,23 @@ Possibility 3: Measure yourself in the field
 
 Possibility 4: Use trait values from phylogenetically close species. (Recommended)
 
-Download the trait values and search for closely related species:
+* Download the trait values and search for closely related species:
 
 ```{r get-traits, results = FALSE, message = FALSE}
-data_gift <- GIFT_traits(
+data_gift <- GIFT::GIFT_traits(
   trait_IDs = c("1.2.2", "1.6.3","3.7.1", "3.21.1", "4.5.1"),
   agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
   )
 
+(data <- data_gift %>%
+  filter(str_detect(work_species, "Aconitum")))
+```
+
+* Check relevant species for Germany:
+
+e.g. [FloraWeb](https://www.floraweb.de/php/systematik1.php?suchnr=61135) (BfN) or  [FloraVeg.EU](https://floraveg.eu/taxon/) ([Chytrý et al. 2020](https://doi.org/10.1111/avsc.12519))
+
+```{r get-traits, results = FALSE, message = FALSE}
 (data <- data_gift %>%
   filter(str_detect(work_species, "Aconitum")))
 ```
