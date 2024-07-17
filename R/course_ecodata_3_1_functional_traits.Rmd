@@ -38,8 +38,9 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 # 1 Preparation
 
-Load the libraries. You can always install missing libraries by
-`install.packages("GIFT")` for the GIFT package.
+## 1.1 Load libraries
+
+You can always install missing libraries by `install.packages("here")` for the `here` package.
 
 ```{r libraries, message = FALSE}
 library(here)
@@ -47,7 +48,7 @@ library(tidyverse)
 rm(list = ls())
 ```
 
-## 1.1 The example data set
+## 1.2 The example data set
 
 A study in the Ammer valley before and after the weir in the [floodplain Schnalz](https://www.openstreetmap.org/#map=16/47.7737/10.9615).
 
@@ -61,41 +62,14 @@ The dataset is also available on GitHub (Bauer et al. 2018)
 
 <https://github.com/markus1bauer/2018_alluvial_forest_river_ammer/tree/main>
 
-## 1.2 Load data
+## 1.3 Load data
 
 ```{r load-data}
-data_species <- read_csv(
+species <- read_csv(
   here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_species.csv"),
-  col_names = TRUE, col_types = cols(
-    .default = "?",
-    name = "f",
-    layer = "f"
-    )
-  ) %>%
-  select(-contains("Extra")) %>% # exclude some plots
-  filter(layer == "h") %>% # filter only species of the herbal layer
-  group_by(name) %>%
-  mutate(
-    sum = sum(c_across(IN1:AC6)),
-    presence = if_else(sum > 0, 1, 0)
-    ) %>%
-  filter(presence == 1) %>% # exclude species which are not present in the remaining plots
-  ungroup() %>%
-  select(-sum, -presence, -layer)
-
-data_traits <- read_csv(
-  here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_traits.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
-  ) %>%
-  select(name, lifeform) %>%
-  filter(!str_detect(lifeform, "wood"))
-
-species <- data_species %>%
-  semi_join(data_traits, by = "name") # only herbal species
-traits <- data_traits %>%
-  semi_join(species, by = "name") # only species which occur in the plots
-
-rm(list = setdiff(ls(), c("species", "traits")))
+  )
+rm(list = setdiff(ls(), c("species")))
 ```
 
 # 2 Metadata of traits
@@ -159,14 +133,13 @@ references[1:2, ]
 
 ## 3.3 Download traits of SLA, height, seed mass
 
--   Get the aggregated trait values of the mean SLA, plant height and
-    seed mass.
+* Get the aggregated trait values of the mean SLA, plant height and seed mass.
 
 Here is an example how to download several traits:
 
 ```{r get-traits, results = FALSE, message = FALSE}
 data_gift <- GIFT::GIFT_traits(
-  trait_IDs = c("1.2.2", "1.6.2", "1.6.3","3.7.1", "3.21.1", "4.5.1"),
+  trait_IDs = c("1.2.2", "1.6.2", "1.6.3", "3.7.1", "3.21.1", "4.5.1"),
   agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
   )
 
@@ -195,15 +168,11 @@ names <- data %>%
     Name_submitted, Taxonomic_status, Accepted_name, Accepted_name_url,
     Accepted_family
     ) %>%
-  rename_with(tolower) %>%
-  rename(name = name_submitted)
+  rename_with(tolower)
 ```
 
--   Note the version of the database from metadata\$version and the
-    sources of the names with metadata\$citations for the
-    material-and-methods section
-
--   Note the range of Overall_score for your submitted species names.
+* Note the version of the database from metadata\$version and the sources of the names with metadata\$citations for the material-and-methods section
+* Note the range of Overall_score for your submitted species names.
 
 # 5 Merge
 
@@ -211,13 +180,17 @@ Merge the resolved species names and the functional plant traits into the existi
 
 ```{r merge-resolved-names}
 data <- species %>%
-  full_join(names %>% select(name, accepted_name), by = "name") %>%
+  rename(name_submitted) %>%
+  full_join(
+    names %>% select(name_submitted, accepted_name), by = "name_submitted"
+    ) %>%
   select(-name)
 species <- data
 
 data <- names %>%
-  full_join(traits, by = "name") %>%
-  left_join(data_gift %>% rename(accepted_name = work_species), by = "accepted_name")
+  left_join(
+    data_gift %>% rename(accepted_name = work_species), by = "accepted_name"
+    )
 traits <- data %>%
   select(-work_ID, -work_author, -starts_with("references"))
 
