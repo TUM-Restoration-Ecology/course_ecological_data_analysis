@@ -1,30 +1,415 @@
 ---
-title: "Analysis of ecological data: 3.1 Functional traits"
-author: "Markus Bauer"
-date: "`r Sys.Date()`"
-output: html_document
+title: "Analysis of Ecological Data <br> 3.4 Community Weighted Mean"
+author: "<b>Markus Bauer</b> <br>"
+date: "<b>`r format(Sys.time(), '%Y-%m-%d')`</b>"
+output:
+  github_document:
+    toc: true
+    toc_depth: 3
+    dev: png
+    fig_width: 7
+    fig_height: 5
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  echo = TRUE
+  )
 ```
 
-## R Markdown
+**Markus Bauer**
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Technichal University of Munich, TUM School of Life Sciences, Chair of
+Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+[markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
 
-```{r cars}
-summary(cars)
+<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/><https://orcid.org/0000-0001-5372-4174>
+
+[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
+
+# Tasks
+
+* Make 2.2 tidy
+* Make 2.3 working also with categorical traits
+* Test script
+
+This script uses large parts from [Bello et al. (2021)](https://doi.org/10.1017/9781108628426)
+
+# 1 Preparation
+
+Load the libraries.
+
+```{r libraries, message = FALSE}
+library(here)
+library(tidyverse)
+library(FD)
+rm(list = ls())
 ```
 
-## Including Plots
+## 1.1 The example data set
 
-You can also embed plots, for example:
+A study in the Ammer valley before and after the weir in the [floodplain Schnalz](https://www.openstreetmap.org/#map=16/47.7737/10.9615).
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+Normally there are alluvial grey alder forests (Alnetum incanae, alliance [Alnion incanae](https://floraveg.eu/vegetation/overview/Alnion%20incanae), EUNIS habitat [T12](https://floraveg.eu/habitat/overview/T12))
+
+Due to the dam along the Ammer and the weir in the Ammer the flood regime changed and the vegetation could have developed to a maple-ash forest ('Edellaubholzwald') (Adoxo-Aceretum, alliance [Tilio-Acerion](https://floraveg.eu/vegetation/overview/Tilio-Acerion), EUNIS habitat type [T1F](https://floraveg.eu/habitat/overview/T1F%3E))
+
+The dataset is also available on GitHub (Bauer et al. 2018)
+
+[![DOI:10.14471/2018.38.006](http://img.shields.io/badge/DOI-10.14471/2018.38.006-informational.svg)](https://doi.org/10.14471/2018.38.006)
+
+<https://github.com/markus1bauer/2018_alluvial_forest_river_ammer/tree/main>
+
+## 1.2 Load data
+
+```{r load-data}
+comm1 <- c(10, 10, 10, 10, 10, 0, 0)
+comm2 <- c(49, 0, 5, 0, 5, 0, 11)
+comm3 <- c(0, 6, 0, 4, 0, 2, 8)
+names <- paste("species", 1:7)
+species_invented <- tibble(names, comm1, comm2, comm3)
+
+bodysize <- c(10, 20, 30, 40, 50, NA, 70)
+carnivory <- c(1, 1, 0, 1, 0, 1, 0)
+traits_invented <- tibble(names, bodysize, carnivory)
+
+species_spain <- read_delim(
+  here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXplotsNE.txt"),
+  col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
+  )
+traits_spain <- read_delim(
+  here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXtraitsNE.txt"),
+  col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
+  )
+
+species_ammer <- read_csv(
+  here("data", "processed", "data_processed_species.csv"),
+  col_names = TRUE, col_types = cols(
+    .default = "?",
+    accepted_name = "f"
+    )
+  )
+
+traits_ammer <- read_csv(
+  here("data", "processed", "data_processed_traits.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+  )
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+# 2 Calculation of CWM
+
+## 2.1 Invented data
+
+### 2.1.1 Preparation
+
+Let’s look at an invented ‘species x community’ matrix and then a ‘species x traits’ matrix. *Notice* that we will start computing everything by hand, to learn the overall process, although existing functions in `R` can be used instead much more simply (see later in the section).
+
+```{r}
+species_invented
+```
+
+```{r}
+traits_invented
+```
+
+As you can see this data reflects an hypothetical case of a dataset with a total of 3 communities, containing a total of 7 species, for which we have data for 2 traits, body size and whether species are carnivourous (1 = yes) or not (0 = no). Species 6 has missing data for body size.
+
+To compute CWM we first need the relative abundance of the species in each community. For this we need first to compute the total abundance in each community for example as:
+
+```{r}
+totalabb <- species_invented %>%
+  summarize(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)))
+totalabb
+```
+
+Then, we need to divide the abundance of each species in each plot by the total abundance of the plot. In `R` it could be done as following (notice also that the sum of the relative abundances within a plot should be equal to 1, as we show):
+
+```{r}
+sp.rel.abb <- species_invented %>%
+  mutate(
+    across(where(is.numeric), ~ ./ sum(., na.rm = FALSE)),
+    comm2 = round(comm2, digits = 3)
+    )
+sp.rel.abb
+```
+
+```{r}
+sp.rel.abb %>%
+  summarize(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)))
+```
+
+The *presence of a missing value (NA)* in the trait matrix will create some problems. In particular, species 6 is present in community 3, with a relative abundance of 0.1 (i.e. 10%). Because we do not have data about body size for this species, we need to remove the species from community 3 and compute new relative abundances (because the sum of relative abundance still needs to be sum 1). To do this, for example, we can:
+
+```{r}
+species_invented.nosp6 <- species_invented %>% #create a copy of the species x community matrix
+  mutate(comm3 = if_else(names == "species 6", 0, comm3))
+sp.rel.abb.nosp6 <- species_invented.nosp6 %>%
+  mutate(
+    across(where(is.numeric), ~ ./ sum(., na.rm = TRUE)),
+    across(where(is.numeric), ~ round(., digits = 3))
+    )
+sp.rel.abb.nosp6
+```
+
+As you can see the relative abundances in community 3 have slightly changed. This means now that, in principle, for each trait we should use a different plot composition data which is of course complicated. *Notice* that we could have also removed the species from the whole matrix, for example by doing `species_invented %>% filter(!(names == "species 6"))` but this would have made the ‘species x community’ matrix smaller than the ‘species x traits’ matrix, which is definitely NOT a good way forward. For example in this case the species has other traits information so that we can still use it for computing trait dissimilarity and therefore functional diversity. In some cases, indeed it might be quicker to remove the species from all matrices, see below.
+
+### 2.1.2 Calculation by hand
+
+We can now compute the CWM for the two traits. For carnivory, where we do not have NAs, we can use the full data, with all species (‘sp.rel.abb’), while for body size we need the version of the plot data without species 6 (‘sp.rel.abb.nosp6’). The CWM is computed, for each plot (community), by 1) multiplying the trait values by species relative abundance and 2) summing the resulting values. This is done in the following way, first for carnivory:
+
+```{r}
+sp.rel.abb.car <- sp.rel.abb %>%
+  mutate(across(where(is.numeric), ~ .x * traits_invented$carnivory))
+sp.rel.abb.car
+```
+
+```{r}
+sp.rel.abb.car %>%
+  summarize(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)))
+```
+This means that in comm1 and comm3, a 60% of the total abundance is composed by carnivourous organisms. In comm2, it is 70%.
+
+Before we continue, a word of caution. Here, and below, notice that we use the expression “60% of the total abundance is composed by carnivorous organisms” and NOT “species”. This is because, using relative abundance, the CWM indicates which proportion of the total abundance in a plot is composed by organisms of a given type, for example how many individuals in the comm1 are carnivorous, irrespectively of the proportion of species. Of course, in comm1 all species have the same abundance (10 for all species, so that in that case we can say that 60% of the species are carnivorous). But in comm2 the abundance is quite uneven across species, so that 70% indicates the proportion of organisms, and not species, that in the plot are carnivorous.
+
+Having said so, we can compute the same for body size:
+
+```{r}
+sp.rel.abb.bod <- sp.rel.abb.nosp6 %>%
+  mutate(across(where(is.numeric), ~ .x * traits_invented$bodysize))
+sp.rel.abb.bod
+```
+
+```{r}
+sp.rel.abb.bod %>%
+  summarize(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)))
+```
+
+
+Which means that the weighted average of body size is the biggest in comm3 and the smallest in comm2.
+
+### 2.1.3. Calculation with a package
+
+Of course you do not need to compute CWM always by hand! There are existing functions (such as `dbFD` in the package `FD`) that does all the things we did above directly for you. This was simply an example to show the functioning of the underlying processes. We can get (basically) the same results (but see below) by doing the following.
+However, the function needs a ‘species x traits’ matrix (more specifically a `data.frame` or `tibble`), as first argument, and as second argument we need to provide the ‘species x community’ matrix, which has a form where species are columns and plots as rows (that is why we needed to transpose it!).
+
+```{r}
+species_invented_2 <- species_invented %>%
+  pivot_longer(-names) %>%
+  pivot_wider(names_from = names, values_from = value) %>%
+  column_to_rownames(var = "name")
+  
+traits_invented_2 <- traits_invented %>%
+  column_to_rownames(var = "names")
+
+data <- FD::dbFD(
+  traits_invented_2, species_invented_2,
+  calc.CWM = TRUE, w.abun = TRUE,
+  calc.FRic = FALSE, calc.FDiv = FALSE, corr = "none"
+  )
+data$CWM %>%
+  select(bodysize, carnivory)
+```
+
+As you see in the script above, the function `dbFD` does all the steps we did above, by ‘hand’, in almost one line. How convenient!
+It is important to notice that both matrices need to be of the same size (i.e. same number of species) and that the species names should be EXACTLY the same in both, even the same order. This is very often a problem we find when we are working with students. So be careful! We suggest checking these things before doing the calculations:
+
+```{r}
+species_invented %>%
+  anti_join(traits_invented, by = "names")
+traits_invented %>%
+  anti_join(species_invented, by = "names")
+species_invented <- species_invented %>%
+  arrange(names)
+traits_invented <- traits_invented %>%
+  arrange(names)
+```
+
+Notice also that in the results we obtained above there is something apparently strange! they are not the same we got by hand, so far. Specifically, we got the same results obtained above for body size, but not for carnivory. For this trait, using the function `dbFD` we got, as a result, the value 1 for all 3 plots. What does this mean? This apparently counterintuitive result is simply because the function ‘dbFD’, in the case of these binary traits, or any categorial trait, does not compute by default the CWM, but it rather tells us what is the most dominant type in each plot. In practice the function tells us that in all the 3 plots considered, the dominant type is ‘carnivorous’ (remember that in all communities there was more than 50% of carnivorous organisms). To obtain the proportion of each type, which is what we computed above using, we can just include `CWM.type = "all"`:
+
+```{r}
+data <- FD::dbFD(
+  traits_invented_2, species_invented_2,
+  calc.CWM = TRUE, w.abun = TRUE, CWM.type = "all",
+  calc.FRic = FALSE, calc.FDiv = FALSE, corr = "none"
+  )
+data$CWM %>%
+  select(bodysize, starts_with("carnivory"))
+```
+
+With the argument `CWM.type = "all"` The function `dbFD` now gives us the CWM for both carnivourous and non-carnivorous categories. This shows that in the first community is composed by a total of 40% non-carnivorous organisms, and consequently, a 60% of carnivorous organisms. Obvioulsy one would expect that the sum of these two values would be 1, so that the columns ‘carnivory_0’ and ‘carnivory_1’ are “complementary”. This is the case in this example, and it should be always like that! But….sometimes ‘dbFD’ gets into troubles in the presence of NAs.
+
+With quantitative traits the `dbFD` function removes the species for which traits are missing, i.e. with NA. For binary and categorical traits, this is not done. So, in summary, when you have missing values in some binary of categorical traits the function `dbFD` does different things. Luckily, categorical traits are generally more easily available and there will be less NAs. But please do not forget that there is an issue.
+
+## 2.2 Spanish data
+
+### 2.2.1 Preparation
+
+Let’s now use real data and let’s start with the NE Spain data described above. Let’s first check the dimension of the objects and if the species names are the same in the plot composition data and in the trait data:
+
+```{r}
+rm(list = setdiff(ls(), c("species_ammer", "species_spain", "traits_ammer", "traits_spain")))
+dim(species_spain)
+```
+
+```{r}
+dim(spxt)
+```
+
+```{r}
+rownames(species_spain) == rownames(spxt)
+```
+
+Let’s also now have a look at the data. This is a glimpse at the ‘species x plot matrix’, for example the first 6 species in the 5th vegetation belt, i.e. the last 12 columns in the matrix. You will see that there are a lot of zero, as species from one vegetation belt are not in all vegetation belts.
+
+```{r}
+species_spain[1:6, 49:60]
+```
+
+Let’s also now have a look at the trait data. Again, only the first 6 species for simplicity:
+
+```{r}
+head(spxt)
+```
+
+You can now see what type of trait information we have at hand. First we have one categorical trait “GrowthForm”, with 4 levels (grass, forb, i.e. herbs that are non grasses and subshrubs, small shrubs like thyme, shrub, including small trees). We then have data on whether the species are legumes (“LEG”), which is a binary 0/1 trait, and the specific leaf area (“SLA”) which is quantitative. We then have a trait, which is Life Form (“LF_”), which is introduced as a dummy variable, with fuzzy coding. This mean that the different life forms categories, generally following Raunkiaer scheme (https://en.wikipedia.org/wiki/Raunki%C3%A6r_plant_life-form), are represented by a different column (this includes Th=Therophytes, G=Geophytes, H=Hemicryptophytes, Ch=Chamaephytes, here divided in herbaceuous “h” and woody “w”, NP=nano-Phanerophytes and P=Phanerophytes). Please see the link above for a detailed description of these groups. Each species can be part of different groups, althouh most of the times each species is only in one group. For example Acercamp, i.e. Acer campestris, i.e. a Phanerophytes, so it has the value 1 in this category. On the other hand some species, such as Achimill, Achillea millefolium, can be both an Hemicryptophytes and a Chamaephytes. In this case, we assign 0.5 in each column. Notice that the total value per species, for the LF trait has to sum up to 1 (see the Chapter 3 and 5 in the reference book for further explanations).
+
+```{r}
+rowSums(spxt[, 4:10]) == 1 #sorry we do not show the results as they occupy a lot of space! but, yes, all species have 1 as a sum. 
+```
+
+We can also check if all quantitative traits are more or less normally distributed and if a log transformation would help improve normality
+
+```{r}
+par(mfrow = c(1, 2))
+par(mar = c(2, 4, 2, 0.5))
+hist(spxt$SLA, main = "SLA", xlab = "")
+hist(log(spxt$SLA), main = "log(SLA)", xlab = "")
+```
+
+Hence is better to log-transform the SLA data, for example in the following way (but be careful to run the following line only once!)
+
+```{r}
+spxt$SLA <- log(spxt$SLA)
+```
+
+Alternatively you can create a new variable.
+
+We are now ready to compute CWM. We have no NAs so our life will be very easy. Notice that, in this case we decided to log transform the abundance data, to decrease the importance of more dominant species (using log(x+1) on the species x community matrix). The results shown below are basically the same with and without such a transformation (you can try), but we show it below just to demonstrate how such transformation of data can be applied.
+
+### 2.2.2 Calculation
+
+```{r}
+resCWM <- dbFD(spxt, log(t(species_spain) + 1), CWM.type = "all")
+# resCWM<-dbFD(spxt, t(species_spain), CWM.type = "all")#option without log tranformation
+head(resCWM)
+```
+
+WELL DONE! we now have the CWM data. So….what shall we do with this information? Let’s see if CWM changes along the climatic gradient. For example, let’s explore visually a bit the results before running any analysis, just choosing some of the potential graphs (4 in this case):
+
+### 2.2.3 Plot
+
+```{r}
+par(mfrow = c(2, 2))
+par(mar = c(3, 4, 2, 1))
+plot(envxp$moisture.index, resCWM$SLA, xlab = "moisture index",
+     ylab = "CWM SLA [log mm2/mg]",  pch = 20)
+plot(envxp$moisture.index, resCWM$GrowhtForm_shrub,  xlab = "moisture index",
+     ylab = "% of Shrubs",  pch = 20)
+plot(envxp$moisture.index, resCWM$LEG_1, xlab = "moisture index",
+     ylab = "% of Legumes", pch = 20)
+plot(envxp$moisture.index, resCWM$LF_Th, xlab = "moisture index",
+     ylab = "% of Therophytes", pch = 20)
+```
+
+We can already reach some conclusions while looking at these figures. The CWM SLA is increasing with moisture index, likely because of a decrease in shrub species with moisture. If fact, the different growth forms tend to have different SLA. You can test this by using this line:
+
+```{r}
+boxplot(spxt$SLA ~ spxt$GrowhtForm, ylab = "log SLA", xlab = "")
+```
+
+## 2.3 Ammer data
+
+### 2.3.1 Preparation
+
+```{r}
+data_traits <- traits %>%
+  select(name.plant, sla, growth.form.1) %>%
+  filter(!is.na(sla) & !(growth.form.1 %in% c("shrub", "tree"))) %>%
+  select(-growth.form.1) %>%
+  mutate(sla = log(sla))
+
+data_species <- species %>%
+  select(id.plot, name.plant, cover) %>%
+  semi_join(data_traits, by = "name.plant") %>% 
+  # only data from subtransects A1-A4, not T:
+  filter(!str_ends(id.plot, "T"))
+
+# Check duplicates
+data_species %>%
+  group_by(id.plot, name.plant) %>% 
+  count() %>%
+  filter(n > 1)
+# Check
+data_species %>%
+  dplyr::group_by(id.plot, name.plant) %>%
+  dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
+  dplyr::filter(n > 1L)
+
+data_species <- data_species %>%
+  arrange(name.plant) %>%
+  pivot_wider(
+    names_from = "name.plant", values_from = "cover", values_fill = 0,
+    values_fn = mean
+  ) %>%
+  filter(!is.na(id.plot)) %>% # no NA in dataset
+  column_to_rownames("id.plot")
+
+data_traits <- data_traits %>%
+  arrange(name.plant) %>%
+  filter(!is.na(name.plant)) %>% # no NA
+  column_to_rownames("name.plant")
+```
+
+### 2.3.2 Calculation
+
+
+```{r}
+data_abundance <- FD::dbFD(
+  data_traits, data_species,
+  calc.CWM = TRUE, w.abun = TRUE,
+  calc.FRic = FALSE, calc.FDiv = FALSE, corr = "none"
+)
+data_presence <- FD::dbFD(
+  data_traits, data_species,
+  calc.CWM = TRUE, w.abun = FALSE,
+  calc.FRic = FALSE, calc.FDiv = FALSE, corr = "none"
+)
+```
+
+### 2.3.3 Saving and plotting
+
+
+```{r}
+data <- data_abundance$CWM$sla %>%
+  as.data.frame() %>%
+  rownames_to_column("id.plot") %>%
+  rename(
+    "cwm.abu.sla" = "data_abundance$CWM$sla"
+  ) %>%
+  mutate(
+    across(where(is.numeric), ~ exp(.x)),
+    across(where(is.numeric), ~ round(.x, digits = 2))
+    ) %>%
+  select(id.plot, cwm.abu.sla)
+sla <- data
+```
+
+```{r}
+plot(cwm.abu.sla)
+```
+
