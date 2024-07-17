@@ -66,7 +66,16 @@ The dataset is also available on GitHub (Bauer et al. 2018)
 ## 1.2 Load data
 
 ```{r load-data}
-species <- read_csv(
+bodysize <- c(10, 20, 30, 40, 50, NA, 70)
+carnivory <- c(1, 1, 0, 1, 0,1, 0)
+red <- c(1, 0, 0.5, 0, 0.2, 0, 1)
+yellow <- c(0, 1, 0, 0, 0.3, 1, 0)
+blue <- c(0, 0, 0.5,1, 0.5, 0, 0)
+colors.fuzzy <- cbind(red, yellow, blue)
+names <- paste("sp", 1:7, sep = "")
+traits_invented <- tibble(names, bodysize, carnivory, colors.fuzzy)
+
+species_ammer <- read_csv(
   here("data", "processed", "data_processed_species.csv"),
   col_names = TRUE, col_types = cols(
     .default = "?",
@@ -74,22 +83,12 @@ species <- read_csv(
     )
   )
 
-traits <- read_csv(
+traits_ammer <- read_csv(
   here("data", "processed", "data_processed_traits.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
 
-
-bodysize <- c(10, 20, 30, 40, 50, NA, 70)
-carnivory <- c(1, 1, 0, 1, 0,1, 0)
-red <- c(1, 0, 0.5, 0, 0.2, 0, 1)
-yellow <- c(0, 1, 0, 0, 0.3, 1, 0)
-blue <- c(0, 0, 0.5,1, 0.5, 0, 0)
-colors.fuzzy <- cbind(red, yellow, blue)
-names <- paste("sp", 1:7, sep="")
-tall <- as_tibble(cbind(names, bodysize, carnivory, colors.fuzzy))
-
-rm(list = setdiff(ls(), c("species", "traits", "tall")))
+rm(list = setdiff(ls(), c("species", "traits", "traits_invented")))
 ```
 
 # 2 Different trait types
