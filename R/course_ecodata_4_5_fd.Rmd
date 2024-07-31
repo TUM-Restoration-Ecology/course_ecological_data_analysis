@@ -1,12 +1,23 @@
 ---
-title: "Analysis of ecological data: 3.5 Functional Diversity (FD)"
-author: "Markus Bauer"
-date: "`r Sys.Date()`"
-output: html_document
+title: "Analysis of Ecological Data <br> Functional Diversity (FD)"
+author: "<b>Markus Bauer</b> <br>"
+date: "<b>`r format(Sys.time(), '%Y-%m-%d')`</b>"
+output:
+  github_document:
+    toc: true
+    toc_depth: 3
+    dev: png
+    fig_width: 7
+    fig_height: 5
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+  echo = TRUE
+  )
 ```
 
 **Markus Bauer**
@@ -29,7 +40,7 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 * Plot results of traits data
 * Include Zeleny
 
-This script uses large parts from [Bello et al. (2021)](https://doi.org/10.1017/9781108628426)
+This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426))
 
 # 1 Preparation
 
@@ -37,7 +48,7 @@ In this exercise we will learn how to compute different indices of Functional di
 
 ## 1.1 Load libraries and functions
 
-Load the libraries.
+The FD package is of Laliberté & Legendre ([2010](https://doi.org/10.1890/08-2244.1))
 
 ```{r libraries, message = FALSE}
 library(here)
@@ -80,6 +91,8 @@ traits_ammer <- read_csv(
     -name, -taxonomic_status, -starts_with("accepted_"), -starts_with("cv_"), -starts_with("n_")
     )
 ```
+
+<a href="#top">Back to top</a>
 
 # 2 Calculation of FD
 
@@ -191,6 +204,8 @@ ex.1trait.noNA <- dbFD(
   ) #it works! no errors provided.
 ```
 
+ <a href="#top">Back to top</a>
+
 ## 2.2 Spain data
 
 ### 2.2.1 Numeric traits
@@ -239,6 +254,8 @@ resFD.alltraits <- dbFD(
   )
 ```
 
+ <a href="#top">Back to top</a>
+
 ## 2.3 Ammer data
 
 ```{r}
@@ -247,6 +264,7 @@ resFD.alltraits <- dbFD(
 #   ) 
 ```
 
+ <a href="#top">Back to top</a>
 
 # 3 Calculation of Alpha, beta and gamma FD
 

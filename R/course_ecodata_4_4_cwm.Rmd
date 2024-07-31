@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Ecological Data <br> 3.4 Community Weighted Mean"
+title: "Analysis of Ecological Data <br> Community Weighted Mean (CWM)"
 author: "<b>Markus Bauer</b> <br>"
 date: "<b>`r format(Sys.time(), '%Y-%m-%d')`</b>"
 output:
@@ -37,12 +37,16 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 * Make 2.2 tidy
 * Make 2.3 working also with categorical traits
 * Test script
+* Include Zeleny
+* Save CWM in sites --> Load first data_raw_sites
 
-This script uses large parts from [Bello et al. (2021)](https://doi.org/10.1017/9781108628426)
+This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426))
 
 # 1 Preparation
 
-Load the libraries.
+In this exercise we will learn how to compute one important index of community trait structure, i.e. Community Weighted Mean (CWM). This exercise follows the first part of Chapter 5 of the reference textbook, so all theoretical and mathematical issues beyond the indices described in this exercise can be found there.
+
+Load the libraries. The FD package is of (Laliberté & Legendre [2010](https://doi.org/10.1890/08-2244.1))
 
 ```{r libraries, message = FALSE}
 library(here)
@@ -51,7 +55,15 @@ library(FD)
 rm(list = ls())
 ```
 
-## 1.1 The example data set
+## 1.1 The example data sets
+
+### 1.1.1 Spain data
+
+We will work with first invented data, as used in the Chapter (specially Fig.5.2, with data created below), as well as data available in the help of the function functcomp. Then field data from an climatic gradient in NE Spain will be used.
+
+In the NE Spain data, 5 vegetation belts along a climatic and altitudinal gradients were sampled. The data is based on two publications de Bello et al. (2006; 2009). The gradient characterized by the 5 vegetation belts is going from a shrubland in Monegros, in the Aragon region (basically a desert with rainfall around 320 mm per year and altitude around 200 m a.s.l) to a subalpine meadow in the Catalan Pirinees (rainfall slightly below 1000 mm per year and altitude around 2000 m a.s.l). We characterized each belt by a moisture index, which is rainfall divided by potential evapotranspiration (just google UNEP aridity index). In each vegetation belt a total of 12 plots were surveyed (10x10m plots divided into 100 1m2 quadrats). Thus for each plot species frequency over the 100 quadrats is given in the “speciesXplotsNE.txt” file (notice that in the file species are rows and plots are columns, while some authors and R function prefer the data in a transposed form, with species information using columns and plots using rows; we will start with this format, shown in Chapter 5 and explain why in some cases it is better to transpose the data). Out of the 12 plots per vegetation belt, 4 had high grazing pressure, 4 intermediate and in 4 grazing was abandoned. Information about plot location along the 5 vegetation belts are included in the file “environXplotsNE.txt” (column “vegbelt”, 1 is the driest and lowest vegetation belt, 5 is the highest and wettest vegetation belt, see also “moisture index”; in column “grazing” 0=abandonment, 1=intermediate grazing, 2=intensive grazing). Traits information is included in “speciesXtraitsNE.text”, similar to the data used in Chapter 3, see further below.
+
+### 1.1.2 Ammer data
 
 A study in the Ammer valley before and after the weir in the [floodplain Schnalz](https://www.openstreetmap.org/#map=16/47.7737/10.9615).
 
@@ -100,6 +112,8 @@ traits_ammer <- read_csv(
   col_names = TRUE, col_types = cols(.default = "?")
   )
 ```
+
+ <a href="#top">Back to top</a>
 
 # 2 Calculation of CWM
 
@@ -192,7 +206,7 @@ sp.rel.abb.bod %>%
 
 Which means that the weighted average of body size is the biggest in comm3 and the smallest in comm2.
 
-### 2.1.3. Calculation with a package
+### 2.1.3. Calculation with the `FD` package
 
 Of course you do not need to compute CWM always by hand! There are existing functions (such as `dbFD` in the package `FD`) that does all the things we did above directly for you. This was simply an example to show the functioning of the underlying processes. We can get (basically) the same results (but see below) by doing the following.
 However, the function needs a ‘species x traits’ matrix (more specifically a `data.frame` or `tibble`), as first argument, and as second argument we need to provide the ‘species x community’ matrix, which has a form where species are columns and plots as rows (that is why we needed to transpose it!).
@@ -205,7 +219,11 @@ species_invented_2 <- species_invented %>%
   
 traits_invented_2 <- traits_invented %>%
   column_to_rownames(var = "names")
+```
 
+Calculate the CWM:
+
+```{r}
 data <- FD::dbFD(
   traits_invented_2, species_invented_2,
   calc.CWM = TRUE, w.abun = TRUE,
@@ -245,7 +263,9 @@ With the argument `CWM.type = "all"` The function `dbFD` now gives us the CWM fo
 
 With quantitative traits the `dbFD` function removes the species for which traits are missing, i.e. with NA. For binary and categorical traits, this is not done. So, in summary, when you have missing values in some binary of categorical traits the function `dbFD` does different things. Luckily, categorical traits are generally more easily available and there will be less NAs. But please do not forget that there is an issue.
 
-## 2.2 Spanish data
+ <a href="#top">Back to top</a>
+
+## 2.2 Spain data
 
 ### 2.2.1 Preparation
 
@@ -257,11 +277,11 @@ dim(species_spain)
 ```
 
 ```{r}
-dim(spxt)
+dim(traits_spain)
 ```
 
 ```{r}
-rownames(species_spain) == rownames(spxt)
+table(rownames(species_spain) == rownames(traits_spain))
 ```
 
 Let’s also now have a look at the data. This is a glimpse at the ‘species x plot matrix’, for example the first 6 species in the 5th vegetation belt, i.e. the last 12 columns in the matrix. You will see that there are a lot of zero, as species from one vegetation belt are not in all vegetation belts.
@@ -273,13 +293,13 @@ species_spain[1:6, 49:60]
 Let’s also now have a look at the trait data. Again, only the first 6 species for simplicity:
 
 ```{r}
-head(spxt)
+head(traits_spain)
 ```
 
 You can now see what type of trait information we have at hand. First we have one categorical trait “GrowthForm”, with 4 levels (grass, forb, i.e. herbs that are non grasses and subshrubs, small shrubs like thyme, shrub, including small trees). We then have data on whether the species are legumes (“LEG”), which is a binary 0/1 trait, and the specific leaf area (“SLA”) which is quantitative. We then have a trait, which is Life Form (“LF_”), which is introduced as a dummy variable, with fuzzy coding. This mean that the different life forms categories, generally following Raunkiaer scheme (https://en.wikipedia.org/wiki/Raunki%C3%A6r_plant_life-form), are represented by a different column (this includes Th=Therophytes, G=Geophytes, H=Hemicryptophytes, Ch=Chamaephytes, here divided in herbaceuous “h” and woody “w”, NP=nano-Phanerophytes and P=Phanerophytes). Please see the link above for a detailed description of these groups. Each species can be part of different groups, althouh most of the times each species is only in one group. For example Acercamp, i.e. Acer campestris, i.e. a Phanerophytes, so it has the value 1 in this category. On the other hand some species, such as Achimill, Achillea millefolium, can be both an Hemicryptophytes and a Chamaephytes. In this case, we assign 0.5 in each column. Notice that the total value per species, for the LF trait has to sum up to 1 (see the Chapter 3 and 5 in the reference book for further explanations).
 
 ```{r}
-rowSums(spxt[, 4:10]) == 1 #sorry we do not show the results as they occupy a lot of space! but, yes, all species have 1 as a sum. 
+table(rowSums(traits_spain[, 4:10]) == 1) # yes, all species have 1 as a sum. 
 ```
 
 We can also check if all quantitative traits are more or less normally distributed and if a log transformation would help improve normality
@@ -294,7 +314,7 @@ hist(log(spxt$SLA), main = "log(SLA)", xlab = "")
 Hence is better to log-transform the SLA data, for example in the following way (but be careful to run the following line only once!)
 
 ```{r}
-spxt$SLA <- log(spxt$SLA)
+traits_spain$SLA <- log(traits_spain$SLA)
 ```
 
 Alternatively you can create a new variable.
@@ -304,33 +324,20 @@ We are now ready to compute CWM. We have no NAs so our life will be very easy. N
 ### 2.2.2 Calculation
 
 ```{r}
-resCWM <- dbFD(spxt, log(t(species_spain) + 1), CWM.type = "all")
+resCWM <- dbFD(traits_spain, log(t(species_spain) + 1), CWM.type = "all")
 # resCWM<-dbFD(spxt, t(species_spain), CWM.type = "all")#option without log tranformation
 head(resCWM)
 ```
 
-WELL DONE! we now have the CWM data. So….what shall we do with this information? Let’s see if CWM changes along the climatic gradient. For example, let’s explore visually a bit the results before running any analysis, just choosing some of the potential graphs (4 in this case):
+WELL DONE! we now have the CWM data. 
 
-### 2.2.3 Plot
-
-```{r}
-par(mfrow = c(2, 2))
-par(mar = c(3, 4, 2, 1))
-plot(envxp$moisture.index, resCWM$SLA, xlab = "moisture index",
-     ylab = "CWM SLA [log mm2/mg]",  pch = 20)
-plot(envxp$moisture.index, resCWM$GrowhtForm_shrub,  xlab = "moisture index",
-     ylab = "% of Shrubs",  pch = 20)
-plot(envxp$moisture.index, resCWM$LEG_1, xlab = "moisture index",
-     ylab = "% of Legumes", pch = 20)
-plot(envxp$moisture.index, resCWM$LF_Th, xlab = "moisture index",
-     ylab = "% of Therophytes", pch = 20)
-```
-
-We can already reach some conclusions while looking at these figures. The CWM SLA is increasing with moisture index, likely because of a decrease in shrub species with moisture. If fact, the different growth forms tend to have different SLA. You can test this by using this line:
+The different growth forms tend to have different SLA. You can test this by using this line:
 
 ```{r}
 boxplot(spxt$SLA ~ spxt$GrowhtForm, ylab = "log SLA", xlab = "")
 ```
+
+<a href="#top">Back to top</a>
 
 ## 2.3 Ammer data
 
@@ -413,3 +420,4 @@ sla <- data
 plot(cwm.abu.sla)
 ```
 
+ <a href="#top">Back to top</a>

@@ -1,0 +1,67 @@
+---
+title: "Analysis of Ecological Data <br> RLQ"
+author: "<b>Markus Bauer</b> <br>"
+date: "<b>`r format(Sys.time(), '%Y-%m-%d')`</b>"
+output:
+  github_document:
+    toc: true
+    toc_depth: 3
+    dev: png
+    fig_width: 7
+    fig_height: 5
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE
+  )
+```
+
+**Markus Bauer**
+
+Technichal University of Munich, TUM School of Life Sciences, Chair of
+Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
+
+[markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
+
+<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/><https://orcid.org/0000-0001-5372-4174>
+
+[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
+
+# Tasks
+
+This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426))
+
+As we shown in Chapter 4 of the reference book, the presence of multiple CWM values for each plot, allows us to use multivariate analyses for the representation of the data and statistical analysis. For example we could use RDA (see Chapter 4 and Kleyer et al. (2012)).
+
+```{r}
+library(vegan) # it is already loaded when you use the package 'FD'
+rdaNEspain.all <- rda(resCWM ~ moisture.index * grazing, data = envxp)
+plot(rdaNEspain.all, type = "n", scaling = "sites")
+text(rdaNEspain.all, dis = "cn", scaling = "sites")
+text(rdaNEspain.all, dis = "sp", scaling = "sites", col = "red")
+```
+
+In the figure, we can see which CWM values are associated with an increase of moisture index, mostly corresponding to the first axis of the RDA, and grazing partially on the second axis. For example, glowworm ‘forbs’ (GrowhtForm_forb) are expected to be favoured by higher moisture (i.e. high moisture index), while Phanerophytes (LF_P) are expected to increase with low grazing and in relatively drier conditions (i.e. slightly low moisture index).
+
+A global statistical test would be done simply as in the following script.
+
+```{r}
+rdaNEspain0 <- rda(resCWM ~ 1, data = envxp)
+rdaNEspain.all <- rda(resCWM ~ moisture.index * grazing, data = envxp)
+ordistep(rdaNEspain0, scope = formula (rdaNEspain.all), direction = 'forward')
+```
+
+```{r}
+RsquareAdj (rdaNEspain.all)$adj.r.squared 
+```
+
+First notice that we used the function ordistep, which is basically a stepwise regression analyses applied to multivariate analyses, which resembles the function step for linear models. In this case we selected a ‘forward’ selection, see argument ‘forward’ above. The approach is working by a comparing a model with all predictors (‘rdaNEspain.all’) with an ‘empty’ model (‘rdaNEspain0’, with no predictors). The results indicate that both grazing and the moisture index are kept into the model, including their interactions (moisture.index:grazing), for being significant. So the final model is indicated in Call: rda(formula = resCWM ~ moisture.index + grazing + moisture.index:grazing, data = envxp). The analysis further provides a lot of interesting information about constrained and unconstrained axes, their eigenvalues etc. While important we prefer here not to explain their meaning and do refer to the interesting page by David Zeleny indicated above.
+
+At the same time we can see also how to understand the amount of variability explained by this model, simply using the RsquareAdj function. The resulting model keeps moisture and grazing, and their interaction in the model, for a R2~0.6, similarly to the linear model we considered above for SLA in a simple linear model.
+
+<a href="#top">Back to top</a>

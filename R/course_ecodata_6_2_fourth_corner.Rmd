@@ -1,0 +1,90 @@
+---
+title: "Analysis of Ecological Data <br> Fourth-corner approach"
+author: "<b>Markus Bauer</b> <br>"
+date: "<b>`r format(Sys.time(), '%Y-%m-%d')`</b>"
+output:
+  github_document:
+    toc: true
+    toc_depth: 3
+    dev: png
+    fig_width: 7
+    fig_height: 5
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE
+  )
+```
+
+**Markus Bauer**
+
+Technichal University of Munich, TUM School of Life Sciences, Chair of
+Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
+
+[markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
+
+<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/><https://orcid.org/0000-0001-5372-4174>
+
+[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
+
+# Tasks
+
+* 
+
+This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426))
+
+# 1 Preparation
+
+## 1.1 Load libraries and functions
+
+```{r libraries, message = FALSE}
+library(here)
+library(tidyverse)
+rm(list = ls())
+```
+
+## 1.2 Load data
+
+```{r load-data}
+species_spain <- read_delim(
+  here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXplotsNE.txt"),
+  col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
+  ) %>%
+  column_to_rownames("species")
+traits_spain <- read_delim(
+  here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXtraitsNE.txt"),
+  col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
+  ) %>%
+  column_to_rownames("species")
+
+species_ammer <- read_csv(
+  here("data", "processed", "data_processed_species.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+  ) %>%
+  column_to_rownames("accepted_name")
+traits_ammer <- read_csv(
+  here("data", "processed", "data_processed_traits.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+  ) %>%
+  column_to_rownames("accepted_name") %>%
+  select(
+    -name, -taxonomic_status, -starts_with("accepted_"), -starts_with("cv_"), -starts_with("n_")
+    )
+```
+
+<a href="#top">Back to top</a>
+
+# 2 Can we trust the p-value of CWM-based analyses?
+
+In the reference text book, in Chapter 5, we provide an extensive discussion on some potential problems using analyses with CWM. Some authors have suggested that CWM should not be used because the analyses using CWM provide too optimistic p-values. As summarized by David Zeleny and in the reference text book (Zelený 2018), we think that the question is not if we can trust the the p-value of CWM-based analyses but rather which type of questions are asked. If we are interested in observing changes in CWM along gradient, whatever are the causes, then analyses on CWM are robust and interesting. If the question is, for example, if the MAJORITY of species in drier habitats have given traits, then a different type of analyses should be done, basically the analyses at the species level presented in Chapter 3 and in the R material Ch 2. Alternatively, for this type of questions we can have two other solutions still using the CWM. One simple solution is presented below. For other approaches see David’s page: https://www.davidzeleny.net/anadat-r/doku.php/en:traits
+
+Let’s now focus on the suggestion by David Zeleny (2018) on how to run a conservative tests to evaluate the significance of environmental factors on CWM values. The suggestion by Zeleny can be summarized as to run randomizations tests and, basically, verify if the R2 of a given model (for example those obtained in the previous section) is higher than expected by chance. Randomizations can be done in different ways, but we suggest that a simple and effective one is by simply shuffling species names in the trait matrix (we tested the power of this test and it provided the best results compared to other approaches, not shown here). For simplicity here we present only the test of the effect of moisture on CWM for SLA.
+
+Randomizations in R can be done in different ways and we will use a relative simple and common one, ‘loops’. We assume the users are, more or less, familiar with loops in R. Here we make a loop, with 999 randomizations. For each of these randomizations (i=1, i=2, i=3…..) we randomize species names in the species trait matrix and make a new regression between a CWM and the environmental variable, using the CWM obtained with such randomization. Here we test the relationship between CWM for SLA and the moisture index. The results of each of these 999 models are stored in the object `EXPECTED.R2.SLA.moist`.
+
+<a href="#top">Back to top</a>

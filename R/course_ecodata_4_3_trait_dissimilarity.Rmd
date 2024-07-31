@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Ecological Data <br> 3.3 Show trait dissimilarity"
+title: "Analysis of Ecological Data <br> Trait dissimilarity"
 author: "<b>Markus Bauer</b> <br>"
 date: "<b>`r format(Sys.time(), '%Y-%m-%d')`</b>"
 output:
@@ -35,14 +35,19 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 # Tasks
 
 * Use gawdis::gawdis
+* Make tasks tidy
 * Introduce exercise better and write solution
 * format text
+* Include a plot to draw
+* Introduce clustering
 
-This script uses large parts from [Bello et al. (2021)](https://doi.org/10.1017/9781108628426)
+This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426))
 
-# 1 Preparation ([Bello et al. 2021](https://doi.org/10.1017/9781108628426))
+# 1 Preparation (Bello et al. [2021](https://doi.org/10.1017/9781108628426))
 
 ## 1.1 Load libraries
+
+The FD package is of Laliberté & Legendre ([2010](https://doi.org/10.1890/08-2244.1))
 
 ```{r libraries, message = FALSE}
 library(here)
@@ -82,6 +87,8 @@ rownames(colors.fuzzy) <-  paste("sp", 1:7, sep="")
 traits_invented <- as.data.frame(cbind(bodysize, carnivory, colors.fuzzy))
 traits_invented
 ```
+
+<a href="#top">Back to top</a>
 
 # 2 Trait dissimilarity ([Bello et al. 2021](https://doi.org/10.1017/9781108628426))
 
@@ -146,6 +153,8 @@ There is a newer function gawdis::gawdis which is an update of FD::gowdis
 ``` {r}
 trait_meta <- GIFT::GIFT_traits_meta()
 ```
+
+ <a href="#top">Back to top</a>
 
 ## 2.2 Categorical and fuzzy coded traits
 
@@ -255,6 +264,10 @@ plot(mean.dissim.all, dissim.ktab)
 
 This shows that the results are different from what we hoped for. Alternatively, you can apply the function trova (de Bello et al. 2013) which can deal with this type of traits, and also circular traits and intraspecific trait variability. We will work with this function, and see how to use it below and in the R material connected to Chapter 6. See also R material 3: gawdis for a function which solves the problem with uneven trait contribution and can also handle fuzzy coded traits.
 
+<a href="#top">Back to top</a>
+
 ## 2.3 Missing values (NAs)
 
 As already shown above, an important issue with the computation of trait dissimilarity is the case of missing trait values. In the case above of the matrix `traits_invented`, for the quantitative trait the dissimilarity between species 6 and the other species cannot be computed (i.e. NA). The good news is that dissimilarity can be still computed considering other traits when, and only when, there is at least one trait value available for species 6 (and the species to which species 6 is compared to). The resulting dissimilarity combining traits for species 6 is simply the average of the dissimilarity for those traits without NA. In case of the example above this would correspond to the average between dissimilarity for carnivory and for color only, excluding body size (because of the NA). Then, we can still use the dissimilarity resulting from other traits and discard, for the comparisons with species 6, the missing information about body size. For example, the distance between species 1 and 6 would consider both color and carnivory, i.e. 0.5, since dissimilarity based on carnivory is equal to 0 and dissimilarity based on color is equal to 1, and so on. We will deal with the cases of filling NA values in another exercise related to Chapter 6.
+
+<a href="#top">Back to top</a>

@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Ecological Data <br> 3.1 How to get traits?"
+title: "Analysis of Ecological Data <br> How to get functional traits?"
 author: "<b>Markus Bauer</b> <br>"
 date: "<b>`r format(Sys.time(), '%Y-%m-%d')`</b>"
 output:
@@ -34,17 +34,23 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 # Tasks
 
-* Test script
+* Make script run
+* check new traits table
+* Calculate functional traits yourself brick-trees dataset
+* Select also LMF, SRL, LeafN
+
+This script uses parts of the vignette of Laughlin et al. ([2018](https://cran.r-project.org/web/packages/Select/vignettes/selectSpecies.html))
 
 # 1 Preparation
 
 ## 1.1 Load libraries
 
-You can always install missing libraries by `install.packages("here")` for the `here` package.
+You can always install missing libraries by `install.packages("here")` for the `here` package. The tidyverse package is of Wickham et al. ([2019](https://doi.org/10.21105/joss.01686))
 
-```{r libraries, message = FALSE}
+```{r libraries, message = FALSE, results = FALSE}
 library(here)
 library(tidyverse)
+citation("here") # Example how to get citation information
 rm(list = ls())
 ```
 
@@ -65,11 +71,10 @@ The dataset is also available on GitHub (Bauer et al. 2018)
 ## 1.3 Load data
 
 ```{r load-data}
-species <- read_csv(
+species_ammer <- read_csv(
   here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_species.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
-rm(list = setdiff(ls(), c("species")))
 ```
 
 # 2 Metadata of traits
@@ -91,7 +96,7 @@ We can see that the ID of this trait is 1.6.2. Now that we have the ID, we can u
 
 [Original vignette](https://biogeomacro.github.io/GIFT/articles/GIFT.html#trait-data) (Denelle & Weigelt 2024)
 
-Get the functional trait values from the database GIFT ([Weigelt et al. 2023](https://doi.org/10.1111/jbi.13623)) with the package GIFT ([Denelle et al. 2023](https://doi.org/10.1111/2041-210X.14213)).
+Get the functional trait values from the database GIFT (Weigelt et al. [2023](https://doi.org/10.1111/jbi.13623)) with the package GIFT (Denelle et al. [2023](https://doi.org/10.1111/2041-210X.14213)).
 
 ## 3.1 How to download traits
 
@@ -126,8 +131,11 @@ references <- GIFT::GIFT_references(GIFT_version = "latest")
 unique(unlist(strsplit(height$references_1.6.2, ",")))
 
 references <- references[
-  which(references$ref_ID %in% 
-          unique(unlist(strsplit(height$references_1.6.2, ",")))), ]
+  which(
+    references$ref_ID %in% unique(
+      unlist(strsplit(height$references_1.6.2, ","))
+      )
+    ), ]
 references[1:2, ]
 ```
 
@@ -138,19 +146,28 @@ references[1:2, ]
 Here is an example how to download several traits:
 
 ```{r get-traits, results = FALSE, message = FALSE}
+trait_ids <- c(
+  "1.2.2", "1.5", "1.6.3", "3.2.3", "3.3.1", "3.6.1", "3.7.1", "3.21.1",
+  "4.1.3", "4.5.1"
+  )
+trait_meta %>%
+  filter(Lvl3 %in% trait_ids)
+
 data_gift <- GIFT::GIFT_traits(
-  trait_IDs = c("1.2.2", "1.6.2", "1.6.3", "3.7.1", "3.21.1", "4.5.1"),
+  trait_IDs = trait_ids,
   agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
   )
 
 rm(list = setdiff(ls(), c("species", "traits", "data_gift")))
 ```
 
+ <a href="#top">Back to top</a>
+
 # 4 Name resolving
 
 [Original vignette](https://cran.r-project.org/web/packages/TNRS/vignettes/TNRS_vignette.html) (Maitner 2024)
 
-Use the package TNRS ([Boyle et al.2013](https://doi.org/10.1186/1471-2105-14-16)) for name resolving and the taxonoic resouces World Checklist of Vascular Plants of Kew Gardens ([Govaerts 2023](http://sftp.kew.org/pub/data-repositories/WCVP/)) and World Flora Online ([WFO Consortium 2023](https://doi.org/10.5281/zenodo.8079052))
+Use the package TNRS (Boyle et al.[2013](https://doi.org/10.1186/1471-2105-14-16)) for name resolving and the taxonoic resouces World Checklist of Vascular Plants of Kew Gardens (Govaerts [2023](http://sftp.kew.org/pub/data-repositories/WCVP/)) and World Flora Online (WFO Consortium [2023](https://doi.org/10.5281/zenodo.8079052))
 
 ```{r resolve-names-species}
 metadata <- TNRS::TNRS_metadata()
@@ -173,6 +190,8 @@ names <- data %>%
 
 * Note the version of the database from metadata\$version and the sources of the names with metadata\$citations for the material-and-methods section
 * Note the range of Overall_score for your submitted species names.
+
+ <a href="#top">Back to top</a>
 
 # 5 Merge
 
@@ -197,10 +216,13 @@ traits <- data %>%
 rm(list = setdiff(ls(), c("species", "traits")))
 ```
 
+ <a href="#top">Back to top</a>
+
 # 6 Save
 
 ```{r save-files}
-
-write_csv(species, here("data", "processed", "data_processed_species.csv"))
-write_csv(traits, here("data", "processed", "data_processed_traits.csv"))
+write_csv(species, here("data", "processed", "data_processed_species_ammer.csv"))
+write_csv(traits, here("data", "processed", "data_processed_traits_ammer.csv"))
 ```
+
+ <a href="#top">Back to top</a>
