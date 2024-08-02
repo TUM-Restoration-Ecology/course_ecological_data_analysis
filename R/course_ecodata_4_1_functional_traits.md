@@ -1,22 +1,26 @@
-Analysis of Ecological Data <br> 3.1 How to get traits?
+Analysis of Ecological Data <br> How to get functional traits?
 ================
 <b>Markus Bauer</b> <br>
-<b>2024-07-10</b>
+<b>2024-08-02</b>
 
 - [1 Preparation](#1-preparation)
-  - [1.1 The example data set](#11-the-example-data-set)
-  - [1.2 Load data](#12-load-data)
-- [2 Metadata of traits](#2-metadata-of-traits)
-- [3 Get trait values](#3-get-trait-values)
-  - [3.1 How to download traits](#31-how-to-download-traits)
-  - [3.2 Get the references of the
-    measurements](#32-get-the-references-of-the-measurements)
-  - [3.3 Download traits of SLA, height, seed
-    mass](#33-download-traits-of-sla-height-seed-mass)
+  - [1.1 Load libraries](#11-load-libraries)
+  - [1.2 The example data set](#12-the-example-data-set)
+  - [1.3 Load data](#13-load-data)
+- [2 Calculate traits from measured
+  values](#2-calculate-traits-from-measured-values)
+- [3 Traits from databases](#3-traits-from-databases)
+  - [3.1 Metadata of traits](#31-metadata-of-traits)
+  - [3.2 Get trait values](#32-get-trait-values)
+    - [3.2.1 Raw data and aggregated
+      data](#321-raw-data-and-aggregated-data)
+    - [3.2.2 Get the references of the
+      measurements](#322-get-the-references-of-the-measurements)
+    - [3.2.3 Download traits](#323-download-traits)
 - [4 Name resolving](#4-name-resolving)
 - [5 Merge](#5-merge)
-- [6 Check completeness](#6-check-completeness)
-- [7 Save](#7-save)
+- [6 Save](#6-save)
+- [7 Your own dataset](#7-your-own-dataset)
 
 **Markus Bauer**
 
@@ -32,19 +36,22 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 # 1 Preparation
 
-Load the libraries. You can always install missing libraries by
-`install.packages("GIFT")` for the GIFT package.
+## 1.1 Load libraries
+
+You can always install missing libraries by `install.packages("here")`
+for the `here` package. The tidyverse package is of Wickham et
+al. ([2019](https://doi.org/10.21105/joss.01686))
 
 ``` r
 library(here)
 library(tidyverse)
 library(GIFT)
 library(TNRS)
-library(naniar)
+citation("here") # Example how to get citation information
 rm(list = ls())
 ```
 
-## 1.1 The example data set
+## 1.2 The example data set
 
 A study in the Ammer valley before and after the weir in the [floodplain
 Schnalz](https://www.openstreetmap.org/#map=16/47.7737/10.9615).
@@ -66,44 +73,85 @@ The dataset is also available on GitHub (Bauer et al. 2018)
 
 <https://github.com/markus1bauer/2018_alluvial_forest_river_ammer/tree/main>
 
-## 1.2 Load data
+## 1.3 Load data
 
 ``` r
-data_species <- read_csv(
+species_ammer <- read_csv(
   here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_species.csv"),
-  col_names = TRUE, col_types = cols(
-    .default = "?",
-    name = "f",
-    layer = "f"
-    )
-  ) %>%
-  select(-contains("Extra")) %>% # exclude some plots
-  filter(layer == "h") %>% # filter only species of the herbal layer
-  group_by(name) %>%
-  mutate(
-    sum = sum(c_across(IN1:AC6)),
-    presence = if_else(sum > 0, 1, 0)
-    ) %>%
-  filter(presence == 1) %>% # exclude species which are not present in the remaining plots
-  ungroup() %>%
-  select(-sum, -presence, -layer)
-
-data_traits <- read_csv(
-  here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_traits.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
-  ) %>%
-  select(name, lifeform) %>%
-  filter(!str_detect(lifeform, "wood"))
-
-species <- data_species %>%
-  semi_join(data_traits, by = "name") # only herbal species
-traits <- data_traits %>%
-  semi_join(species, by = "name") # only species which occur in the plots
-
-rm(list = setdiff(ls(), c("species", "traits")))
+  )
 ```
 
-# 2 Metadata of traits
+<a href="#top">Back to top</a>
+
+# 2 Calculate traits from measured values
+
+A short example how to calculate functional traits by your own. For
+example the specific leaf area (SLA) of trees (*Acer platanoides* and
+*Tilia cordata*) in a greenhouse experiment in Dürnast (Bauer et
+al. [2023](https://doi.org/10.1007/s00468-023-02391-8)).
+
+Per tree, three leaves were chosen and the leaf area was measured and
+latter the dry weight (Perez-Harguindeguy et
+al. [2013](https://www.uv.es/jgpausas/papers/PerezHarguindeguy-2013-AJB_traits-handbook2.pdf),
+section 3.1).
+
+``` r
+traits_bricks <- read_csv(
+  here("data", "raw", "example_course_brick_trees_mb", "data_raw.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+)
+traits_bricks %>%
+  select(plot, block, species, starts_with("leaf")) %>%
+  head()
+```
+
+    ## # A tibble: 6 × 9
+    ##   plot      block species leaf1Mass leaf2Mass leaf3Mass leaf1Area leaf2Area
+    ##   <chr>     <chr> <chr>       <dbl>     <dbl>     <dbl>     <dbl>     <dbl>
+    ## 1 AY30Amyac A     Acer         0.69      0.47      0.64     107.       82.5
+    ## 2 AY30Anoac A     Acer         0.24      0.3       0.26      40.2      53.3
+    ## 3 AY30Tmyac A     Tilia        0.18      0.15      0.15      34.4      32.3
+    ## 4 AY30Tnoac A     Tilia        0.12      0.11      0.09      24.4      22.3
+    ## 5 BY30Amyac B     Acer         0.42      0.75      0.61      65.1      92.7
+    ## 6 BY30Anoac B     Acer         0.71      0.46      0.57     102.       73.4
+    ## # ℹ 1 more variable: leaf3Area <dbl>
+
+Divide the leaf area by the leaf mass:
+
+``` r
+data <- traits_bricks %>%
+  mutate(
+    sla1 = leaf1Area / leaf1Mass,
+    sla2 = leaf2Area / leaf2Mass,
+    sla3 = leaf3Area / leaf3Mass,
+    sla_mean = (sla1 + sla2 + sla3) / 3
+  ) %>%
+  select(1:3, 8, starts_with("leaf"), starts_with("sla"))
+data %>%
+  select(plot, species, starts_with("sla"))
+```
+
+    ## # A tibble: 100 × 6
+    ##    plot      species  sla1  sla2  sla3 sla_mean
+    ##    <chr>     <chr>   <dbl> <dbl> <dbl>    <dbl>
+    ##  1 AY30Amyac Acer     155.  176.  176.     169.
+    ##  2 AY30Anoac Acer     168.  178.  169.     171.
+    ##  3 AY30Tmyac Tilia    191.  215.  193.     200.
+    ##  4 AY30Tnoac Tilia    203.  203.  244.     217.
+    ##  5 BY30Amyac Acer     155   124.  143.     141.
+    ##  6 BY30Anoac Acer     144.  160.  147.     150.
+    ##  7 BY30Tmyac Tilia    186.  164.  171      173.
+    ##  8 BY30Tnoac Tilia    177.  161.  190      176.
+    ##  9 CY30Amyac Acer     147.  152.  144.     148.
+    ## 10 CY30Anoac Acer     141.  149.  141.     143.
+    ## # ℹ 90 more rows
+
+<a href="#top">Back to top</a>
+
+# 3 Traits from databases
+
+## 3.1 Metadata of traits
 
 There are many functional traits available in GIFT. Each of these traits
 has an identification number called `trait_ID`. Since the two functions
@@ -142,23 +190,19 @@ We can see that the ID of this trait is 1.6.2. Now that we have the ID,
 we can use `GIFT_traits()` to retrieve the growth form values for
 different plant species.
 
-- Search the IDs of *mean* specific leaf area (SLA), seed mass aand
-  plant height.
+<a href="#top">Back to top</a>
 
-- Note the categories, IDs and unit for the material-and-methods
-  section.
-
-# 3 Get trait values
+## 3.2 Get trait values
 
 [Original
 vignette](https://biogeomacro.github.io/GIFT/articles/GIFT.html#trait-data)
 (Denelle & Weigelt 2024)
 
-Get the functional trait values from the database GIFT ([Weigelt et
-al. 2023](https://doi.org/10.1111/jbi.13623)) with the package GIFT
-([Denelle et al. 2023](https://doi.org/10.1111/2041-210X.14213)).
+Get the functional trait values from the database GIFT (Weigelt et
+al. [2023](https://doi.org/10.1111/jbi.13623)) with the package GIFT
+(Denelle et al. [2023](https://doi.org/10.1111/2041-210X.14213)).
 
-## 3.1 How to download traits
+### 3.2.1 Raw data and aggregated data
 
 There are two functions to access trait values. First,
 `GIFT_traits_raw()` returns all trait values for a given species and a
@@ -171,11 +215,11 @@ chose. Let’s retrieve the raw and aggregated values for the maximum
 vegetative height of plants (trait_ID 1.6.2).
 
 ``` r
-height <- GIFT_traits(
+height <- GIFT::GIFT_traits(
   trait_IDs = c("1.6.2"), agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
   )
 
-height_raw <- GIFT_traits_raw(trait_IDs = c("1.6.2"))
+height_raw <- GIFT::GIFT_traits_raw(trait_IDs = c("1.6.2"))
 
 # Raw values
 height_raw %>%
@@ -190,36 +234,51 @@ height %>%
 There were three maximum heights for Fagus sylvatica, 30, 35, and 50
 meters, which led to an aggregated value of 50 meters.
 
-## 3.2 Get the references of the measurements
+<a href="#top">Back to top</a>
+
+### 3.2.2 Get the references of the measurements
 
 If you want to look up the references that led to the aggregated trait
 value, you can run this chunk:
 
 ``` r
-references <- GIFT_references(GIFT_version = "latest")
+references <- GIFT::GIFT_references(GIFT_version = "latest")
 
 unique(unlist(strsplit(height$references_1.6.2, ",")))
 
 references <- references[
-  which(references$ref_ID %in% 
-          unique(unlist(strsplit(height$references_1.6.2, ",")))), ]
+  which(
+    references$ref_ID %in% unique(
+      unlist(strsplit(height$references_1.6.2, ","))
+      )
+    ), ]
 references[1:2, ]
 ```
 
-## 3.3 Download traits of SLA, height, seed mass
+<a href="#top">Back to top</a>
 
-- Get the aggregated trait values of the mean SLA, plant height and seed
-  mass.
+### 3.2.3 Download traits
 
 Here is an example how to download several traits:
 
 ``` r
-data_gift <- GIFT_traits(
-  trait_IDs = c("1.6.2", "1.6.3"), agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
+trait_ids <- c(
+  "1.2.2", "1.5.1", "1.6.3", "3.2.3", "3.3.1", "3.6.1", "3.7.1", "3.21.1",
+  "4.1.3", "4.5.1"
   )
 
-rm(list = setdiff(ls(), c("species", "traits", "data_gift")))
+trait_meta %>%
+  filter(Lvl3 %in% trait_ids) # Get an overview of selected traits
+
+data_gift <- GIFT::GIFT_traits(
+  trait_IDs = trait_ids,
+  agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
+  )
+
+rm(list = setdiff(ls(), c("species_ammer", "traits_ammer", "data_gift")))
 ```
+
+<a href="#top">Back to top</a>
 
 # 4 Name resolving
 
@@ -227,18 +286,22 @@ rm(list = setdiff(ls(), c("species", "traits", "data_gift")))
 vignette](https://cran.r-project.org/web/packages/TNRS/vignettes/TNRS_vignette.html)
 (Maitner 2024)
 
-Use the package TNRS ([Boyle et
-al.2013](https://doi.org/10.1186/1471-2105-14-16)) for name resolving.
+Use the package TNRS (Boyle et
+al.[2013](https://doi.org/10.1186/1471-2105-14-16)) for name resolving
+and the taxonoic resouces World Checklist of Vascular Plants of Kew
+Gardens (Govaerts
+[2023](http://sftp.kew.org/pub/data-repositories/WCVP/)) and World Flora
+Online (WFO Consortium [2023](https://doi.org/10.5281/zenodo.8079052))
 
 ``` r
 metadata <- TNRS::TNRS_metadata()
 
-data <- species %>%
+data <- species_ammer %>%
   rowid_to_column("id") %>%
   select(id, name) %>%
   TNRS::TNRS(
     sources = c("wcvp", "wfo"),
-    classification = "wfo",
+    classification = "wfo", # family classification
     mode = "resolve"
   )
 names <- data %>%
@@ -246,15 +309,10 @@ names <- data %>%
     Name_submitted, Taxonomic_status, Accepted_name, Accepted_name_url,
     Accepted_family
     ) %>%
-  rename_with(tolower) %>%
-  rename(name = name_submitted)
+  rename_with(tolower)
 ```
 
-- Note the version of the database from metadata\$version and the
-  sources of the names with metadata\$citations for the
-  material-and-methods section
-
-- Note the range of Overall_score for your submitted species names.
+<a href="#top">Back to top</a>
 
 # 5 Merge
 
@@ -262,49 +320,51 @@ Merge the resolved species names and the functional plant traits into
 the existing tables ‘species’ and ‘traits’.
 
 ``` r
-data <- species %>%
-  full_join(names %>% select(name, accepted_name), by = "name") %>%
-  select(-name)
-species <- data
+data <- species_ammer %>%
+  rename(name_submitted = name) %>%
+  full_join(
+    names %>% select(name_submitted, accepted_name), by = "name_submitted"
+    )
+species_ammer <- data
 
 data <- names %>%
-  full_join(traits, by = "name") %>%
-  left_join(data_gift %>% rename(accepted_name = work_species), by = "accepted_name")
-traits <- data %>%
+  left_join(
+    data_gift %>% rename(accepted_name = work_species), by = "accepted_name"
+    )
+traits_ammer <- data %>%
   select(-work_ID, -work_author, -starts_with("references"))
 
-rm(list = setdiff(ls(), c("species", "traits")))
+rm(list = setdiff(ls(), c("species_ammer", "traits_ammer")))
 ```
 
-# 6 Check completeness
+<a href="#top">Back to top</a>
+
+# 6 Save
 
 ``` r
-traits %>%
-  select(trait_value_1.6.2, trait_value_1.6.3) %>%
-  naniar::miss_var_summary(order = TRUE)
-traits %>%
-  select(trait_value_1.6.2, trait_value_1.6.3) %>%
-  naniar::vis_miss(cluster = FALSE, sort_miss = TRUE)
+write_csv(
+  species_ammer, here("data", "processed", "data_processed_species_ammer.csv")
+  )
+write_csv(
+  traits_ammer, here("data", "processed", "data_processed_traits_ammer.csv")
+  )
 ```
 
-``` r
-traits %>%
-  select(accepted_name, trait_value_1.6.2, trait_value_1.6.3) %>%
-  filter(is.na(trait_value_1.6.2) | is.na(trait_value_1.6.3))
-```
+<a href="#top">Back to top</a>
 
-- Note the number of missing traits and calculate the ratio.
+# 7 Your own dataset
 
-Check for synonyms
+- Select at least five functional plant traits.
 
-``` r
-GIFT_species_lookup(genus = "Aconitum", epithet = "lycoctonum")
-GIFT_species_lookup(genus = "Molinia", epithet = "arundinacea")
-```
+- Note the categories, IDs, unit and the version of the GIFT database
+  for the material-and-methods section.
 
-# 7 Save
+- Get aggregated trait values from the GIFT database
 
-``` r
-write_csv(species, here("data", "processed", "data_processed_species.csv"))
-write_csv(traits, here("data", "processed", "data_processed_traits.csv"))
-```
+- Resolve names with TNRS
+
+- Note the version of the database from `metadata$version` and the
+  sources of the names with `metadata$citations` for the
+  material-and-methods section
+
+- Note the range of ‘Overall_score’ for your submitted species names.

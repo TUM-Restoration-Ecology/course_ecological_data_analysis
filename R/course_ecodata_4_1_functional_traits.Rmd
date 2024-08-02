@@ -41,6 +41,8 @@ You can always install missing libraries by `install.packages("here")` for the `
 ```{r libraries, message = FALSE, results = FALSE}
 library(here)
 library(tidyverse)
+library(GIFT)
+library(TNRS)
 citation("here") # Example how to get citation information
 rm(list = ls())
 ```
@@ -76,12 +78,14 @@ A short example how to calculate functional traits by your own. For example the 
 
 Per tree, three leaves were chosen and the leaf area was measured and latter the dry weight (Perez-Harguindeguy et al. [2013](https://www.uv.es/jgpausas/papers/PerezHarguindeguy-2013-AJB_traits-handbook2.pdf), section 3.1).
 
-```{r results = FALSE}
+```{r}
 traits_bricks <- read_csv(
   here("data", "raw", "example_course_brick_trees_mb", "data_raw.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
 )
-str(traits_bricks)
+traits_bricks %>%
+  select(plot, block, species, starts_with("leaf")) %>%
+  head()
 ```
 
 Divide the leaf area by the leaf mass:
@@ -115,9 +119,6 @@ trait_meta %>%
 ```
 
 We can see that the ID of this trait is 1.6.2. Now that we have the ID, we can use `GIFT_traits()` to retrieve the growth form values for different plant species.
-
-* Search the IDs of *mean* specific leaf area (SLA), seed mass and plant height.
-* Note the categories, IDs and unit for the material-and-methods section.
 
 <a href="#top">Back to top</a>
 
@@ -190,7 +191,7 @@ data_gift <- GIFT::GIFT_traits(
   agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
   )
 
-rm(list = setdiff(ls(), c("species", "traits", "data_gift")))
+rm(list = setdiff(ls(), c("species_ammer", "traits_ammer", "data_gift")))
 ```
 
 <a href="#top">Back to top</a>
@@ -209,7 +210,7 @@ data <- species_ammer %>%
   select(id, name) %>%
   TNRS::TNRS(
     sources = c("wcvp", "wfo"),
-    classification = "wcvp",
+    classification = "wfo", # family classification
     mode = "resolve"
   )
 names <- data %>%
@@ -228,21 +229,20 @@ Merge the resolved species names and the functional plant traits into the existi
 
 ```{r merge-resolved-names}
 data <- species_ammer %>%
-  rename(name_submitted) %>%
+  rename(name_submitted = name) %>%
   full_join(
     names %>% select(name_submitted, accepted_name), by = "name_submitted"
-    ) %>%
-  select(-name)
+    )
 species_ammer <- data
 
 data <- names %>%
   left_join(
     data_gift %>% rename(accepted_name = work_species), by = "accepted_name"
     )
-traits <- data %>%
+traits_ammer <- data %>%
   select(-work_ID, -work_author, -starts_with("references"))
 
-rm(list = setdiff(ls(), c("species", "traits")))
+rm(list = setdiff(ls(), c("species_ammer", "traits_ammer")))
 ```
 
 <a href="#top">Back to top</a>
@@ -260,10 +260,13 @@ write_csv(
 
  <a href="#top">Back to top</a>
  
- # 7 Your own dataset
- 
- * Get aggregated trait values from GIFT database
- * Resolve names with TNRS
- * Note the version of the database from metadata\$version and the sources of the names with metadata\$citations for the material-and-methods section
+# 7 Your own dataset
+
+* Select at least five functional plant traits.
+* Note the categories, IDs, unit and the version of the GIFT database for the material-and-methods section.
+* Get aggregated trait values from the GIFT database
+
+* Resolve names with TNRS
+* Note the version of the database from `metadata$version` and the sources of the names with `metadata$citations` for the material-and-methods section
 * Note the range of 'Overall_score' for your submitted species names.
  

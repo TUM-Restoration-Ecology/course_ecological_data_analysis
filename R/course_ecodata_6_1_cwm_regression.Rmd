@@ -35,6 +35,7 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 # Tasks
 * Make script tidy
 * Include Ammer data
+* Include DHarma package
 
 This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426)) and Zelený ([2021](https://www.davidzeleny.net/anadat-r/doku.php/en:cwm_fc_examples#example_3ecological_interpretation_of_the_unconstrained_axes_in_constrained_ordination_using_mean_ellenberg-like_indicator_values))
 
