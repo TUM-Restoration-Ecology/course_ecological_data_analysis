@@ -65,6 +65,12 @@ sites_spain <- read_delim(
   col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
   )
 
+load(url('https://raw.githubusercontent.com/zdealveindy/anadat-r/master/data/vltava.RData'))
+species_vltava <- vltava$herbs$spe
+sites_vltava <- vltava$env
+traits_vltava <- vltava$herbs$traits %>%
+  mutate(SLA_sqrt = sqrt(SLA))
+
 species_ammer <- read_csv(
   here("data", "processed", "data_processed_species.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
@@ -84,7 +90,7 @@ traits_ammer <- read_csv(
 
 <a href="#top">Back to top</a>
 
-# 2 CWM regression
+# 2 CWM regression (community level)
 
 ## 2.1 Spain data
 
@@ -170,16 +176,6 @@ We will use the Vltava dataset to analyse the relationship between the community
 
 ### 2.2.1 Preparation
 
-Let's import the object `vltava` from `vltava.RData`; the object is a list of components, and among others contains also the matrix of species composition for herb species (`vltava$herbs$spe`), list of environmental variables (in our case we will use the estimated cover of the tree layer, `vltava$env$COVERE32`, as a proxy of light intensity in the understory - higher cover = less light in the understory), and leaf traits downloaded from TRY database for individual species, specifically SLA (`vltava$herbs$SLA`): 
-
-```{r}
-load(url('https://raw.githubusercontent.com/zdealveindy/anadat-r/master/data/vltava.RData'))
-species_vltava <- vltava$herbs$spe
-sites_vltava <- vltava$env
-traits_vltava <- vltava$herbs$traits %>%
-  mutate(SLA_sqrt = sqrt(SLA))
-```
-
 First, let's calculate the community-weighted mean of SLA for individual vegetation plots; since not all species have assigned trait values, we need to first make sure we delete species with missing trait values from both `vltava_spe` and `vltava_traits`:
 
 ```{r}
@@ -225,14 +221,67 @@ ggplot(data = sites_vltava, aes(y = data$CWM$SLA, x = sites_vltava$COVERE32)) +
 
 So far it goes well - as we see, the relationship is positive and statistically clear (P < 0.001).
 
-The conclusion is that the relationship between CWM of SLA for herb species in the forest understory and the light availability is significant. This offers a strong suggestion that stronger light may filter the species into the community with lower SLA leaves.
-
-Now, the problem is that even with random traits, we have actually a rather good chance to obtain a significant relationship between CWM and environmental variables. Let's see it on the same data, by permuting the SLA values among species, calculating CWM from these randomized trait values, and testing the regression of this randomized CWM on the original environmental variable.
-
-Surprisingly, around 280 out of 1000 regressions are significant - but if the test has a correct Type I error rate, it should be around 5% = 50 (out of 1000) significant results.
-
 <a href="#top">Back to top</a>
 
 ## 2.3 Ammer data
+
+<a href="#top">Back to top</a>
+
+# 3 Can we trust the p-value of CWM-based analyses?
+
+In the reference text book, in Chapter 5, we provide an extensive discussion on some potential problems using analyses with CWM. Some authors have suggested that CWM should not be used because the analyses using CWM provide too optimistic p-values. As summarized by David Zelený and in the reference text book (Zelený [2018](https://doi.org/10.1111/jvs.12688)), we think that the question is not if we can trust the the p-value of CWM-based analyses but rather which type of questions are asked. If we are interested in observing changes in CWM along gradient, whatever are the causes, then analyses on CWM are robust and interesting. If the question is, for example, if the MAJORITY of species in drier habitats have given traits, then a different type of analyses should be done, basically the analyses at the species level presented in Chapter 3 and in the R material Ch 2. 
+
+Let’s now focus on the suggestion by David Zelený ([2018](https://doi.org/10.1111/jvs.12688)) on how to run a conservative tests to evaluate the significance of environmental factors on CWM values. The suggestion by Zelený can be summarized as to run randomizations tests and, basically, verify if the R^2 of a given model (for example those obtained in the previous section) is higher than expected by chance. Randomizations can be done in different ways, but we suggest that a simple and effective one is by simply shuffling species names in the trait matrix.
+
+## 3.2 Ltava data
+
+The problem is that even with random traits, we have actually a rather good chance to obtain a significant relationship between CWM and environmental variables. Let's see it on the same data, by permuting the SLA values among species, calculating CWM from these randomized trait values, and testing the regression of this randomized CWM on the original environmental variable: 
+
+```{r}
+P_rand <- replicate (1000, expr = {
+  SLA_rand <- sample (SLA_1)
+  CWM_SLA_rand <-  apply (com_1, 1, FUN = function (x) sum (x*SLA_rand)/sum (x))
+  LM_rand_col <- lm (CWM_SLA_rand ~ cover)
+  P_value <- anova (LM_rand_col)$`Pr(>F)`[1]
+  return (P_value)
+})
+sum (P_rand < 0.05) 
+```
+
+Surprisingly, around 280 out of 1000 regressions are significant - but if the test has a correct Type I error rate, it should be around 5% = 50 (out of 1000) significant results. Clearly, the standard parametric test has an inflated Type I error rate.
+
+The solution to this problem is to apply the “max” permutation test, which combines results of row- and column-based permutation, and chooses the higher (less significant) P-value. The “max” test can be calculated by package `weimea` (name derived from the community weighted mean), using the function `test_cwm`.
+
+Note that `weimea` contains also the function `cwm`, which offers quick calculation of CWM values from species composition and trait matrix, and can treat the missing values - no need to remove them first. Still, the number of species in the species composition matrix (columns) and species trait matrix (rows) must be identical, and the order of species must be also the same - `cwm` function does not check for this.
+
+```{r}
+library (weimea)
+CWM_SLA_w <- weimea::cwm(com = com, traits = SLA)
+```
+
+The variable `CWM_SLA_w` is like a data frame with calculated CWM, but is much more than that; the object is of the class `cwm`, and contains also the original data used for calculation of CWM (that is why I used a different name of the object from `SLA_CWM` calculated above, even though the calculated values are identical - you may check if you want). It can thus be used directly for testing the regression of CWM and environmental variable, using the function `test_cwm`; you need to also select the method of relating CWM to environmental variables (currently only `lm` for linear model regression, and `cor` for Pearson's correlation, are available):
+
+```{r}
+CWM_cover <- weimea::test_cwm(cwm = CWM_SLA_w, env = cover, method = 'lm', test = 'all')
+CWM_cover
+```
+
+The test output is longish. Important is the P_max value in the end, which is significant (P = 0.02). You can also see how it was calculated, because the function returns P-values of both row- (`P_row`) and column-based (`P_col`) permutation test. `P_par` is the result of the parametric F-test, identical to the result of `anova` function above.
+
+The package `weimea` also offers dedicated function to plot the results of the regression: 
+
+```{r}
+plot(CWM_cover)
+```
+
+The conclusion is that the relationship between CWM of SLA for herb species in the forest understory and the light availability is significant even if tested by the “max” test. This offers a strong suggestion that stronger light may filter the species into the community with lower SLA leaves. 
+
+<a href="#top">Back to top</a>
+
+## 3.3 Zelený (2018)
+
+The recent paper by Peres-Neto, Dray, and ter Braak ([2017](https://doi.org/10.1111/ecog.02302)), focused on the CWM approach, revealed several surprising facts. First, and perhaps the most important finding, is that standard plot-level tests analysing CWM–sample attributes relationship have inflated Type I error rate, returning more optimistic results than is warranted by the data. “Standard tests”, in the meaning used here, include plot-level parametric tests such as the t-test for correlation and F-test for regression or ANOVA, or permutation tests randomizing sample attributes (equivalent to randomizing rows in the species composition matrix). Second, CWM correlation has relatively poor statistical properties, because the correlation coefficient is highly variable and can become rather high even in the case of random species attributes. Third, the CWM approach is numerically related to the seemingly different fourth-corner problem (Legendre et al. 1997), which relates species attributes and sample attributes via the species composition matrix without explicitly calculating the weighted means of species attributes. Fourth, the ‘max test’ (Cormont et al. 2011), which solves the problem of inflated Type I error rate in the fourth-corner approach (ter Braak et al. 2012), does the same in the CWM approach. The max test undertakes two independent permutation tests, one testing the species attributes–species composition link and the other testing the sample attributes–species composition link, and chooses the higher p-value as a result. In conclusion, Peres-Neto et al. ([2017](https://doi.org/10.1111/ecog.02302)) suggested replacing the CWM approach with the more efficient fourth-corner approach.
+
+The findings of Peres-Neto et al. ([2017](https://doi.org/10.1111/ecog.02302)) will undoubtedly cause a revolution in the analysis of trait–environment, and generally, species attributes–sample attributes relationships. It is quite relevant to expect that scientific literature using CWM approach with standard tests is flooded with overly optimistic studies reporting significant relationships between various species and sample attributes, which in fact are merely analytical artefacts. However, the use of the CWM approach has a long tradition in ecology, and calculating the CWM of species attributes and relating them to sample attributes is quite often practical or required by theory. Many studies defining our current empirical knowledge about the trait–environment relationship or the efficiency of Ellenberg-type indicator values have been published, and many studies will use this approach in the future. What can be done about that? How can we recognize whether an inflated Type I error rate affects the results of a particular study or not, and if it does, how strong that effect is? Moreover, if the CWM approach is used in future studies, is it always necessary to replace the standard tests with the max solution? These are some of the questions I will attempt to answer here.
 
 <a href="#top">Back to top</a>

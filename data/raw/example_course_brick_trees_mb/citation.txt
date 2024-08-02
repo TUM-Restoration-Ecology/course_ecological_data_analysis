@@ -1,0 +1,8 @@
+Publication
+
+Bauer M, Krause M, Heizinger V and Kollmann J (2023) Ecological application of waste bricks: brick-augmented substrates have no adverse effects on urban trees. – Trees 37, 875–889. https://doi.org/10.1007/s00468-023-02391-8
+
+Dataset
+
+Bauer M, Krause M, Heizinger V & Kollmann J (2022) Data and code for Bauer et al. (2023): Testing brick substrates for trees (v1.0.0) [Data set]. – Zenodo. https://doi.org/10.5281/zenodo.6390129
+

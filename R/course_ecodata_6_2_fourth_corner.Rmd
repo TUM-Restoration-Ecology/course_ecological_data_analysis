@@ -36,21 +36,32 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 * 
 
-This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426))
+This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426)) and Zelený ([2021](https://www.davidzeleny.net/anadat-r/doku.php/en:cwm_fc_examples#example_3ecological_interpretation_of_the_unconstrained_axes_in_constrained_ordination_using_mean_ellenberg-like_indicator_values))
+
+A helpful textbook is 'Numerical Ecology' (Borcard et al. [2018](https://doi.org/10.1007/978-3-319-71404-2)) and 'Multivariate Analysis of Ecological Data with ade4' (Thioulouse et al. [2018](https://doi.org/10.1007/978-1-4939-8850-1))
 
 # 1 Preparation
 
 ## 1.1 Load libraries and functions
 
+We need the `ade4` package of Dray & Dufour ([2007](https://doi.org/10.18637/jss.v022.i04)) to use the fourth-corner approach of Legendre et al ([1997](https://doi.org/10.1890/0012-9658(1997)078[0547:RBTHST]2.0.CO;2)) and Dray &   Legendre ([2008](https://doi.org/10.1890/08-0349.1))
+
 ```{r libraries, message = FALSE}
 library(here)
 library(tidyverse)
+library(ade4)
 rm(list = ls())
 ```
 
 ## 1.2 Load data
 
 ```{r load-data}
+species_vltava
+sites_vltava
+traits_vltava
+seed.weight_log = log(traits$seed.weight)
+SLA_log = log(traits$SLA)
+
 species_spain <- read_delim(
   here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXplotsNE.txt"),
   col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
@@ -79,12 +90,71 @@ traits_ammer <- read_csv(
 
 <a href="#top">Back to top</a>
 
-# 2 Can we trust the p-value of CWM-based analyses?
+# 2 Fourth-corner approach (species level)
 
-In the reference text book, in Chapter 5, we provide an extensive discussion on some potential problems using analyses with CWM. Some authors have suggested that CWM should not be used because the analyses using CWM provide too optimistic p-values. As summarized by David Zeleny and in the reference text book (Zelený 2018), we think that the question is not if we can trust the the p-value of CWM-based analyses but rather which type of questions are asked. If we are interested in observing changes in CWM along gradient, whatever are the causes, then analyses on CWM are robust and interesting. If the question is, for example, if the MAJORITY of species in drier habitats have given traits, then a different type of analyses should be done, basically the analyses at the species level presented in Chapter 3 and in the R material Ch 2. Alternatively, for this type of questions we can have two other solutions still using the CWM. One simple solution is presented below. For other approaches see David’s page: https://www.davidzeleny.net/anadat-r/doku.php/en:traits
+## 2.1 Vltava dataset
 
-Let’s now focus on the suggestion by David Zeleny (2018) on how to run a conservative tests to evaluate the significance of environmental factors on CWM values. The suggestion by Zeleny can be summarized as to run randomizations tests and, basically, verify if the R2 of a given model (for example those obtained in the previous section) is higher than expected by chance. Randomizations can be done in different ways, but we suggest that a simple and effective one is by simply shuffling species names in the trait matrix (we tested the power of this test and it provided the best results compared to other approaches, not shown here). For simplicity here we present only the test of the effect of moisture on CWM for SLA.
+This example directly follows the Vlatava example, in which we related CWM of SLA calculated from herb understory in the forest sites to canopy cover in the same sites as a proxy of the light available for the understory plants. We found a significant positive relationship, i.e. higher cover (less light) = higher SLA.
 
-Randomizations in R can be done in different ways and we will use a relative simple and common one, ‘loops’. We assume the users are, more or less, familiar with loops in R. Here we make a loop, with 999 randomizations. For each of these randomizations (i=1, i=2, i=3…..) we randomize species names in the species trait matrix and make a new regression between a CWM and the environmental variable, using the CWM obtained with such randomization. Here we test the relationship between CWM for SLA and the moisture index. The results of each of these 999 models are stored in the object `EXPECTED.R2.SLA.moist`.
+### 2.1.1 Preparation
+
+In this exercise, we will calculate the same relationship, but using the fourth corner method, introduced by Pierre Legendre and colleagues ([1997](https://doi.org/10.1890/0012-9658(1997)078[0547:RBTHST]2.0.CO;2)). The method is implemented in the package `ade4`.
+
+Remember to remove the missing species from both species composition and trait matrices, since the function `fourthcorner` cannot handle them. Also, `fourthcorner` function expects that all objects representing data will be data frames, so better to convert data into them right at the beginning.
+
+```{r}
+species <- vlatava_species %>%
+  as.matrix()
+sites <- vlatava_sites %>%
+  select(SLA_log) %>%
+  as.matrix()
+traits <- vlatava_traits %>%
+  as.matrix()
+```
+
+
+### 2.1.2 Calculation of the fourth-corner approach
+
+```{r}
+fc_ade4 <- ade4::fourthcorner(
+  tabR = sites, tabL = species, tabQ = traits, modeltype = 6 # max test
+  )
+fc_ade4
+```
+
+The fourth corner statistic r = 0.188, and the P-value of it (calculated by max test, since the argument modeltype = 6) is significant.
+
+### 2.2 Calculation with several traits
+
+We can calculate the fourth corner for more than a single combination of trait and environmental variable. Let's use all three traits available in vltava$herbs$traits, namely SLA, plant height and seed weight, and also choose three environmental variables which may have some relationship to them, namely heat load (combination of slope and aspect, indicating radiation income of the site), soil depth, and cover of canopy layer. 
+
+```{r}
+traits <- vltava_traits
+traits$seed.weight <- log(traits$seed.weight)
+traits_2 <- traits[complete.cases(traits),]
+com_2 <- com[, complete.cases(traits)]
+env <- vltava$env[,c('HEAT.LOAD', 'SOILDPT', 'COVERE32')]
+ 
+traits_fc_ade4 <- fourthcorner (tabR = env, tabL = com_2, tabQ = traits_2)
+traits_fc_ade4
+```
+
+Note that the function automatically applies correction of P-values for multiple testing by Holm's method (the last column, Pvalue.adj).
+
+To plot the results, use: 
+
+```{r}
+plot (traits_fc_ade4)
+# Plot also a scatterplot with line
+```
+
+Two of the relationships are significant: plant height and soil depth (red = positive) and SLA and heat load (blue = negative). SLA and cover didn't make it through the Holm's correction. 
 
 <a href="#top">Back to top</a>
+
+## 2.2 Spain dataset
+
+
+
+## 2.3 Ammer dataset
+
