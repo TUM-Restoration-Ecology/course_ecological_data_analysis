@@ -1,7 +1,7 @@
 Analysis of Ecological Data <br> How to get functional traits?
 ================
 <b>Markus Bauer</b> <br>
-<b>2024-08-02</b>
+<b>2024-08-05</b>
 
 - [1 Preparation](#1-preparation)
   - [1.1 Load libraries](#11-load-libraries)
@@ -38,18 +38,41 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 ## 1.1 Load libraries
 
-You can always install missing libraries by `install.packages("here")`
-for the `here` package. The tidyverse package is of Wickham et
-al. ([2019](https://doi.org/10.21105/joss.01686))
+You can always install missing libraries by `install.packages()` like
+`install.packages("here")`. We use the `tidyverse` package (Wickham et
+al. [2019](https://doi.org/10.21105/joss.01686)), the `GIFT` package
+(Denelle et al. [2023](https://doi.org/10.1111/2041-210X.14213)) and the
+package `TNRS` (Boyle et
+al.[2013](https://doi.org/10.1186/1471-2105-14-16))
 
 ``` r
 library(here)
 library(tidyverse)
 library(GIFT)
 library(TNRS)
-citation("here") # Example how to get citation information
 rm(list = ls())
 ```
+
+Example how to get citation information
+
+``` r
+citation("here")
+```
+
+    ## Um Paket 'here' in Publikationen zu zitieren, nutzen Sie bitte:
+    ## 
+    ##   Müller K (2020). _here: A Simpler Way to Find Your Files_. R package
+    ##   version 1.0.1, <https://CRAN.R-project.org/package=here>.
+    ## 
+    ## Ein BibTeX-Eintrag für LaTeX-Benutzer ist
+    ## 
+    ##   @Manual{,
+    ##     title = {here: A Simpler Way to Find Your Files},
+    ##     author = {Kirill Müller},
+    ##     year = {2020},
+    ##     note = {R package version 1.0.1},
+    ##     url = {https://CRAN.R-project.org/package=here},
+    ##   }
 
 ## 1.2 The example data set
 
@@ -151,15 +174,24 @@ data %>%
 
 # 3 Traits from databases
 
+[Original
+vignette](https://biogeomacro.github.io/GIFT/articles/GIFT.html#trait-data)
+(Denelle & Weigelt 2024)
+
+Get the functional trait values from the GLobal Inventory of Floras and
+Traits (GIFT) database (Weigelt et
+al. [2023](https://doi.org/10.1111/jbi.13623)) with the package `GIFT`
+(Denelle et al. [2023](https://doi.org/10.1111/2041-210X.14213)).
+
 ## 3.1 Metadata of traits
 
-There are many functional traits available in GIFT. Each of these traits
-has an identification number called `trait_ID`. Since the two functions
-for retrieving trait values, `GIFT_traits()` and `GIFT_traits_raw()`,
-rely on these IDs, the first step is to call the function
-`GIFT_traits_meta()` to know what the ID of the desired trait is. For
-example, let’s say we want to retrieve the maximum vegetative heights of
-plant species.
+There are many functional traits available in the GIFT database. Each of
+these traits has an identification number called `trait_ID`. Since the
+two functions for retrieving trait values, `GIFT_traits()` and
+`GIFT_traits_raw()`, rely on these IDs, the first step is to call the
+function `GIFT_traits_meta()` to know what the ID of the desired trait
+is. For example, let’s say we want to retrieve the maximum vegetative
+heights of plant species.
 
 ``` r
 trait_meta <- GIFT::GIFT_traits_meta()
@@ -193,14 +225,6 @@ different plant species.
 <a href="#top">Back to top</a>
 
 ## 3.2 Get trait values
-
-[Original
-vignette](https://biogeomacro.github.io/GIFT/articles/GIFT.html#trait-data)
-(Denelle & Weigelt 2024)
-
-Get the functional trait values from the database GIFT (Weigelt et
-al. [2023](https://doi.org/10.1111/jbi.13623)) with the package GIFT
-(Denelle et al. [2023](https://doi.org/10.1111/2041-210X.14213)).
 
 ### 3.2.1 Raw data and aggregated data
 

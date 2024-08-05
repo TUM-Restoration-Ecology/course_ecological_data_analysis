@@ -34,7 +34,7 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 # Tasks
 
-* 
+* Which model type, p-adjustment and nrepet is used?
 
 This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426)) and Zelený ([2021](https://www.davidzeleny.net/anadat-r/doku.php/en:cwm_fc_examples#example_3ecological_interpretation_of_the_unconstrained_axes_in_constrained_ordination_using_mean_ellenberg-like_indicator_values))
 
@@ -44,7 +44,7 @@ A helpful textbook is 'Numerical Ecology' (Borcard et al. [2018](https://doi.org
 
 ## 1.1 Load libraries and functions
 
-We need the `ade4` package of Dray & Dufour ([2007](https://doi.org/10.18637/jss.v022.i04)) to use the fourth-corner approach of Legendre et al ([1997](https://doi.org/10.1890/0012-9658(1997)078[0547:RBTHST]2.0.CO;2)) and Dray &   Legendre ([2008](https://doi.org/10.1890/08-0349.1))
+We need the `ade4` package of Dray & Dufour ([2007](https://doi.org/10.18637/jss.v022.i04)) to use the fourth-corner approach of Legendre et al ([1997](https://doi.org/10.1890/0012-9658(1997)078[0547:RBTHST]2.0.CO;2)) and Dray & Legendre ([2008](https://doi.org/10.1890/08-0349.1))
 
 ```{r libraries, message = FALSE}
 library(here)
@@ -135,7 +135,7 @@ traits_2 <- traits[complete.cases(traits),]
 com_2 <- com[, complete.cases(traits)]
 env <- vltava$env[,c('HEAT.LOAD', 'SOILDPT', 'COVERE32')]
  
-traits_fc_ade4 <- fourthcorner (tabR = env, tabL = com_2, tabQ = traits_2)
+traits_fc_ade4 <- fourthcorner(tabR = env, tabL = com_2, tabQ = traits_2)
 traits_fc_ade4
 ```
 

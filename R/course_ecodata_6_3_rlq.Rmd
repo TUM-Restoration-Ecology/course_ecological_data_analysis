@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Ecological Data <br> RLQ"
+title: "Analysis of Ecological Data <br> RLQ Analysis"
 author: "<b>Markus Bauer</b> <br>"
 date: "<b>`r format(Sys.time(), '%Y-%m-%d')`</b>"
 output:
@@ -34,34 +34,263 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 # Tasks
 
-This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426))
+* Use theme for Plot
+* Show Ammer data
+* Create biplot of Borcard et al
+* Make arrows longer
 
-As we shown in Chapter 4 of the reference book, the presence of multiple CWM values for each plot, allows us to use multivariate analyses for the representation of the data and statistical analysis. For example we could use RDA (see Chapter 4 and Kleyer et al. (2012)).
+The tutorial is based on Borcard et al. ([2018](https://doi.org/10.1007/978-3-319-71404-2), 6.11.2)
 
-```{r}
-library(vegan) # it is already loaded when you use the package 'FD'
-rdaNEspain.all <- rda(resCWM ~ moisture.index * grazing, data = envxp)
-plot(rdaNEspain.all, type = "n", scaling = "sites")
-text(rdaNEspain.all, dis = "cn", scaling = "sites")
-text(rdaNEspain.all, dis = "sp", scaling = "sites", col = "red")
+# 1 Preparation
+
+## 1.1 Load libraries and functions
+
+We need the `ade4` package of Dray & Dufour ([2007](https://doi.org/10.18637/jss.v022.i04)) to apply the RLQ analysis of Dolédec et al ([1996](https://doi.org/10.1007/BF02427859))
+
+```{r libraries, message = FALSE}
+library(here)
+library(tidyverse)
+library(ade4)
+rm(list = ls())
 ```
 
-In the figure, we can see which CWM values are associated with an increase of moisture index, mostly corresponding to the first axis of the RDA, and grazing partially on the second axis. For example, glowworm ‘forbs’ (GrowhtForm_forb) are expected to be favoured by higher moisture (i.e. high moisture index), while Phanerophytes (LF_P) are expected to increase with low grazing and in relatively drier conditions (i.e. slightly low moisture index).
+## 1.2 Load data
 
-A global statistical test would be done simply as in the following script.
+The example proposed here is extracted from a tutorial written by Stéphane Dray and provided as a Supplement to the Dray et al. ([2014](https://doi.org/10.1890/13-0196.1)) paper ([ESA Ecological Archives](https://esapubs.org/archive/default.htm) [E095–002-S1](https://esapubs.org/archive/ecol/E095/002/)). The example concerns the ecological data analysed in the Dray et al. ([2014](https://doi.org/10.1890/13-0196.1)) paper, which describes the response of plant traits to a snow-melting gradient in the French Alps. The main question is: how does the snow cover duration, with all its consequences, impact the alpine grasslands, as assessed by functional traits of the plant species?
 
-```{r}
-rdaNEspain0 <- rda(resCWM ~ 1, data = envxp)
-rdaNEspain.all <- rda(resCWM ~ moisture.index * grazing, data = envxp)
-ordistep(rdaNEspain0, scope = formula (rdaNEspain.all), direction = 'forward')
+The data come from 75, 5 x 5 m plots located in the South-Western Alps at about 2700 m elevation. They consist in the three following matrices: community composition (82 species, abundance scale from 0 to 5), traits (8 quantitative variables) and environment (4 quantitative and 2 categorical variables). To simplify this presentation, only some of the variables that are identiﬁed as signiﬁcant are presented below. Readers are referred to Dray et al. ([2014](https://doi.org/10.1890/13-0196.1)) and Choler ([2005](https://doi.org/10.1657/1523-0430(2005)037[0444:CSIAPT]2.0.CO;2)) for a more complete interpretation of the results. The data are available in `ade4`.
+
+```{r load-data}
+data(aravo)
+
+species_spain <- read_delim(
+  here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXplotsNE.txt"),
+  col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
+  ) %>%
+  pivot_longer(-species) %>%
+  pivot_wider(names_from = "species", values_from = "value") %>%
+  column_to_rownames("name")
+traits_spain <- read_delim(
+  here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXtraitsNE.txt"),
+  col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
+  ) %>%
+  column_to_rownames("species")
+sites_spain <- read_delim(
+  here::here("data", "raw", "bello_etal-2021", "chapter5", "environXplotsNE.txt"),
+  col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
+  ) %>%
+  column_to_rownames("Plots")
+
+species_ammer <- read_csv(
+  here("data", "processed", "data_processed_species.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+  ) %>%
+  column_to_rownames("accepted_name")
+traits_ammer <- read_csv(
+  here("data", "processed", "data_processed_traits.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+  ) %>%
+  column_to_rownames("accepted_name") %>%
+  select(
+    -name, -taxonomic_status, -starts_with("accepted_"), -starts_with("cv_"), -starts_with("n_")
+    )
+# sites_ammer <- read_csv(
+#   here("data", "processed", "data_processed_sites.csv"),
+#   col_names = TRUE, col_types = cols(.default = "?")
+#   )
 ```
-
-```{r}
-RsquareAdj (rdaNEspain.all)$adj.r.squared 
-```
-
-First notice that we used the function ordistep, which is basically a stepwise regression analyses applied to multivariate analyses, which resembles the function step for linear models. In this case we selected a ‘forward’ selection, see argument ‘forward’ above. The approach is working by a comparing a model with all predictors (‘rdaNEspain.all’) with an ‘empty’ model (‘rdaNEspain0’, with no predictors). The results indicate that both grazing and the moisture index are kept into the model, including their interactions (moisture.index:grazing), for being significant. So the final model is indicated in Call: rda(formula = resCWM ~ moisture.index + grazing + moisture.index:grazing, data = envxp). The analysis further provides a lot of interesting information about constrained and unconstrained axes, their eigenvalues etc. While important we prefer here not to explain their meaning and do refer to the interesting page by David Zeleny indicated above.
-
-At the same time we can see also how to understand the amount of variability explained by this model, simply using the RsquareAdj function. The resulting model keeps moisture and grazing, and their interaction in the model, for a R2~0.6, similarly to the linear model we considered above for SLA in a simple linear model.
 
 <a href="#top">Back to top</a>
+
+# 2 RLQ Analysis
+
+## 2.1 Aravo data
+
+### 2.1.1 Apply the RLQ analysis
+
+The method works upon three separate ordinations, one for each data matrix and adapted to its mathematical type, and combines the three to identify the main relationships between the environment and the traits, as mediated by the species. It computes a generalized singular value decomposition of the fourth-corner matrix D (Dray et al. [2014](https://doi.org/10.1890/13-0196.1)). For the ﬁrst ordination axis, RLQ ﬁnds coefﬁcients for the environmental variables and species traits. These coefﬁcients measure the contributions of individual variables and are used to compute site and species scores; they are chosen to maximize the ﬁrst eigenvalue. The analysis proceeds in the same way for the next, orthogonal ordination axes. For mathematical details see Dray et al. ([2014](https://doi.org/10.1890/13-0196.1)).
+
+After having loaded the data, the ﬁrst step of the RLQ analysis is to compute separate ordinations of the three data sets, which are computed by function `rlq()` of `ade4` package. The ordination methods are chosen in accordance with the mathematical types of the variables. Here, following Dray et al. ([2014](https://doi.org/10.1890/13-0196.1)), we compute a correspondence analysis (CA) on the species data, a principal component analysis (PCA) on the (quantitative) trait data; for the environmental data, which are quantitative and categorical, we will apply a special type of PCA that can handle such types of data, called a Hill-Smith analysis (Hill and Smith [1976](https://doi.org/10.2307/1219449)).
+
+The RLQ analysis is then computed on the basis of the three ordinations.
+
+```{r ordinations-aravo}
+dim(aravo$spe)
+dim(aravo$traits)
+dim(aravo$env)
+
+# Preliminary analyses
+l_aravo <- dudi.coa(aravo$spe, scannf = FALSE)
+r_aravo <- dudi.hillsmith(aravo$env,  row.w = l_aravo$lw, scannf = FALSE)
+q_aravo <- dudi.pca(aravo$traits, row.w = l_aravo$cw, scannf = FALSE)
+```
+
+Apply the RLQ analyis:
+
+```{r rlq-aravo}
+m1 <- rlq(
+  dudiR = r_aravo, 
+  dudiL = l_aravo, 
+  dudiQ = q_aravo,
+  scannf = FALSE
+)
+```
+
+A single `plot()` command allows one to plot all results in a single graphical window, but the individual plots are rather crowded, so we also provide the code to plot the results separately. 
+
+```{r plot-aravo}
+plot(m1)
+```
+
+```{r table-aravo}
+m1$tab # Traits by environment crossed table
+```
+
+Since the plots are crowded, one can plot them one by one in large graphical windows.
+
+```{r single-plots-aravo}
+# Site (L) scores:
+s.label(m1$lR)
+# Species (Q) scores
+s.label(m1$lQ)
+# Environmental variables:
+s.arrow(m1$l1)
+# Species traits:
+s.arrow(m1$c1)
+```
+
+The script below concludes with a global “model 6” test (after ter Braak et al. [2012](https://doi.org/10.1890/12-0126.1)). The two tests included in “model 6” yielded a combined p-value = 0.001, hence the null hypothesis is rejected, which means that both links, L-Q and R-L, are signiﬁcant.
+
+The permutation models are the following, considering matrix L (or A) with observations in the rows and species as columns:
+
+* Model 2: environmental control over species assemblages. Permute entire rows of matrix L (A). H0 states that the species compositions of the sites are unrelated to the environmental conditions. This model considers that species assemblages must be taken as whole entities, which are preserved through the permutations, and react as such to environmental constraints.
+
+* Model 4: random species attributes. Permute entire columns of matrix L (A). H0 states that species are distributed according to their preferences for site conditions (this is preserved through the permutations), but independently from their traits.
+
+* Model 6: this is actually a combination of models 2 and 4. A ﬁrst form of this combination was proposed by Dray and Legendre ([2008](https://doi.org/10.1890/08-0349.1)), who noted, however, that it suffered from a strong inﬂation of type I error rate when L (A) is only linked to one other table (R or Q). Ter Braak et al. ([2012](https://doi.org/10.1890/12-0126.1)) proposed to overcome this problem by considering the two tests sequentially and rejecting the overall null hypothesis (i.e., traits and environment unrelated) only if both tests (models 2 and 4) reject H0 at the alpha level. The maximum p-value becomes the overall p-value. These authors showed that this procedure ensures a correct level of type I error and a good power if the number of species is sufﬁcient (at least 30).
+
+
+```{r test-aravo}
+randtest(m1, nrepet = 999, modeltype = 6)
+```
+
+The results are interpreted as follows by Dray et al. ([2014](https://doi.org/10.1890/13-0196.1)): “The left (negative) part of the ﬁrst RLQ axis identiﬁes species (*Poa supina*, *Alchemilla pentaphyllea*, or *Taraxacum alpinum*) with higher speciﬁc leaf area (SLA) and mass-based leaf nitrogen content (NMass), lower height, and a reduced seed mass. These species were mostly found in late-melting habitats. The right part of the axis highlights trait attributes (upright and thick leaves) associated with convex landforms, physically disturbed and mostly early-melting sites. Corresponding species are *Sempervivum montanum*, *Androsace adﬁnis*, or *Lloydia serotina*. The second RLQ axis outlined zoogenic disturbed sites located in concave slopes. These habitats were characterized by large-leaved species (*Cirsium acaule*, *Geum montanum*, *Alchemilla vulgaris*).”
+
+### 2.2.2 Repetition: Fourth-corner analysis
+
+The same data will now be submitted to a fourth-corner analysis, which provides tests at the bivariate level, i.e. one trait and one environmental variable at a time. This is where the correction for multiple tests is necessary. Given the large number of permutations needed to reach an adequately precise estimation of the p-value, the most astute way of computing this analysis consists in a ﬁrst computation without any correction for multiple testing. The resulting object can be corrected afterwards. So, if several types of corrections must be examined, there is no need to recompute the whole analysis and its large and time-consuming number of permutations.
+
+The fourth-corner analysis is computed by means of the function `fourthcorner()` of `ade4`, using model 6 advocated by Dray et al. ([2014](https://doi.org/10.1890/13-0196.1)).
+
+```{r fourth-corner-aravo}
+fourth.aravo <- fourthcorner(
+  tabR = aravo$env,
+  tabL = aravo$spe,
+  tabQ = aravo$traits,
+  modeltype = 6,
+  p.adjust.method.G = "none",
+  p.adjust.method.D = "none",
+  nrepet = 49999
+)
+```
+
+The correction for multiple testing is taken care of by the function `p.adjust.4thcorner()`, which operates on the output object of the analysis. Here the false discovery rate is used (FDR).
+
+```{r p-adjust-aravo}
+fourth.aravo.adj <- p.adjust.4thcorner(
+  fourth.aravo,
+  p.adjust.method.G = "fdr",
+  p.adjust.method.D = "fdr",
+  p.adjust.D = "global"
+) 
+```
+
+We will ﬁrst plot the results as a table with coloured cells.
+
+```{r plot-fourth-corner}
+plot(fourth.aravo.adj, alpha = 0.05, stat = "D2")
+```
+
+This representation allows a detailed interpretation. For instance, SLA (speciﬁc leaf area) and N_mass (mass-based leaf nitrogen content) are positively associated with Snow (mean snow melt date) and Form.5 (concave microtopography), features that can also be observed in the ordination. This shows that these traits are likely to favor species that tolerate a longer period of snow cover: a higher nitrogen content, partly due to nitrogen storage in snowpacks and partly to the protective effect of snow on soil temperature and water content (Choler [2005](https://doi.org/10.1657/1523-0430(2005)037[0444:CSIAPT]2.0.CO;2)), warrants larger reserves, and a larger leaf area allows a larger rate of photosynthesis once the plant iseventually exposed to the sun. Conversely, these two traits are negatively associated with PhysD (physical disturbance due to cryoturbation), which tends to occur more often in areas without snow and therefore more exposed to large temperature oscillations.
+
+## 2.2 Spain data
+
+### 2.2.1 RLQ analysis
+
+```{r ordination-spain}
+l_spain <- dudi.coa(species_spain, scannf = FALSE)
+r_spain <- dudi.hillsmith(sites_spain,  row.w = l_spain$lw, scannf = FALSE)
+q_spain <- dudi.pca(
+  traits_spain %>% select(-GrowhtForm), row.w = l_spain$cw, scannf = FALSE
+  )
+```
+
+```{r rlq-spain}
+m2 <- rlq(
+  dudiR = r_spain, 
+  dudiL = l_spain, 
+  dudiQ = q_spain,
+  scannf = FALSE
+)
+```
+
+```{r}
+randtest(m2, nrepet = 999, modeltype = 6)
+```
+
+### 2.2.2 Use ggplot2
+
+First, the standard plot:
+
+```{r}
+plot(m2)
+```
+
+Now, we have to prepare the data for ggplot2. Get the scores of the sites, species, environmental variables and functional traits:
+
+```{r}
+# Site (R) scores:
+scores_sites <- m1$lR %>%
+  rownames_to_column("plot_id")
+# Species (Q) scores
+scores_species <- m1$lQ %>%
+  rownames_to_column("name")
+# Environmental variables:
+scores_env <- m1$l1 %>%
+  rownames_to_column("env_factor")
+# Species traits:
+scores_traits <- m1$c1 %>%
+  rownames_to_column("trait")
+```
+
+Use `ggrepel` to avoid overlapping text labels ([Vignette](https://ggrepel.slowkow.com/articles/examples), Slowikowski [2024](https://CRAN.R-project.org/package=ggrepel))
+
+```{r}
+library(ggrepel)
+ggplot() +
+  geom_point(data = scores_sites, aes(x = AxcR1, y = AxcR2)) +
+  geom_label_repel(
+    data = scores_traits,
+    aes(x = CS1, y = CS2, label = trait)
+    ) +
+  geom_segment(
+    data = scores_traits, aes(x = 0, y = 0, xend = CS1, yend = CS2),
+    arrow = arrow(length = unit(0.3, "cm"), type = "closed")
+    )
+```
+```{r}
+library(ggrepel)
+ggplot() +
+  geom_point(data = scores_sites, aes(x = AxcR1, y = AxcR2)) +
+  geom_label_repel(
+    data = scores_env,
+    aes(x = RS1, y = RS2, label = env_factor)
+    ) +
+  geom_segment(
+    data = scores_env, aes(x = 0, y = 0, xend = RS1, yend = RS2),
+    arrow = arrow(length = unit(0.3, "cm"), type = "closed")
+    )
+```
+
+
+* Try the same with the Ammer data and your data
