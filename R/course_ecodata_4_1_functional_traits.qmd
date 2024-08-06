@@ -21,8 +21,6 @@ knitr::opts_chunk$set(
   )
 ```
 
-**Markus Bauer**
-
 Technichal University of Munich, TUM School of Life Sciences, Chair of
 Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
@@ -46,12 +44,6 @@ library(GIFT)
 library(TNRS)
 rm(list = ls())
 ```
-Example how to get citation information
-
-```{r}
-citation("here")
-```
-
 
 ## 1.2 The example data set
 

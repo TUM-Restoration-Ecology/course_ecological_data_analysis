@@ -176,6 +176,8 @@ randtest(m1, nrepet = 999, modeltype = 6)
 
 The results are interpreted as follows by Dray et al. ([2014](https://doi.org/10.1890/13-0196.1)): “The left (negative) part of the ﬁrst RLQ axis identiﬁes species (*Poa supina*, *Alchemilla pentaphyllea*, or *Taraxacum alpinum*) with higher speciﬁc leaf area (SLA) and mass-based leaf nitrogen content (NMass), lower height, and a reduced seed mass. These species were mostly found in late-melting habitats. The right part of the axis highlights trait attributes (upright and thick leaves) associated with convex landforms, physically disturbed and mostly early-melting sites. Corresponding species are *Sempervivum montanum*, *Androsace adﬁnis*, or *Lloydia serotina*. The second RLQ axis outlined zoogenic disturbed sites located in concave slopes. These habitats were characterized by large-leaved species (*Cirsium acaule*, *Geum montanum*, *Alchemilla vulgaris*).”
 
+<a href="#top">Back to top</a>
+
 ### 2.2.2 Repetition: Fourth-corner analysis
 
 The same data will now be submitted to a fourth-corner analysis, which provides tests at the bivariate level, i.e. one trait and one environmental variable at a time. This is where the correction for multiple tests is necessary. Given the large number of permutations needed to reach an adequately precise estimation of the p-value, the most astute way of computing this analysis consists in a ﬁrst computation without any correction for multiple testing. The resulting object can be corrected afterwards. So, if several types of corrections must be examined, there is no need to recompute the whole analysis and its large and time-consuming number of permutations.
@@ -213,6 +215,8 @@ plot(fourth.aravo.adj, alpha = 0.05, stat = "D2")
 
 This representation allows a detailed interpretation. For instance, SLA (speciﬁc leaf area) and N_mass (mass-based leaf nitrogen content) are positively associated with Snow (mean snow melt date) and Form.5 (concave microtopography), features that can also be observed in the ordination. This shows that these traits are likely to favor species that tolerate a longer period of snow cover: a higher nitrogen content, partly due to nitrogen storage in snowpacks and partly to the protective effect of snow on soil temperature and water content (Choler [2005](https://doi.org/10.1657/1523-0430(2005)037[0444:CSIAPT]2.0.CO;2)), warrants larger reserves, and a larger leaf area allows a larger rate of photosynthesis once the plant iseventually exposed to the sun. Conversely, these two traits are negatively associated with PhysD (physical disturbance due to cryoturbation), which tends to occur more often in areas without snow and therefore more exposed to large temperature oscillations.
 
+<a href="#top">Back to top</a>
+
 ## 2.2 Spain data
 
 ### 2.2.1 RLQ analysis
@@ -237,6 +241,8 @@ m2 <- rlq(
 ```{r}
 randtest(m2, nrepet = 999, modeltype = 6)
 ```
+
+<a href="#top">Back to top</a>
 
 ### 2.2.2 Use ggplot2
 
@@ -291,6 +297,10 @@ ggplot() +
     arrow = arrow(length = unit(0.3, "cm"), type = "closed")
     )
 ```
+<a href="#top">Back to top</a>
 
+## 2.3 Ammer data
 
 * Try the same with the Ammer data and your data
+
+<a href="#top">Back to top</a>

@@ -1,0 +1,246 @@
+---
+title: "Analysis of Ecological Data <br> Install R, RStudio, GitHub and GitHub Desktop"
+author: "<b>Markus Bauer ^1^ & Christina Hartung ^2^</b> <br>"
+date: today
+date-format: iso
+output:
+  html:
+    toc: true
+    toc_depth: 3
+    dev: png
+    fig_width: 7
+    fig_height: 5
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE
+  )
+```
+
+^1^ Technichal University of Munich, TUM School of Life Sciences, Chair of
+Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
+
+[markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
+
+<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/><https://orcid.org/0000-0001-5372-4174>
+
+[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
+
+^2^ University of Applied Sciences Weihenstephan-Triesdorf, Institute of Ecology and Landscape, Am Hofgarten 1, Building A10, 85354 Freising, Germany
+
+[christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
+
+# 1 Why R?
+
+John Verzani ([2001](https://www.karlin.mff.cuni.cz/~kulich/vyuka/Rdoc/Verzani-SimpleR.pdf), 1) & Nathaniel D. Phillips ([2018](https://bookdown.org/ndphillips/YaRrr/why-is-r-so-great.html), 1.3):
+
+The benefits of R for an introductory student are
+
+* R is free. R is open-source and runs on UNIX, Windows and Macintosh.
+* R’s language has a powerful, easy to learn syntax with many built-in statistical functions.
+* R has an excellent built-in help system and an engaged community on [stackoverflow](https://stackoverflow.com/). It means that a huge community of R programmers will constantly develop an distribute new R functionality and packages. If you ever have a question about how to implement something in R, a quick online search will lead you to your answer virtually every single time.
+* R is incredibly versatile. You can use R to do everything from calculating simple summary statistics, to performing complex simulations to creating gorgeous plots. If you can imagine an analytical task, you can almost certainly implement it in R.
+* Analyses conducted in R are transparent, easily shareable, and reproducible. If you ask an SPSS user how they conducted a specific analyses, they will either A) Not remember, B) Try (nervously) to construct an analysis procedure on the spot that makes sense - which may or may not correspond to what they actually did months or years ago, or C) Ask you what you are doing in their house. I used to primarily use SPSS, so I speak from experience on this. If you ask an R user (who uses good programming techniques!) how they conducted an analysis, they should always be able to show you the exact code they used. Of course, this does not mean that they used the appropriate analysis or interpreted it correctly, but with all the original code, any problems should be completely transparent!
+
+What is R lacking compared to other software solutions?
+
+* It has a limited graphical interface (S-Plus has a good one). This means, it can be harder to learn at the outset.
+* The command language is a programming language so students must learn to appreciate syntax issues etc.
+
+R is an open-source (GPL) statistical environment modeled after S and S-Plus (http://www.insightful.com). The S language was developed in the late 1980s at AT&T labs. The R project was started by Robert Gentleman and Ross Ihaka of the Statistics Department of the University of Auckland in 1995. It has quickly gained a widespread audience. It is currently maintained by the R core-development team, a hard-working, international team of *volunteer* developers. The R project web page (http://www.r-project.org) is the main site for information on R. At this site are directions for obtaining the software, accompanying packages and other sources of documentation.
+
+<a href="#top">Back to top</a>
+
+# 2 Use of eduroam
+
+First, you should get access to the internet with eduroam. Here are further information about eduroam ([TUM FAQ](https://www.it.tum.de/it/eduroam/)) and how to get access ([BayernCollab](https://collab.dvb.bayern/display/TUMdocs/eduroam+Anleitungen)).
+
+<a href="#top">Back to top</a>
+
+# 3 Install R and RStudio
+
+## 3.1 R
+
+The software R is maintained by an international team of developers who make the language available through the web page of The Comprehensive R Archive Network. The top of the web page provides three links for downloading R. Follow the link that describes your operating system: Windows, Mac, or Linux.
+
+1. Go to the download page of RStudio Desktop: https://posit.co/download/rstudio-desktop/
+2. Select the button 'Download and install R'
+3. You are linked to the site of the Comprehensive R Archive Network:
+https://cran.r-project.org
+4. In the first box 'Download and Install R', click the Download button for your system. For example: 'Download R for Windows' or enter https://cran.r-project.org/bin/windows/
+5. Select the installation file for your system. Windows users should select
+the 'base' distribution.
+6. Run the installation file.
+
+## 3.2 RStudio Desktop
+
+RStudio is a graphical user interface for R. RStudio is an application like Microsoft Word—except that instead of helping you write in English, RStudio helps you write in R.
+
+1. Go to the download page of RStudio Desktop:
+https://posit.co/download/rstudio-desktop/
+2. Click the button 'Download RStudio Desktop for Windows' or scroll down for other OS
+3. Run the installation file.
+
+<a href="#top">Back to top</a>
+
+# 4 Use RStudio
+
+Now that you have both R and RStudio on your computer, you can begin using R by opening the RStudio program. You see the console on the left side (Figure [2](https://r4ds.hadley.nz/intro#fig-rstudio-console), Wickham et al. [2023](https://r4ds.hadley.nz/)))
+
+When you start RStudio you see the following in the console:
+
+
+```{r}
+# R version 4.4.1 (2024-06-14 ucrt) -- "Race for Your Life"
+# Copyright (C) 2024 The R Foundation for Statistical Computing
+# Platform: x86_64-w64-mingw32/x64
+# 
+# R ist freie Software und kommt OHNE JEGLICHE GARANTIE.
+# Sie sind eingeladen, es unter bestimmten Bedingungen weiter zu verbreiten.
+# Tippen Sie 'license()' or 'licence()' für Details dazu.
+# 
+# R ist ein Gemeinschaftsprojekt mit vielen Beitragenden.
+# Tippen Sie 'contributors()' für mehr Information und 'citation()',
+# um zu erfahren, wie R oder R packages in Publikationen zitiert werden können.
+# 
+# Tippen Sie 'demo()' für einige Demos, 'help()' für on-line Hilfe, oder
+# 'help.start()' für eine HTML Browserschnittstelle zur Hilfe.
+# Tippen Sie 'q()', um R zu verlassen.
+```
+
+In the first line is the installed version of R. For the whole citation:
+
+```{r}
+citation()
+```
+
+
+* Note for your material-and-methods section the R version you use (not the RStudio version) and the whole citation.
+
+<a href="#top">Back to top</a>
+
+## 4.1 The tidyverse
+
+Wickham et al. ([2023](https://r4ds.hadley.nz/), Introduction):
+
+You will also need to install some R packages. An R package is a collection of functions, data, and documentation that extends the capabilities of base R. Using packages is key to the successful use of R. The majority of the packages that you will learn in this book are part of the so-called tidyverse (Wickham et al. [2019](https://doi.org/10.21105/joss.01686)). The packages in the tidyverse share a common philosophy of data and R programming, and are designed to work together naturally.
+
+You can install the complete tidyverse with a single line of code (Copy without '#'):
+
+```{r}
+# install.packages("tidyverse")
+```
+
+On your computer, type that line of code in the console, and then press enter to run it. R will download the packages from CRAN and install them on your computer.
+
+You will not be able to use the functions, objects, or help files in a package until you load it with `library()`. Once you have installed a package, you can load it using the `library()` function. Copy the code in your console. Click in this line. Press 'Cmd/Strg' + 'Enter' to run the code.
+
+```{r}
+library(tidyverse)
+```
+
+This tells you that `tidyverse` loads nine packages: `dplyr`, `forcats`, `ggplot2`, `lubridate`, `purrr`, `readr`, `stringr`, `tibble`, `tidyr`. These are considered the **core** of the tidyverse because you’ll use them in almost every analysis.
+
+Packages in the tidyverse change fairly frequently. You can see if updates are available by running `tidyverse_update()`.
+
+You need to cite in the material-and-methods section the used packages. You can get these information as follows:
+
+```{r}
+citation("tidyverse")
+```
+
+<a href="#top">Back to top</a>
+
+## 4.2 Scripts
+
+Wickham et al. ([2023](https://r4ds.hadley.nz/workflow-scripts), 6.1):
+
+So far, you have used the console to run code. That’s a great place to start, but you’ll find it gets cramped pretty quickly as you create more complex ggplot2 graphics and longer dplyr pipelines. To give yourself more room to work, use the script editor. Open it up by clicking in the menu bar (top left) 'File' > 'New File' > 'R script', or using the keyboard shortcut 'Cmd/Strg' + 'Shift' + 'N'. Now you’ll see four panes, as in Figure [6.1](https://r4ds.hadley.nz/workflow-scripts#fig-rstudio-script).
+
+The script editor is a great place to experiment with your code. When you want to change something, you don’t have to re-type the whole thing, you can just edit the script and re-run it. And once you have written code that works and does what you want, you can save it as a script file to easily return to later.
+
+## 4.3 Projects
+
+Wickham et al. ([2023](https://r4ds.hadley.nz/workflow-scripts#projects), 6.2):
+
+One day, you will need to quit R, go do something else, and return to your analysis later. One day, you will be working on multiple analyses simultaneously and you want to keep them separate. One day, you will need to bring data from the outside world into R and send numerical results and figures from R back out into the world.
+
+Keeping all the files associated with a given project (input data, R scripts, analytical results, and figures) together in one directory is such a wise and common practice that RStudio has built-in support for this via projects.
+
+Let us make a project for you to use while you’re working through the rest of this book. Click 'File' > 'New Project', then follow the steps shown in Figure [6.3](https://r4ds.hadley.nz/workflow-scripts#fig-new-project).
+
+Call your project `my_project` and think carefully about which subdirectory you put the project in. If you don’t store it somewhere sensible, it will be hard to find it in the future!
+
+Once this process is complete, you will get a new RStudio project just for this book. Check that the “home” of your project is the current working directory:
+
+```{r}
+getwd()
+```
+
+Now enter the following commands in the script editor, and save the file, calling it “diamonds.R”. Finally, run the complete script which will save a PNG and CSV file into your project directory. Do not worry about the details, you will learn them later in the course. Copy without the '#':
+
+```{r}
+ggplot(data = diamonds, aes(x = carat, y = price)) + 
+  geom_point()
+# ggsave("diamonds.png")
+# write_csv(diamonds, "diamonds.csv")
+```
+
+Quit RStudio. Inspect the folder associated with your project — notice the `.Rproj` file. Double-click that file to re-open the project. Notice you get back to where you left off: it’s the same working directory and command history, and all the files you were working on are still open. Because you followed our instructions above, you will, however, have a completely fresh environment, guaranteeing that you’re starting with a clean slate.
+
+In your favorite OS-specific way, search your computer for `diamonds.png` and you will find the PNG (no surprise) but also the script that created it (`diamonds.R`). This is a huge win! One day, you will want to remake a figure or just understand where it came from. If you rigorously save figures to files with R code and never with the mouse or the clipboard, you will be able to reproduce old work with ease!
+
+<a href="#top">Back to top</a>
+
+## 4.4 Relative and absolute path
+
+Wickham et al. ([2023](https://r4ds.hadley.nz/workflow-scripts#relative-and-absolute-paths), 6.2.4):
+
+Once you’re inside a project, you should only ever use relative paths not absolute paths. What’s the difference? A relative path is relative to the working directory, i.e. the project’s home. When Hadley wrote `data/diamonds.csv` above it was a shortcut for `/Users/hadley/Documents/r4ds/data/diamonds.csv`. But importantly, if Mine ran this code on her computer, it would point to `/Users/Mine/Documents/r4ds/data/diamonds.csv`. This is why relative paths are important: they’ll work regardless of where the R project folder ends up.
+
+Absolute paths point to the same place regardless of your working directory. They look a little different depending on your operating system. On Windows they start with a drive letter (e.g., `C:`) or two backslashes (e.g., `\\servername`) and on Mac/Linux they start with a slash “/” (e.g., `/users/hadley`). You should never use absolute paths in your scripts, because they hinder sharing: no one else will have exactly the same directory configuration as you.
+
+Try a relative path yourself (Copy without the '#'):
+
+```{r}
+# install.packages("here")
+library(here)
+here() #you get the location of your project
+# data <- read_csv(here("diamonds.csv"))
+```
+
+<a href="#top">Back to top</a>
+
+# 5 Terminology
+
+Bello et al. ([2021](https://doi.org/10.1017/9781108628426), 1.4):
+
+In the R universe, there is an established and strict set of terms that is used for the different objects and data structures that can be encountered (mostly stemming from statistical and IT terminology). Sometimes, these terms are at odds and lead to some confusion with more loosely defined terms we use in ecology and in particular for ecological data. We therefore provide here a short glossary of terms that are somewhat ambiguous and could lead to confusion. At the same time, this section serves to establish some standards that we use across the R material, in particular regarding the orientation of data in rows and columns in our data objects.
+
+R terminology
+
+* **Matrix**: a two dimensional array of rows and columns. It can only contain one specific data type, e.g. numerical data. When trying to transform a data frame (see next point) that contains different data types into a matrix (with as.matrix), all data get coerced to be of the most basic data type. E.g. if the data frame contains columns with numerical numbers, and other columns with characters (i.e. text), the numerical columns will be turned into columns of the type character in the matrix.
+
+* **Data frame**: like a matrix, it is an array of rows and columns but, unlike a matrix, it can hold different types of data (e.g. numerical and categorical, with the latter being represented in R as characters or so-called factors) across the different columns.
+
+* **Distance matrix**: and object of class distance (dist). It usually includes information about the dissimilarity between pairs of objects (e.g. species). In the text it is often referred to as a distance matrix, although in R it is neither a matrix, nor a data frame. When displayed in the R console, it has triangular shape, because it only contains values in the cells below the diagonal. However, such a distance object can be transformed into a matrix with the as.matrix function (and back into a distance object with the as.dist function). Because there are the same number of columns and rows in the resulting matrix, this is a square matrix, with the same objects from ‘left to right’ as from ‘top to bottom’, i.e. the names of rows and columns will be identical. This square matrix contains the same data as the distance object, but twice. In most cases, the diagonal will contain only zero values, as the distances of objects with themselves are zero. At the same time, the diagonal is the axis along which data in the lower triangle is ‘mirrored’ to the upper triangle. See examples in Chapter 3 of the reference book.
+
+Ecological terminology
+
+* **Community matrix** (or ‘site by species’, or ´species x plot´ matrix): A table containing community data, i.e. the occurrence or abundance of species in different sampling units. This is also referred to as species composition or community composition data. For different packages there are different conventions regarding the R data structure the community matrix should be in. This will be either a matrix, a data frame, or the possibility to provide either. The help of whatever function you are using should give you clear instructions about the data types and structures that it expects. Regarding the orientation of the community matrix, virtually all packages and functions taking a community matrix as input expect the species to be columns and the samples (sites, vegetation plots, pit fall traps, etc.) to be rows. However, especially in vegetation ecology, the community matrix can be represented with species as rows and sites/plots as columns (e.g. the vegetation data used in R materials Chapter 5). In such cases, the use of the transpose function (t()) will make the necessary ‘90 degree turn’ of the data.
+
+* **Distance matrix** (see also above): distance matrices are used very often in methods of ecological statistics, as very often we are interested in storing or representing some sort of similarity or dissimilarity (i.e. distance) between a set of objects. For instance, we might be interested how similar species are among each other based on their traits, which can be expressed as differences in trait values between species. Beta diversity measures are another good example; beta diversity expresses how different samples are with respect to their species composition, and we therefore obtain a beta diversity value for each pair of samples. The pairwise character of distance matrices becomes obvious in their structure, as the same objects (i.e. species or plots) are repeated in rows and columns. Therefore, sometimes also the term pairwise distance matrix is used, to highlight the fact that it contains, for example, trait distances between all possible pairs of species. The most important point in the context of working in R is that essential information contained in distance matrices can be stored and handled in two ways, as objects of class distance, or as a square matrix (see above under R terminology).
+
+* **Trait table** (species x trait matrix): a table containing the traits we want to use for analyses. In R, a trait table will most often be in the form of a data frame, because this allows for having different types of variables (e.g. continuous and categorical) in the same object. Importantly, the species names will most often be expected to be the row.names of the data frame, and have to be following the same standard, spelling, etc. to be correctly matched to species in other data (community matrix, phylogeny).
+
+# 6 GitHub and GitHub Desktop
+
+Go through this tutorial of Vanessa Trujillo to be prepared for track-and-change mode in R. This is not required for the course but recommended and we will use and show GitHub in the course.
+
+[https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e124](https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e12)
+

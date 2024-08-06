@@ -39,6 +39,8 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 * Show example Ammer
 * Plot results of traits data
 * Include Zeleny
+* Include DHarma
+* Include data exploration
 
 This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426))
 
