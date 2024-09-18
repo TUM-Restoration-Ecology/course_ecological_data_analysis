@@ -1,0 +1,194 @@
+---
+title: "Analysis of Ecological Data <br> Select and prepare traits"
+author: "<b>Markus Bauer</b> <br>"
+date: today
+date-format: iso
+format: html
+toc: true
+toc-depth: 3
+toc-expand: 2
+number-sections: true
+dev: png
+fig-width: 7
+fig-height: 5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE
+  )
+```
+
+Technichal University of Munich, TUM School of Life Sciences, Chair of
+Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
+
+[markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
+
+<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/><https://orcid.org/0000-0001-5372-4174>
+
+[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
+
+::: {.content-hidden when-format="html"}
+
+# Tasks
+
+* Subsitute NA values of Ammer dataset
+
+:::
+
+# Preparation
+
+## Load libraries
+
+```{r libraries, message = FALSE}
+library(here)
+library(tidyverse)
+library(GIFT)
+rm(list = ls())
+```
+
+## Load data
+
+```{r load-data}
+bodysize <- c(10, 20, 30, 40, 50, NA, 70)
+carnivory <- c(1, 1, 0, 1, 0,1, 0)
+red <- c(1, 0, 0.5, 0, 0.2, 0, 1)
+yellow <- c(0, 1, 0, 0, 0.3, 1, 0)
+blue <- c(0, 0, 0.5,1, 0.5, 0, 0)
+names <- paste("sp", 1:7, sep = "")
+traits_invented <- tibble(names, bodysize, carnivory, red, yellow, blue)
+
+species_ammer <- read_csv(
+  here("data", "processed", "data_processed_species_ammer.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+  )
+
+traits_ammer <- read_csv(
+  here("data", "processed", "data_processed_traits_ammer.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+  )
+
+rm(list = setdiff(ls(), c("species_ammer", "traits_ammer", "traits_invented")))
+```
+
+<a href="#top">Back to top</a>
+
+# Different trait types
+
+Reload the metadata of the GIFT traits:
+
+```{r}
+trait_meta <- GIFT::GIFT_traits_meta()
+```
+
+We have qualitative (binary, nominal), semi-quantitative (ordinal), and quantiative data (discrete, continuous, proportional, circular traits).
+
+* Reload the traits table and define the column type with the following experessions:
+
+> `col_logical()` = binary: yes/no data or presence-absence data<br>
+`col_integer()` = whole numbers: counting data or rounded data<br>
+`col_double()` = continous numbers: measured values<br>
+`col_factor()` or specify further "col_factor(levels, ordered)": ordinal traits are hierarchically and nominal traits not<br>
+`col_date()` or specify further "col_date("%Y-%m-%d")": phenological traits are such circular traits<br>
+`col_character()` = text
+
+```{r different-trait-types}
+data_traits <- read_csv(
+  here("data", "processed", "data_processed_traits_ammer.csv"),
+  col_names = TRUE, col_types = cols(
+    .default = "?",
+    name_submitted = col_character()#,
+    # go on here
+    )
+  )
+```
+
+Fuzzy coding: Different individaulas of the same species belong to different levels of a factor
+
+<a href="#top">Back to top</a>
+
+# Check completeness
+
+With the package `naniar` (Cook [2023](https://doi.org/10.18637/jss.v105.i07)) you can get an overview of missing data ([Vignette](https://naniar.njtierney.com/)):
+
+```{r check-completeness, results = FALSE, fig.show = 'hide', message = FALSE}
+traits_ammer %>%
+  select(starts_with("trait_value")) %>%
+  naniar::miss_var_summary(order = TRUE)
+traits_ammer %>%
+  select(starts_with("trait_value")) %>%
+  naniar::vis_miss(cluster = FALSE, sort_miss = TRUE)
+traits_ammer %>%
+  select(accepted_name, starts_with("trait_value")) %>%
+  filter(if_any(-accepted_name, is.na))
+```
+
+* Note the number of missing traits in your data and calculate the ratio of missing traits.
+
+<a href="#top">Back to top</a>
+
+# Handle missing traits
+
+Identify missing traits
+
+```{r identify-missing-traits}
+traits_ammer %>%
+  select(accepted_name, trait_value_1.6.3) %>%
+  filter(is.na(trait_value_1.6.3))
+```
+
+What to do with missing values?
+
+Possibility 1: Remove the row.
+
+Possibility 2: Use the sample average
+
+Possibility 3: Measure the value yourself in the field
+
+Possibility 4: Use trait values from phylogenetically close species. (Recommended)
+
+Get again an overview of selected species:
+
+```{r metadata-traits, results = FALSE, message = FALSE}
+trait_ids <- c(
+  "1.2.2", "1.5.1", "1.6.3", "3.2.3", "3.3.1", "3.6.1", "3.7.1", "3.21.1",
+  "4.1.3", "4.5.1"
+  )
+
+trait_meta %>%
+  filter(Lvl3 %in% trait_ids) # Get an overview of selected traits
+```
+You can check for synonyms and closely related species which might have a trait value:
+
+```{r lookup-synonyms, results = FALSE, message = FALSE}
+GIFT::GIFT_species_lookup(genus = "Aconitum", epithet = "lycoctonum")
+GIFT::GIFT_species_lookup(genus = "Molinia", epithet = "arundinacea")
+```
+
+* Check the list for species occuring in Germany:
+
+e.g. [FloraWeb](https://www.floraweb.de/php/systematik1.php?suchnr=61135) (BfN) or  [FloraVeg.EU](https://floraveg.eu/taxon/) (Chytrý et al. [2020](https://doi.org/10.1111/avsc.12519))
+
+* Search for the trait values of closely related species:
+
+```{r search-species, results = FALSE, message = FALSE}
+data_gift <- GIFT::GIFT_traits(
+  trait_IDs = trait_ids,
+  agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
+  )
+(data <- data_gift %>%
+  filter(str_detect(work_species, "Aconitum")))
+```
+
+<a href="#top">Back to top</a>
+
+# Save
+
+```{r save}
+write_csv(
+  traits_invented, here("data", "processed", "data_processed_traits_invented.csv")
+)
+```
+
+<a href="#top">Back to top</a>

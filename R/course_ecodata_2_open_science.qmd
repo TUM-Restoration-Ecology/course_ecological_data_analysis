@@ -1,0 +1,217 @@
+---
+title: "Analysis of Ecological Data <br> Open science and version control"
+author: "<b>Markus Bauer</b> <br>"
+date: today
+date-format: iso
+format: html
+toc: true
+toc-depth: 3
+toc-expand: 2
+number-sections: true
+dev: png
+fig-width: 7
+fig-height: 5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE
+  )
+```
+
+Technichal University of Munich, TUM School of Life Sciences, Chair of
+Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
+
+[markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
+
+<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/><https://orcid.org/0000-0001-5372-4174>
+
+[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
+
+::: panel-tabset
+
+### Open science
+
+# Use and produce FAIR data
+
+## Find and access data
+
+Findable data need a DOI and should be indexed in a database.
+
+* Search in [PANGAEA](https://www.pangaea.de) a dataset which is similar to yours and note its citation information, the license and what are the main similarities you get from the metadata.
+
+* Find the data and code of an example dataset we use in the course on Zenodo and GitHub: Bauer et al. ([2018](https://doi.org/10.14471/2018.38.006)). Note the reference and the license of code and data.
+
+* Download the raw data of this publication.
+
+## Folder structure
+
+Set up a starting structure of your folders for your R project. You have folder for data, outputs, and code ('R' folder). The data is separated in untouched raw data and processed data. Outpus are separated in figures, tables, models, and statistics. Data preparation, modelling and plotting should be done with separated R scripts.
+
+```
+├── data
+│   ├── processed       #.csv
+│   └── raw             #.csv
+├── outputs
+│   ├── figures         #.tiff, your graphs
+│   ├── models          #.Rdata, your models
+│   ├── statistics      #.csv, your summaries of the models
+│   └── tables          #.csv/.html, your tables for results section
+├── R
+│   ├── prepare_data.R
+│   ├── model_1.R
+│   └── show_figure_1.R
+├── renv                #automatically_generated
+├── README.md           #generated with GitHub
+├── LICENSE             #generated with GitHub
+└── your_project.Rproj  #here is the R project file which you use to open RStudio
+```
+
+> Never ever touch raw data. Store them permanently, and use scripts to produce derived, clean datasets for analyses.<br>
+– Francisco Rodríguez-Sánchez, Estación Biológica de Doñana (CSIC)
+
+* Apply the folder structure for your R project
+
+## File naming
+
+From Picardi ([2015](https://ecorepsci.github.io/reproducible-science/index.html)) Reproducible Data Science
+
+There is a science to choosing good file names, too. Here is a list of file names that are not good, for a variety of different reasons:
+
+> data.csv <br>
+> data_cleaned_March-22-2012.csv <br>
+> analysis code.R <br>
+> Green Frogs Manuscript_Final_edits.docx <br>
+> final.docx
+
+#### Computer-readable file names
+
+What makes a file name computer-readable? First, computer readable files contain no spaces, no punctuation, and no special characters. They are case-consistent, which means that you always stick to the same case pattern, whether that be full lowercase, camel case (ThisIsWhatIMeanByCamelCase), or whatever else. Finally, good file names make deliberate use of text delimiters. Wise use of delimiters makes it easy to look for patterns when you are searching for a specific file. Usually, it’s recommended that you use an underscore (_) to delimit metadata units and a dash (-) to delimit words within a metadata unit. For example, here is a good, computer-readable file name:
+
+> 2018-04-26_reproducible-science_slides_lesson-01.pptx
+
+#### Human-readable file names
+
+The example file name above is not only computer-readable, it’s also human-readable. This means that a human can read the file name and have a pretty good idea of what’s in that file. Good file names are informative! You shouldn’t be afraid to use long names if that’s what it takes to make them descriptive.
+
+* Update your file names
+
+## Metadata files
+
+You have different types of metadata. First, the metadata of the whole project (see [PANGAEA](https://doi.pangaea.de/10.1594/PANGAEA.962775)). Second, you have metadata for each data file, where you explain the column names (see [PANGAEA](https://doi.pangaea.de/10.1594/PANGAEA.962762) and [GitHub](https://github.com/markus1bauer/2023_danube_dike_experiment/blob/main/data/raw/data_raw_sites_metadata.csv)).
+
+Now have a look on the example of [GitHub](https://github.com/markus1bauer/2023_danube_dike_experiment/blob/main/data/raw/data_raw_sites_metadata.csv). It is not only important to explain the column names ('attributeDefinition'), but also to explain date formats ('formatString'), write down the units ('unit'), the number type ('numberType') like 'integer' or 'real', the general type ('type') of the data like 'character' (text), 'factor', 'numeric', or 'date'. For the factors your have to note the levels and their meaning ('factor'). There should be always space for a comment ('comment').
+
+The names of the columns of the metadata file are adapted from the `EML` package (Boettinger et al. [2022](https://doi.org/10.32614/CRAN.package.EML)) which creates EML files ([Vignette](https://cran.r-project.org/web/packages/EML/vignettes/creating-EML.html)). EML (Ecological Metadata Language) is a widely used metadata standard in the ecological and environmental sciences, described in Jones et al. ([2006](https://doi.org/10.1146%2Fannurev.ecolsys.37.091305.110031)) (See also the online book: Jones et al. [2019](https://doi.org/10.5063/F11834T2)).
+
+* Get standard unit names
+
+```{r}
+units <- EML::get_unitList()
+```
+
+* Start writing metadata files for your raw data
+
+### renv package
+
+# The `renv` package
+
+## Introduction
+
+You can document your used versions of packages and R within a R project. The following tutorial is based on the RStudio User Guide ([Release 2024.04.2](https://docs.posit.co/ide/user/ide/guide/environments/r/renv.html)):
+
+The [`renv`](https://rstudio.github.io/renv/articles/renv.html) package (Ushey & Wickham [2024](https://CRAN.R-project.org/package=renv)) helps you create **r**eproducible **env**ironments for your R projects. Use `renv` to make your R projects more:
+
+**Isolated**: Installing a new or updated package for one project won't break your other projects, and vice versa. That's because `renv` gives each project its own private package library.
+
+**Portable**: Easily transport your projects from one computer to another, even across different platforms. `renv` makes it easy to install the packages your project depends on.
+
+**Reproducible**: `renv` records the exact package versions you depend on, and ensures those exact versions are the ones that get installed wherever you go.
+
+## Workflow
+
+The general workflow when working with `renv` is:
+
+1.  Call [`renv::init()`](https://rstudio.github.io/renv/reference/init.html) to initialize a new project-local environment with a private R library,
+
+2.  Work in the project as normal, installing and removing new R packages as they are needed in the project,
+
+3.  Call [`renv::snapshot()`](https://rstudio.github.io/renv/reference/snapshot.html) to save the state of the project library to the lockfile (called `renv.lock`),
+
+4.  Continue working on your project, installing and updating R packages as needed.
+
+5.  Call [`renv::snapshot()`](https://rstudio.github.io/renv/reference/snapshot.html) again to save the state of your project library if your attempts to update R packages were successful, or call [`renv::restore()`](https://rstudio.github.io/renv/reference/restore.html) to revert to the previous state as encoded in the lockfile if your attempts to update packages introduced some new problems.
+
+The [`renv::init()`](https://rstudio.github.io/renv/reference/init.html) function attempts to ensure the newly-created project library includes all R packages currently used by the project. It does this by crawling R files within the project for dependencies with the [`renv::dependencies()`](https://rstudio.github.io/renv/reference/dependencies.html) function. The discovered packages are then installed into the project library with the [`renv::hydrate()`](https://rstudio.github.io/renv/reference/hydrate.html) function, which will also attempt to save time by copying packages from your user library (rather than reinstalling from CRAN) as appropriate.
+
+Calling [`renv::init()`](https://rstudio.github.io/renv/reference/init.html) will also write out the infrastructure necessary to automatically load and use the private library for new R sessions launched from the project root directory. This is accomplished by creating (or amending) a project-local `.Rprofile` with the necessary code to load the project when the R session is started.
+
+If you'd like to initialize a project without attempting dependency discovery and installation -- that is, you'd prefer to manually install the packages your project requires on your own -- you can use `renv::init(bare = TRUE)` to initialize a project with an empty project library.
+
+For full details, see the `renv` [package documentation](https://rstudio.github.io/renv/articles/renv.html).
+
+## New project, use renv with this project
+
+The general details on creating a new Project in RStudio are covered in RStudio Projects. Users can opt in to using `renv` when creating a new Project in RStudio.
+
+![](C:/Users/marku/Documents/GitHub/course_ecological_data_analysis/data\screenshots\Screenshot 2024-08-07 143121.png)
+
+Select the **Use renv with this project** checkbox, and the new project will automatically create and activate the necessary scaffolding for `renv` within that project. Since those files now exist in the newly created project, you can skip step 1 from the above workflow.
+
+![](C:/Users/marku/Documents/GitHub/course_ecological_data_analysis/data\screenshots\Screenshot 2024-08-07 143147.png)
+
+* Use `renv` for your project and make your first snapshot and check `renv::status()`
+
+```{r results = FALSE}
+renv::init()
+renv::status()
+renv::snapshot()
+```
+
+* At the end of this course make a last `renv::snapshot` and put in the Appendix the output of `sessionInfo()`
+
+```{r}
+sessionInfo()
+```
+
+
+### GitHub
+
+# Use GitHub as version control
+
+## Introduction
+
+Version control with GitHub and GitHub Desktop is a way to have a track-and-change mode in R. This makes it possible to revert faults.
+
+If you have not installed GitHub and GitHub Desktop you can go through this [tutorial](https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e124) of Vanessa Trujillo
+
+The following tutorial is from [GitHub, Inc](https://docs.github.com/en/desktop/overview/creating-your-first-repository-using-github-desktop#part-3-exploring-github-desktop)
+
+## The GitHub Desktop repository bar
+
+At the top of the GitHub Desktop app, you will see a bar that shows the current state of your repository.
+
+[See figure](https://docs.github.com/en/desktop/overview/creating-your-first-repository-using-github-desktop#the-github-desktop-repository-bar)
+
+**Current repository** shows the name of the repository you're working on. You can click Current repository to switch to a different repository in GitHub Desktop.
+
+**Current branch** shows the name of the branch you're working on. You can click Current branch to view all the branches in your repository, switch to a different branch, or create a new branch. Once you create pull requests in your repository, you can also view these by clicking on Current branch.
+
+**Publish repository** appears because you haven't published your repository to GitHub yet, which you'll do later in the next step. This section of the bar will change based on the status of your current branch and repository. Different context dependent actions will be available that let you exchange data between your local and remote repositories.
+
+## Changes and History
+
+In the left sidebar, you'll find the Changes and History views.
+
+[See figure](https://docs.github.com/en/desktop/overview/creating-your-first-repository-using-github-desktop#changes-and-history)
+
+The **Changes** view shows changes you've made to files in your current branch but haven't committed to your local repository. At the bottom, there is a box with "Summary" and "Description" text boxes and a Commit to BRANCH button. This is where you'll commit new changes. The Commit to BRANCH button is dynamic and will display which branch you're committing your changes to.
+
+The **History** view shows the previous commits on the current branch of your repository. You should see an "Initial commit" that was created by GitHub Desktop when you created your repository. To the right of the commit, depending on the options you selected while creating your repository, you may see .gitattributes, .gitignore, LICENSE, or README files. You can click each file to see a diff for that file, which is the changes made to the file in that commit. The diff only shows the parts of the file that have changed, not the entire contents of the file
+
+* Make changes in your script, control the 'Changes' section of GitHub Desktop. Commit the change and push it to the server.
+* Insert a license
+* Insert a README file
+
+:::

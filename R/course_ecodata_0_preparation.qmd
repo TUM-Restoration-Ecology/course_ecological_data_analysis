@@ -3,19 +3,17 @@ title: "Analysis of Ecological Data <br> Install R, RStudio, GitHub and GitHub D
 author: "<b>Markus Bauer ^1^ & Christina Hartung ^2^</b> <br>"
 date: today
 date-format: iso
-output:
-  html:
-    toc: true
-    toc_depth: 3
-    dev: png
-    fig_width: 7
-    fig_height: 5
-editor_options: 
-  markdown: 
-    wrap: 72
+format: html
+toc: true
+toc-depth: 3
+toc-expand: 2
+number-sections: true
+dev: png
+fig-width: 7
+fig-height: 5
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   echo = TRUE
   )
@@ -35,7 +33,7 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 [christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
-# 1 Why R?
+# Why R?
 
 John Verzani ([2001](https://www.karlin.mff.cuni.cz/~kulich/vyuka/Rdoc/Verzani-SimpleR.pdf), 1) & Nathaniel D. Phillips ([2018](https://bookdown.org/ndphillips/YaRrr/why-is-r-so-great.html), 1.3):
 
@@ -56,15 +54,15 @@ R is an open-source (GPL) statistical environment modeled after S and S-Plus (ht
 
 <a href="#top">Back to top</a>
 
-# 2 Use of eduroam
+# Use of eduroam
 
 First, you should get access to the internet with eduroam. Here are further information about eduroam ([TUM FAQ](https://www.it.tum.de/it/eduroam/)) and how to get access ([BayernCollab](https://collab.dvb.bayern/display/TUMdocs/eduroam+Anleitungen)).
 
 <a href="#top">Back to top</a>
 
-# 3 Install R and RStudio
+# Install R and RStudio
 
-## 3.1 R
+## R
 
 The software R is maintained by an international team of developers who make the language available through the web page of The Comprehensive R Archive Network. The top of the web page provides three links for downloading R. Follow the link that describes your operating system: Windows, Mac, or Linux.
 
@@ -77,7 +75,7 @@ https://cran.r-project.org
 the 'base' distribution.
 6. Run the installation file.
 
-## 3.2 RStudio Desktop
+## RStudio Desktop
 
 RStudio is a graphical user interface for R. RStudio is an application like Microsoft Word—except that instead of helping you write in English, RStudio helps you write in R.
 
@@ -88,7 +86,7 @@ https://posit.co/download/rstudio-desktop/
 
 <a href="#top">Back to top</a>
 
-# 4 Use RStudio
+# Use RStudio
 
 Now that you have both R and RStudio on your computer, you can begin using R by opening the RStudio program. You see the console on the left side (Figure [2](https://r4ds.hadley.nz/intro#fig-rstudio-console), Wickham et al. [2023](https://r4ds.hadley.nz/)))
 
@@ -124,7 +122,7 @@ citation()
 
 <a href="#top">Back to top</a>
 
-## 4.1 The tidyverse
+## The tidyverse
 
 Wickham et al. ([2023](https://r4ds.hadley.nz/), Introduction):
 
@@ -156,7 +154,7 @@ citation("tidyverse")
 
 <a href="#top">Back to top</a>
 
-## 4.2 Scripts
+## Scripts
 
 Wickham et al. ([2023](https://r4ds.hadley.nz/workflow-scripts), 6.1):
 
@@ -164,7 +162,7 @@ So far, you have used the console to run code. That’s a great place to start, 
 
 The script editor is a great place to experiment with your code. When you want to change something, you don’t have to re-type the whole thing, you can just edit the script and re-run it. And once you have written code that works and does what you want, you can save it as a script file to easily return to later.
 
-## 4.3 Projects
+## Projects
 
 Wickham et al. ([2023](https://r4ds.hadley.nz/workflow-scripts#projects), 6.2):
 
@@ -197,7 +195,7 @@ In your favorite OS-specific way, search your computer for `diamonds.png` and yo
 
 <a href="#top">Back to top</a>
 
-## 4.4 Relative and absolute path
+## Relative and absolute path
 
 Wickham et al. ([2023](https://r4ds.hadley.nz/workflow-scripts#relative-and-absolute-paths), 6.2.4):
 
@@ -205,7 +203,7 @@ Once you’re inside a project, you should only ever use relative paths not abso
 
 Absolute paths point to the same place regardless of your working directory. They look a little different depending on your operating system. On Windows they start with a drive letter (e.g., `C:`) or two backslashes (e.g., `\\servername`) and on Mac/Linux they start with a slash “/” (e.g., `/users/hadley`). You should never use absolute paths in your scripts, because they hinder sharing: no one else will have exactly the same directory configuration as you.
 
-Try a relative path yourself (Copy without the '#'):
+The `here` package of Müller ([2020](https://CRAN.R-project.org/package=here)) helps you with relative paths ([Original vignette](https://here.r-lib.org/index.html), Kirill Müller). Try a relative path yourself (Copy without the '#'):
 
 ```{r}
 # install.packages("here")
@@ -213,10 +211,11 @@ library(here)
 here() #you get the location of your project
 # data <- read_csv(here("diamonds.csv"))
 ```
+If you have created a `data` folder you access the file by `data <- read_csv(here("data", "diamonds"))`
 
 <a href="#top">Back to top</a>
 
-# 5 Terminology
+# Terminology
 
 Bello et al. ([2021](https://doi.org/10.1017/9781108628426), 1.4):
 
@@ -238,9 +237,6 @@ Ecological terminology
 
 * **Trait table** (species x trait matrix): a table containing the traits we want to use for analyses. In R, a trait table will most often be in the form of a data frame, because this allows for having different types of variables (e.g. continuous and categorical) in the same object. Importantly, the species names will most often be expected to be the row.names of the data frame, and have to be following the same standard, spelling, etc. to be correctly matched to species in other data (community matrix, phylogeny).
 
-# 6 GitHub and GitHub Desktop
+# GitHub and GitHub Desktop
 
-Go through this tutorial of Vanessa Trujillo to be prepared for track-and-change mode in R. This is not required for the course but recommended and we will use and show GitHub in the course.
-
-[https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e124](https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e12)
-
+Go through this [tutorial](https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e124) of Vanessa Trujillo to be prepared for track-and-change mode in R. This is not required for the course but recommended and we will use and show GitHub in the course.

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Markus Bauer 1 &amp; Christina Hartung 2  ">
-<meta name="dcterms.date" content="2024-08-06">
+<meta name="dcterms.date" content="2024-08-07">
 
 <title>Analysis of Ecological Data   Install R, RStudio, GitHub and GitHub Desktop</title>
 <style>
@@ -73,10 +73,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="2">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#why-r" id="toc-why-r" class="nav-link active" data-scroll-target="#why-r"><span class="header-section-number">1</span> Why R?</a></li>
+  <li><a href="#use-of-eduroam" id="toc-use-of-eduroam" class="nav-link" data-scroll-target="#use-of-eduroam"><span class="header-section-number">2</span> Use of eduroam</a></li>
+  <li><a href="#install-r-and-rstudio" id="toc-install-r-and-rstudio" class="nav-link" data-scroll-target="#install-r-and-rstudio"><span class="header-section-number">3</span> Install R and RStudio</a>
+  <ul class="collapse">
+  <li><a href="#r" id="toc-r" class="nav-link" data-scroll-target="#r"><span class="header-section-number">3.1</span> R</a></li>
+  <li><a href="#rstudio-desktop" id="toc-rstudio-desktop" class="nav-link" data-scroll-target="#rstudio-desktop"><span class="header-section-number">3.2</span> RStudio Desktop</a></li>
+  </ul></li>
+  <li><a href="#use-rstudio" id="toc-use-rstudio" class="nav-link" data-scroll-target="#use-rstudio"><span class="header-section-number">4</span> Use RStudio</a>
+  <ul class="collapse">
+  <li><a href="#the-tidyverse" id="toc-the-tidyverse" class="nav-link" data-scroll-target="#the-tidyverse"><span class="header-section-number">4.1</span> The tidyverse</a></li>
+  <li><a href="#scripts" id="toc-scripts" class="nav-link" data-scroll-target="#scripts"><span class="header-section-number">4.2</span> Scripts</a></li>
+  <li><a href="#projects" id="toc-projects" class="nav-link" data-scroll-target="#projects"><span class="header-section-number">4.3</span> Projects</a></li>
+  <li><a href="#relative-and-absolute-path" id="toc-relative-and-absolute-path" class="nav-link" data-scroll-target="#relative-and-absolute-path"><span class="header-section-number">4.4</span> Relative and absolute path</a></li>
+  </ul></li>
+  <li><a href="#terminology" id="toc-terminology" class="nav-link" data-scroll-target="#terminology"><span class="header-section-number">5</span> Terminology</a></li>
+  <li><a href="#github-and-github-desktop" id="toc-github-and-github-desktop" class="nav-link" data-scroll-target="#github-and-github-desktop"><span class="header-section-number">6</span> GitHub and GitHub Desktop</a></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -98,7 +121,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2024-08-06</p>
+      <p class="date">2024-08-07</p>
     </div>
   </div>
   
@@ -116,8 +139,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><a href="https://scholar.google.de/citations?user=oHhmOkkAAAAJ&amp;hl=de&amp;oi=ao"><img src="https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&amp;logo=google-scholar&amp;logoColor=white.png" class="img-fluid" alt="Google Scholar"></a> <a href="https://github.com/markus1bauer"><img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&amp;logo=github&amp;logoColor=white" class="img-fluid" alt="GitHub"></a></p>
 <p><sup>2</sup> University of Applied Sciences Weihenstephan-Triesdorf, Institute of Ecology and Landscape, Am Hofgarten 1, Building A10, 85354 Freising, Germany</p>
 <p><a href="mailto:christina.hartung@hswt.de">christina.hartung@hswt.de</a></p>
-<section id="why-r" class="level1">
-<h1>1 Why R?</h1>
+<section id="why-r" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Why R?</h1>
 <p>John Verzani (<a href="https://www.karlin.mff.cuni.cz/~kulich/vyuka/Rdoc/Verzani-SimpleR.pdf">2001</a>, 1) &amp; Nathaniel D. Phillips (<a href="https://bookdown.org/ndphillips/YaRrr/why-is-r-so-great.html">2018</a>, 1.3):</p>
 <p>The benefits of R for an introductory student are</p>
 <ul>
@@ -135,15 +158,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>R is an open-source (GPL) statistical environment modeled after S and S-Plus (http://www.insightful.com). The S language was developed in the late 1980s at AT&amp;T labs. The R project was started by Robert Gentleman and Ross Ihaka of the Statistics Department of the University of Auckland in 1995. It has quickly gained a widespread audience. It is currently maintained by the R core-development team, a hard-working, international team of <em>volunteer</em> developers. The R project web page (http://www.r-project.org) is the main site for information on R. At this site are directions for obtaining the software, accompanying packages and other sources of documentation.</p>
 <p><a href="#top">Back to top</a></p>
 </section>
-<section id="use-of-eduroam" class="level1">
-<h1>2 Use of eduroam</h1>
+<section id="use-of-eduroam" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Use of eduroam</h1>
 <p>First, you should get access to the internet with eduroam. Here are further information about eduroam (<a href="https://www.it.tum.de/it/eduroam/">TUM FAQ</a>) and how to get access (<a href="https://collab.dvb.bayern/display/TUMdocs/eduroam+Anleitungen">BayernCollab</a>).</p>
 <p><a href="#top">Back to top</a></p>
 </section>
-<section id="install-r-and-rstudio" class="level1">
-<h1>3 Install R and RStudio</h1>
-<section id="r" class="level2">
-<h2 class="anchored" data-anchor-id="r">3.1 R</h2>
+<section id="install-r-and-rstudio" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Install R and RStudio</h1>
+<section id="r" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="r"><span class="header-section-number">3.1</span> R</h2>
 <p>The software R is maintained by an international team of developers who make the language available through the web page of The Comprehensive R Archive Network. The top of the web page provides three links for downloading R. Follow the link that describes your operating system: Windows, Mac, or Linux.</p>
 <ol type="1">
 <li>Go to the download page of RStudio Desktop: https://posit.co/download/rstudio-desktop/</li>
@@ -154,8 +177,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Run the installation file.</li>
 </ol>
 </section>
-<section id="rstudio-desktop" class="level2">
-<h2 class="anchored" data-anchor-id="rstudio-desktop">3.2 RStudio Desktop</h2>
+<section id="rstudio-desktop" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="rstudio-desktop"><span class="header-section-number">3.2</span> RStudio Desktop</h2>
 <p>RStudio is a graphical user interface for R. RStudio is an application like Microsoft Word—except that instead of helping you write in English, RStudio helps you write in R.</p>
 <ol type="1">
 <li>Go to the download page of RStudio Desktop: https://posit.co/download/rstudio-desktop/</li>
@@ -165,8 +188,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><a href="#top">Back to top</a></p>
 </section>
 </section>
-<section id="use-rstudio" class="level1">
-<h1>4 Use RStudio</h1>
+<section id="use-rstudio" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Use RStudio</h1>
 <p>Now that you have both R and RStudio on your computer, you can begin using R by opening the RStudio program. You see the console on the left side (Figure <a href="https://r4ds.hadley.nz/intro#fig-rstudio-console">2</a>, Wickham et al.&nbsp;<a href="https://r4ds.hadley.nz/">2023</a>))</p>
 <p>When you start RStudio you see the following in the console:</p>
 <div class="cell">
@@ -216,8 +239,8 @@ citing R packages.</code></pre>
 <li>Note for your material-and-methods section the R version you use (not the RStudio version) and the whole citation.</li>
 </ul>
 <p><a href="#top">Back to top</a></p>
-<section id="the-tidyverse" class="level2">
-<h2 class="anchored" data-anchor-id="the-tidyverse">4.1 The tidyverse</h2>
+<section id="the-tidyverse" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="the-tidyverse"><span class="header-section-number">4.1</span> The tidyverse</h2>
 <p>Wickham et al.&nbsp;(<a href="https://r4ds.hadley.nz/">2023</a>, Introduction):</p>
 <p>You will also need to install some R packages. An R package is a collection of functions, data, and documentation that extends the capabilities of base R. Using packages is key to the successful use of R. The majority of the packages that you will learn in this book are part of the so-called tidyverse (Wickham et al.&nbsp;<a href="https://doi.org/10.21105/joss.01686">2019</a>). The packages in the tidyverse share a common philosophy of data and R programming, and are designed to work together naturally.</p>
 <p>You can install the complete tidyverse with a single line of code (Copy without ‘#’):</p>
@@ -272,14 +295,14 @@ Ein BibTeX-Eintrag für LaTeX-Benutzer ist
 </div>
 <p><a href="#top">Back to top</a></p>
 </section>
-<section id="scripts" class="level2">
-<h2 class="anchored" data-anchor-id="scripts">4.2 Scripts</h2>
+<section id="scripts" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="scripts"><span class="header-section-number">4.2</span> Scripts</h2>
 <p>Wickham et al.&nbsp;(<a href="https://r4ds.hadley.nz/workflow-scripts">2023</a>, 6.1):</p>
 <p>So far, you have used the console to run code. That’s a great place to start, but you’ll find it gets cramped pretty quickly as you create more complex ggplot2 graphics and longer dplyr pipelines. To give yourself more room to work, use the script editor. Open it up by clicking in the menu bar (top left) ‘File’ &gt; ‘New File’ &gt; ‘R script’, or using the keyboard shortcut ‘Cmd/Strg’ + ‘Shift’ + ‘N’. Now you’ll see four panes, as in Figure <a href="https://r4ds.hadley.nz/workflow-scripts#fig-rstudio-script">6.1</a>.</p>
 <p>The script editor is a great place to experiment with your code. When you want to change something, you don’t have to re-type the whole thing, you can just edit the script and re-run it. And once you have written code that works and does what you want, you can save it as a script file to easily return to later.</p>
 </section>
-<section id="projects" class="level2">
-<h2 class="anchored" data-anchor-id="projects">4.3 Projects</h2>
+<section id="projects" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="projects"><span class="header-section-number">4.3</span> Projects</h2>
 <p>Wickham et al.&nbsp;(<a href="https://r4ds.hadley.nz/workflow-scripts#projects">2023</a>, 6.2):</p>
 <p>One day, you will need to quit R, go do something else, and return to your analysis later. One day, you will be working on multiple analyses simultaneously and you want to keep them separate. One day, you will need to bring data from the outside world into R and send numerical results and figures from R back out into the world.</p>
 <p>Keeping all the files associated with a given project (input data, R scripts, analytical results, and figures) together in one directory is such a wise and common practice that RStudio has built-in support for this via projects.</p>
@@ -310,12 +333,12 @@ Ein BibTeX-Eintrag für LaTeX-Benutzer ist
 <p>In your favorite OS-specific way, search your computer for <code>diamonds.png</code> and you will find the PNG (no surprise) but also the script that created it (<code>diamonds.R</code>). This is a huge win! One day, you will want to remake a figure or just understand where it came from. If you rigorously save figures to files with R code and never with the mouse or the clipboard, you will be able to reproduce old work with ease!</p>
 <p><a href="#top">Back to top</a></p>
 </section>
-<section id="relative-and-absolute-path" class="level2">
-<h2 class="anchored" data-anchor-id="relative-and-absolute-path">4.4 Relative and absolute path</h2>
+<section id="relative-and-absolute-path" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="relative-and-absolute-path"><span class="header-section-number">4.4</span> Relative and absolute path</h2>
 <p>Wickham et al.&nbsp;(<a href="https://r4ds.hadley.nz/workflow-scripts#relative-and-absolute-paths">2023</a>, 6.2.4):</p>
 <p>Once you’re inside a project, you should only ever use relative paths not absolute paths. What’s the difference? A relative path is relative to the working directory, i.e.&nbsp;the project’s home. When Hadley wrote <code>data/diamonds.csv</code> above it was a shortcut for <code>/Users/hadley/Documents/r4ds/data/diamonds.csv</code>. But importantly, if Mine ran this code on her computer, it would point to <code>/Users/Mine/Documents/r4ds/data/diamonds.csv</code>. This is why relative paths are important: they’ll work regardless of where the R project folder ends up.</p>
 <p>Absolute paths point to the same place regardless of your working directory. They look a little different depending on your operating system. On Windows they start with a drive letter (e.g., <code>C:</code>) or two backslashes (e.g., <code>\\servername</code>) and on Mac/Linux they start with a slash “/” (e.g., <code>/users/hadley</code>). You should never use absolute paths in your scripts, because they hinder sharing: no one else will have exactly the same directory configuration as you.</p>
-<p>Try a relative path yourself (Copy without the ‘#’):</p>
+<p>The <code>here</code> package of Müller (<a href="https://CRAN.R-project.org/package=here">2020</a>) helps you with relative paths (<a href="https://here.r-lib.org/index.html">Original vignette</a>, Kirill Müller). Try a relative path yourself (Copy without the ‘#’):</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("here")</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -328,11 +351,12 @@ Ein BibTeX-Eintrag für LaTeX-Benutzer ist
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># data &lt;- read_csv(here("diamonds.csv"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>If you have created a <code>data</code> folder you access the file by <code>data &lt;- read_csv(here("data", "diamonds"))</code></p>
 <p><a href="#top">Back to top</a></p>
 </section>
 </section>
-<section id="terminology" class="level1">
-<h1>5 Terminology</h1>
+<section id="terminology" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Terminology</h1>
 <p>Bello et al.&nbsp;(<a href="https://doi.org/10.1017/9781108628426">2021</a>, 1.4):</p>
 <p>In the R universe, there is an established and strict set of terms that is used for the different objects and data structures that can be encountered (mostly stemming from statistical and IT terminology). Sometimes, these terms are at odds and lead to some confusion with more loosely defined terms we use in ecology and in particular for ecological data. We therefore provide here a short glossary of terms that are somewhat ambiguous and could lead to confusion. At the same time, this section serves to establish some standards that we use across the R material, in particular regarding the orientation of data in rows and columns in our data objects.</p>
 <p>R terminology</p>
@@ -348,10 +372,9 @@ Ein BibTeX-Eintrag für LaTeX-Benutzer ist
 <li><p><strong>Trait table</strong> (species x trait matrix): a table containing the traits we want to use for analyses. In R, a trait table will most often be in the form of a data frame, because this allows for having different types of variables (e.g.&nbsp;continuous and categorical) in the same object. Importantly, the species names will most often be expected to be the row.names of the data frame, and have to be following the same standard, spelling, etc. to be correctly matched to species in other data (community matrix, phylogeny).</p></li>
 </ul>
 </section>
-<section id="github-and-github-desktop" class="level1">
-<h1>6 GitHub and GitHub Desktop</h1>
-<p>Go through this tutorial of Vanessa Trujillo to be prepared for track-and-change mode in R. This is not required for the course but recommended and we will use and show GitHub in the course.</p>
-<p><a href="https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e12">https://medium.com/<span class="citation" data-cites="vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e124">@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e124</span></a></p>
+<section id="github-and-github-desktop" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> GitHub and GitHub Desktop</h1>
+<p>Go through this <a href="https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e124">tutorial</a> of Vanessa Trujillo to be prepared for track-and-change mode in R. This is not required for the course but recommended and we will use and show GitHub in the course.</p>
 </section>
 
 </main>
