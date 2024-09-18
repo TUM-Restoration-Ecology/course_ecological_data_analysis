@@ -1,4 +1,45 @@
 ---
+title: "Analysis of Ecological Data <br> Trait dissimilarity"
+author: "<b>Markus Bauer</b> <br>"
+date: today
+date-format: iso
+format: html
+toc: true
+toc-depth: 3
+toc-expand: 2
+number-sections: true
+dev: png
+fig-width: 7
+fig-height: 5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE
+  )
+```
+
+Technichal University of Munich, TUM School of Life Sciences, Chair of
+Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
+
+[markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
+
+<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/><https://orcid.org/0000-0001-5372-4174>
+
+[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
+
+::: {.content-hidden when-format="html"}
+
+# Tasks
+
+* !Introduce exercise better and write solution
+* !Include a plot to draw
+* Use gawdis::gawdis
+* Introduce clustering
+
+:::
+---
 title: "Analysis of Ecological Data <br> CWM regression approach"
 author: "<b>Markus Bauer</b> <br>"
 date: "<b>`r format(Sys.time(), '%Y-%m-%d')`</b>"

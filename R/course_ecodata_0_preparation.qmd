@@ -33,6 +33,46 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 [christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
+# Welcome
+
+Dear students, 
+
+the course “Analysis of ecological data” will take place next week. 
+We will meet on Monday (**23.09.2024**) at 9 am in the forestry building of the Weihenstephan-Triesdorf University of Applied Sciences (**Room F9.354**, Hans-Carl-von-Carlowitz-Platz 3, Freising).
+
+[Location](https://geoportal.bayern.de/bayernatlas/index.html?zoom=15&lang=de&topic=umwe&bgLayer=tk&E=701239.38&N=5364338.42&layers=e528a2a8-44e7-46e9-9069-1a8295b113b5,86e82390-1739-4d21-bf78-e8b189c1a35d,2dce0ec9-927f-450c-9d2c-5a92da91ab62&layers_visibility=false,false,false&catalogNodes=110)
+
+It is possible to evaluate your own data sets directly during the course. If you do not have your own data sets, we will provide you with sample data sets. 
+
+Computers are available for the exercises. You can also bring your own laptop. Please install R and RStudio before the course (see tutorial in the appendix). In the building you have internet access via eduroam. Those who want to use the PCs in the building should also read the tutorial. 
+
+The exam will take place on the last day of the course (Friday, **27.09.2024**) and consists of a 12-minute presentation in which you will present your own evaluations. 
+
+We are looking forward to the course with you next week. 
+
+Cheers,
+
+Markus Bauer and Christina Hartung 
+
+<a href="#top">Back to top</a>
+
+# The course
+
+* MO 9:00-17:00 (1h break): Introduction to R, tidyverse, statistics, and open science
+* DI 9:00-17:00 (1h break): Species composition - Ordinations
+* MI 9:00-17:00 (1h break): Functional trait diversity - Community-weighted mean, functional dispersion
+* DO 9:00-17:00 (1h break): Species/trait diversity ~ environment
+* FR 9:00-12:30 (0h break): Exam
+
+Hans-Carl-von-Carlowitz-Platz 3, 85354 Freising
+Room F9.354
+
+Guest access for PC:  The use name is the PC name. The PC name is written at the screen (e.g., PC0401), and the key word is 'fedv4'.
+
+Internet for own Laptop: eduroam (see tutorial below)
+
+<a href="#top">Back to top</a>
+
 # Why R?
 
 John Verzani ([2001](https://www.karlin.mff.cuni.cz/~kulich/vyuka/Rdoc/Verzani-SimpleR.pdf), 1) & Nathaniel D. Phillips ([2018](https://bookdown.org/ndphillips/YaRrr/why-is-r-so-great.html), 1.3):
@@ -162,6 +202,8 @@ So far, you have used the console to run code. That’s a great place to start, 
 
 The script editor is a great place to experiment with your code. When you want to change something, you don’t have to re-type the whole thing, you can just edit the script and re-run it. And once you have written code that works and does what you want, you can save it as a script file to easily return to later.
 
+<a href="#top">Back to top</a>
+
 ## Projects
 
 Wickham et al. ([2023](https://r4ds.hadley.nz/workflow-scripts#projects), 6.2):
@@ -237,6 +279,10 @@ Ecological terminology
 
 * **Trait table** (species x trait matrix): a table containing the traits we want to use for analyses. In R, a trait table will most often be in the form of a data frame, because this allows for having different types of variables (e.g. continuous and categorical) in the same object. Importantly, the species names will most often be expected to be the row.names of the data frame, and have to be following the same standard, spelling, etc. to be correctly matched to species in other data (community matrix, phylogeny).
 
-# GitHub and GitHub Desktop
+<a href="#top">Back to top</a>
+
+# GitHub and GitHub Desktop (No reuired, but recommended)
 
 Go through this [tutorial](https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e124) of Vanessa Trujillo to be prepared for track-and-change mode in R. This is not required for the course but recommended and we will use and show GitHub in the course.
+
+<a href="#top">Back to top</a>
