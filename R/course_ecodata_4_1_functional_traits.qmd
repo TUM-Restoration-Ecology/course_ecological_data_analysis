@@ -3,16 +3,14 @@ title: "Analysis of Ecological Data <br> How to get functional traits?"
 author: "<b>Markus Bauer</b> <br>"
 date: today
 date-format: iso
-output:
-  html:
-    toc: true
-    toc_depth: 3
-    dev: png
-    fig_width: 7
-    fig_height: 5
-editor_options: 
-  markdown: 
-    wrap: 72
+format: html
+toc: true
+toc-depth: 3
+toc-expand: 2
+number-sections: true
+dev: png
+fig-width: 7
+fig-height: 5
 ---
 
 ```{r setup, include=FALSE}
@@ -39,9 +37,9 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 :::
 
-# 1 Preparation
+# Preparation
 
-## 1.1 Load libraries
+## Load libraries
 
 You can always install missing libraries by `install.packages()` like `install.packages("here")`. We use the `tidyverse` package (Wickham et al. [2019](https://doi.org/10.21105/joss.01686)), the `GIFT` package (Denelle et al. [2023](https://doi.org/10.1111/2041-210X.14213)) and the package `TNRS` (Boyle et al.[2013](https://doi.org/10.1186/1471-2105-14-16))
 
@@ -53,7 +51,7 @@ library(TNRS)
 rm(list = ls())
 ```
 
-## 1.2 The example data set
+## The example data set
 
 A study in the Ammer valley before and after the weir in the [floodplain Schnalz](https://www.openstreetmap.org/#map=16/47.7737/10.9615).
 
@@ -61,24 +59,22 @@ Normally there are alluvial grey alder forests (Alnetum incanae, alliance [Alnio
 
 Due to the dam along the Ammer and the weir in the Ammer the flood regime changed and the vegetation could have developed to a maple-ash forest ('Edellaubholzwald') (Adoxo-Aceretum, alliance [Tilio-Acerion](https://floraveg.eu/vegetation/overview/Tilio-Acerion), EUNIS habitat type [T1F](https://floraveg.eu/habitat/overview/T1F%3E))
 
-The dataset is also available on GitHub (Bauer et al. 2018)
+The dataset is also available on [Zenodo](https://doi.org/10.5281/zenodo.6054867) (Bauer et al. [2018](https://doi.org/10.14471/2018.38.006))
 
-[![DOI:10.14471/2018.38.006](http://img.shields.io/badge/DOI-10.14471/2018.38.006-informational.svg)](https://doi.org/10.14471/2018.38.006)
-
-<https://github.com/markus1bauer/2018_alluvial_forest_river_ammer/tree/main>
-
-## 1.3 Load data
+## Load data
 
 ```{r load-data}
 species_ammer <- read_csv(
   here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_species.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
-  )
+  ) %>%
+  filter(layer == "h") %>% # select only the herbal layer, but not tree or shrub layer
+  select(-layer)
 ```
 
 <a href="#top">Back to top</a>
 
-# 2 Calculate traits from measured values
+# Calculate traits from measured values
 
 A short example how to calculate functional traits by your own. For example the specific leaf area (SLA) of trees (*Acer platanoides* and *Tilia cordata*) in a greenhouse experiment in Dürnast (Bauer et al. [2023](https://doi.org/10.1007/s00468-023-02391-8)).
 
@@ -112,13 +108,13 @@ data %>%
 
 <a href="#top">Back to top</a>
 
-# 3 Traits from databases
+# Traits from databases
 
 [Original vignette](https://biogeomacro.github.io/GIFT/articles/GIFT.html#trait-data) (Denelle & Weigelt 2024)
 
 Get the functional trait values from the Global Inventory of Floras and Traits (GIFT) database (Weigelt et al. [2023](https://doi.org/10.1111/jbi.13623)) with the package `GIFT` (Denelle et al. [2023](https://doi.org/10.1111/2041-210X.14213)).
 
-## 3.1 Metadata of traits
+## Metadata of traits
 
 There are many functional traits available in the GIFT database. Each of these traits has an identification number called `trait_ID`. Since the two functions for retrieving trait values, `GIFT_traits()` and `GIFT_traits_raw()`, rely on these IDs, the first step is to call the function `GIFT_traits_meta()` to know what the ID of the desired trait is. For example, let’s say we want to retrieve the maximum vegetative heights of plant species.
 
@@ -132,9 +128,9 @@ We can see that the ID of this trait is 1.6.2. Now that we have the ID, we can u
 
 <a href="#top">Back to top</a>
 
-## 3.2 Get trait values
+## Get trait values
 
-### 3.2.1 Raw data and aggregated data
+### Raw data and aggregated data
 
 There are two functions to access trait values. First, `GIFT_traits_raw()` returns all trait values for a given species and a given trait. These trait values can then vary. Second, `GIFT_traits()` returns an aggregated trait value at the species level. The aggregation simply takes the mean for continuous traits or the most frequent entry for categorical traits. However, for some specific cases, the aggregation takes either the minimum or the maximum, as for the trait we chose. Let’s retrieve the raw and aggregated values for the maximum vegetative height of plants (trait_ID 1.6.2).
 
@@ -159,7 +155,7 @@ There were three maximum heights for Fagus sylvatica, 30, 35, and 50 meters, whi
 
 <a href="#top">Back to top</a>
 
-### 3.2.2 Get the references of the measurements
+### Get the references of the measurements
 
 If you want to look up the references that led to the aggregated trait value, you can run this chunk:
 
@@ -179,7 +175,7 @@ references[1:2, ]
 
 <a href="#top">Back to top</a>
 
-### 3.2.3 Download traits
+### Download traits
 
 Here is an example how to download several traits:
 
@@ -202,7 +198,7 @@ rm(list = setdiff(ls(), c("species_ammer", "traits_ammer", "data_gift")))
 
 <a href="#top">Back to top</a>
 
-# 4 Name resolving
+# Name resolving
 
 [Original vignette](https://cran.r-project.org/web/packages/TNRS/vignettes/TNRS_vignette.html) (Maitner 2024)
 
@@ -229,9 +225,9 @@ names <- data %>%
 
 <a href="#top">Back to top</a>
 
-# 5 Merge
+# Merge
 
-Merge the resolved species names and the functional plant traits into the existing tables 'species' and 'traits'.
+Merge the resolved species names and the functional plant traits into the existing tables 'species' and create a new one 'traits'. First, you have to check for duplicates in the column 'accepted_name' created by name resolving. Second, summarize duplicates by summing the abundances.
 
 ```{r merge-resolved-names}
 data <- species_ammer %>%
@@ -239,12 +235,31 @@ data <- species_ammer %>%
   full_join(
     names %>% select(name_submitted, accepted_name), by = "name_submitted"
     )
-species_ammer <- data
 
-data <- names %>%
+duplicates <- data %>% filter(duplicated(accepted_name))
+
+data2 <- data %>%
+  group_by(accepted_name) %>%
+  summarize(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)))
+species_ammer <- data2
+
+data <- species_ammer %>%
+  select(accepted_name) %>%
   left_join(
     data_gift %>% rename(accepted_name = work_species), by = "accepted_name"
-    )
+    ) %>%
+  rename(
+    growth_form_2 = trait_value_1.2.2,
+    parasite_1 = trait_value_1.5.1,
+    plant_height_mean = trait_value_1.6.3,
+    seed_mass_mean = trait_value_3.2.3,
+    flower_colour = trait_value_3.3.1,
+    dispersal_syndrome_1 = trait_value_3.6.1,
+    pollination_syndrome_1 = trait_value_3.7.1,
+    flowering_start = trait_value_3.21.1,
+    sla_mean = trait_value_4.1.3,
+    nitrogen_fix_1 = trait_value_4.5.1
+  )
 traits_ammer <- data %>%
   select(-work_ID, -work_author, -starts_with("references"))
 
@@ -253,7 +268,7 @@ rm(list = setdiff(ls(), c("species_ammer", "traits_ammer")))
 
 <a href="#top">Back to top</a>
 
-# 6 Save
+# Save
 
 ```{r save-files}
 write_csv(
@@ -266,7 +281,7 @@ write_csv(
 
  <a href="#top">Back to top</a>
  
-# 7 Your own dataset
+# Your own dataset
 
 * Select at least five functional plant traits.
 * Note the categories, IDs, unit and the version of the GIFT database for the material-and-methods section.

@@ -37,9 +37,7 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 * Quellen verlinken
 * Show example Ammer
 * Plot results of traits data
-* Include Zeleny
-* Include DHarma
-* Include data exploration
+* Make alpha, beta and gamma FD available
 
 :::
 
@@ -57,6 +55,7 @@ The FD package is of Laliberté & Legendre ([2010](https://doi.org/10.1890/08-22
 library(here)
 library(tidyverse)
 library(FD)
+library(funspace)
 rm(list = ls())
 ```
 
@@ -118,7 +117,11 @@ dummy$trait # Species x trait matrix
 It is very important to check that the species that you have in these ‘species x community’ matrix and ‘species x trait’ matrices should be the same. In this case we know that they are the same, so we can already run the code:
 
 ```{r}
-ex1 <- dbFD(dummy$trait, dummy$abun)
+ex1 <- dbFD(
+  dummy$trait, dummy$abun,
+  w.abun = TRUE,
+  calc.CWM = FALSE, calc.FDiv = FALSE
+  )
 ```
 
 First we see that the function is very “talkative”, i.e. it explains a lot of things while running. We can eventually switch-off the messages by using `messages = F`, as we will do in the next examples. In the meantime we can see that FEve (functional evenness) cannot be computed in communities with less than 3 species. Similarly as FRic (functional richness) and FDiv (functional divergence) cannot be computed if there is less that 3 unique species, meaning that they should at least have one different trait value. Other important messages include the number of PCoA axes considered. Out of the 7 considered (i.e. with 8 species, the number of PCoA is 7) a total of 2 axes are retained to reflect trait differences between species (see Chapter 3 in the reference book and R material Ch 3. In other words the PCoA has synthesized all traits into two multivariate axes.
@@ -140,7 +143,7 @@ ex1$FRic
 For categorical and binary traits you might want to include the argument `CWM.type = "all"` when running it.
 
 ```{r}
-ex1 <- dbFD(dummy$trait, dummy$abun, CWM.type = "all", message = F)
+ex1 <- dbFD(dummy$trait, dummy$abun, CWM.type = "all", message = FALSE)
 # notice we add `message = F` to avoid too many annoying messages from the function :)
 ex1$CWM
 ```
@@ -257,7 +260,28 @@ resFD.alltraits <- dbFD(
   )
 ```
 
- <a href="#top">Back to top</a>
+### Plotting and saving
+
+```{r}
+sites_spain %>%
+  ggplot(aes(x = fdis.abu.sla)) +
+  geom_density(color = "black", fill = "black", alpha = .1) +
+  labs(x = expression(FDis~SLA)) +
+  theme(
+    axis.line = element_line(color = "black"),
+    panel.background = element_rect(fill = "transparent")
+  )
+```
+
+Save the data file
+
+```{r}
+write_csv(
+  sites_spain, here::here("data", "processed", "data_processed_sites_spain")
+  )
+```
+
+<a href="#top">Back to top</a>
 
 ## Ammer data
 
@@ -268,6 +292,8 @@ resFD.alltraits <- dbFD(
 ```
 
  <a href="#top">Back to top</a>
+
+::: {.content-hidden when-format = "html"}
 
 # Calculation of Alpha, beta and gamma FD
 
@@ -381,3 +407,5 @@ text(0.7, 15, "alpha")
 ```
 
 We can see in this figure that, despite the great turnover in species composition (beta TD, grey colour, left stack) we have a real low functional turnover. In other words **most of the trait dissimilarity between species is found within a plot and not across plots**, even if there are such a marked environmental changes and even if species composition changes are very strong (high beta TD).
+
+:::

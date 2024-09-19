@@ -33,8 +33,8 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 # Tasks
 
-* !Introduce exercise better and write solution
 * !Include a plot to draw
+* !Introduce exercise better and write solution
 * Use gawdis::gawdis
 * Introduce clustering
 
@@ -53,6 +53,7 @@ library(here)
 library(tidyverse)
 library(FD)
 library(gawdis)
+library(funspace)
 rm(list = ls())
 ```
 
@@ -62,7 +63,7 @@ Let us create first some 'species x traits' matrix by hand, just for simplicity.
 
 ```{r}
 species_ammer <- read_csv(
-  here("data", "processed", "data_processed_species.csv"),
+  here("data", "processed", "data_processed_species_ammer.csv"),
   col_names = TRUE, col_types = cols(
     .default = "?",
     accepted_name = "f"
@@ -70,7 +71,7 @@ species_ammer <- read_csv(
   )
 
 traits_ammer <- read_csv(
-  here("data", "processed", "data_processed_traits.csv"),
+  here("data", "processed", "data_processed_traits_ammer.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
 
@@ -326,7 +327,14 @@ list.traits <- list(
   ade4::ktab.list.df()
 dissim.ktab <- list.traits %>%
   ade4::dist.ktab(c("Q", "F"))
-plot(mean.dissim.all, dissim.ktab)
+
+data.frame(mean.dissim.all, dissim.ktab) %>%
+  ggplot(aes(x = mean.dissim.all, y = dissim.ktab)) +
+  geom_point(size = 2) +
+  theme(
+    axis.line = element_line(color = "black"),
+    panel.background = element_rect(fill = "transparent")
+  )
 ```
 
 This shows that the results are different from what we hoped for. Alternatively, you can apply the function trova (de Bello et al. [2013](https://doi.org/10.1111/jvs.12008)) which can deal with this type of traits, and also circular traits and intraspecific trait variability. We will work with this function, and see how to use it below and in the R material connected to Chapter 6. See also R material 3: gawdis for a function which solves the problem with uneven trait contribution and can also handle fuzzy coded traits.
@@ -338,3 +346,98 @@ This shows that the results are different from what we hoped for. Alternatively,
 As already shown above, an important issue with the computation of trait dissimilarity is the case of missing trait values. In the case above of the matrix `traits_invented`, for the quantitative trait the dissimilarity between species 6 and the other species cannot be computed (i.e. NA). The good news is that dissimilarity can be still computed considering other traits when, and only when, there is at least one trait value available for species 6 (and the species to which species 6 is compared to). The resulting dissimilarity combining traits for species 6 is simply the average of the dissimilarity for those traits without NA. In case of the example above this would correspond to the average between dissimilarity for carnivory and for color only, excluding body size (because of the NA). Then, we can still use the dissimilarity resulting from other traits and discard, for the comparisons with species 6, the missing information about body size. For example, the distance between species 1 and 6 would consider both color and carnivory, i.e. 0.5, since dissimilarity based on carnivory is equal to 0 and dissimilarity based on color is equal to 1, and so on. We will deal with the cases of filling NA values in another exercise related to Chapter 6.
 
 <a href="#top">Back to top</a>
+
+::: {.content-hidden when-format = "html"}
+
+# Plot functional diversity
+
+You can use the package `funspace` (Carmona et al. [2024](https://doi.org/10.1111/ddi.13820)).
+
+```{r}
+library(funspace)
+
+data <- traits_ammer %>%
+  select(accepted_name, seed_mass_mean, sla_mean) %>%
+  column_to_rownames("accepted_name")
+phylo.tree <- funspace::phylo
+imputed2 <- impute(traits = data)
+imputed <- impute(traits = data, phylo = phylo.tree, addingSpecies = TRUE)
+m1 <- funspace(x = data, PCs = c(1, 2), n_divisions = 300)
+plot(m1)
+funspace(data.aux)
+
+imputed <- impute(traits = data)
+# Load example data (traits already log10-transformed and scaled)
+data.aux <− funspace::GSPFF_missing()
+# Load the example tree (it must be an object of class phylo)
+# Imputing missing data (Because there are >10 k species, it takes long to run!)
+GSPFF_imputed <- impute(traits = data.aux, phylo = phylo.tree, addingSpecies = TRUE) # Output is a list
+# Save the imputed trait data in a separate object:
+imputed.traits <− GSPFF_imputed$imputed
+# Testing the number of dimensions defining the functional trait space
+funspaceDim(imputed.traits) # two dimensions retained
+# Run PCA
+pca.trait <− princomp(imputed.traits, cor = TRUE)
+# Building the functional trait space (using the first two PCs)
+trait_space_global <− funspace(x = pca.trait, PCs = c(1,2), n_divisions = 300)
+# Loading the taxonomic information
+tax_inf <− funspace::GSPFF_missing_tax
+# Defining a group to include four major families
+selFam <− c(“Pinaceae”, “Poaceae”, “Fabaceae”, “Lauraceae”)
+selRows <− which(tax_inf$family %in% selFam)
+tax_subset <− droplevels(tax_inf[selRows,])
+# Creating a subset of the GSPFF to retain target groups
+GSPFF_subset <− imputed.traits[selRows, ]
+# Run PCA on the subset
+PCA_subset <− princomp(GSPFF_subset)
+A grouping variable can be specified in funspace() by passing a vector including the variable to the group.vec argument.
+# Building the functional trait space (using the first two PCs) including groups
+trait_space_families <− funspace(x = PCA_subset, PCs = c(1,2), group.vec = tax_subset$family,
+n_divisions = 300)
+# We can print the outputs for both spaces:
+summary(trait_space_global)
+summary(trait_space_families)
+
+# Creating the GSPFF functional space:
+pca.gspff <− princomp(GSPFF, cor = TRUE)
+trait_space_gspff <− funspace(x = pca.gspff,
+PCs = c(1,2), n_divisions = 300)
+# Response variable we want to map
+y <− abs(pca.gspff$scores[, 1] * pca.
+gspff$scores[, 2]) + rnorm(nrow(GSPFF), 0, 1)
+# Fitting GAM for all data pooled (It takes few seconds to
+run!)
+fit.gam < − funspaceGAM(y = y,
+funspace = trait_space_gspff)
+
+# 1 – Plotting a functional space including a global (all data pooled) trait probability distribution. In this case, we will plot the trait_space_
+families object.
+plot(x = trait_space_families, # funspace object
+type = “global”, # plot the global TPD
+quant.plot = TRUE, # add quantile lines
+arrows = TRUE, # add arrows for PCA loadings
+arrows.length = 0.9) # make arrows a bit shorter than the default.
+The output is shown in Figure 2a.
+# Plotting an object created with the funspaceGAM() function: we will use the fit.gam object built in Box 2.
+plot(x = fit.gam,
+type = “global”,
+quant.plot = TRUE,
+quant.col = “grey80”) # a lighter tone for the quantiles
+The output is shown in Figure 2b.
+# To display the use of the ‘type’ argument, we also plot the functional trait space with an individual trait probability density function per
+each level of the grouping variable (Fabaceae, Lauraceae, Pinceae, Poaceae). The GAM output per each group is not shown, but it could
+be obtained replacing the trait_space_families object with the fit.gam one in the following code.
+par(mfrow = c(2, 2), mar = c(2,2,1,1), mgp = c(1, 0.1, 0))
+plot(x = trait_space_families,
+type = “groups”, # a plot for each group (family)
+quant.plot = TRUE,
+globalContour = T, # The contour of the global TPD
+pnt = T, # add points for species of each family
+pnt.cex = 0.1, # points should be small
+pnt.col = rgb(0.2, 0.8, 0.1, alpha = 0.2), # colour for points
+axis.title.line = 1)
+```
+
+<a href="#top">Back to top</a>
+
+:::

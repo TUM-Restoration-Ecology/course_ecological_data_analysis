@@ -34,7 +34,8 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 # Tasks
 
 * Make Ammer working also with categorical traits
-* Test script
+* Include DHarma
+* Include data exploration
 
 :::
 
@@ -69,11 +70,7 @@ Normally there are alluvial grey alder forests (Alnetum incanae, alliance [Alnio
 
 Due to the dam along the Ammer and the weir in the Ammer the flood regime changed and the vegetation could have developed to a maple-ash forest ('Edellaubholzwald') (Adoxo-Aceretum, alliance [Tilio-Acerion](https://floraveg.eu/vegetation/overview/Tilio-Acerion), EUNIS habitat type [T1F](https://floraveg.eu/habitat/overview/T1F%3E))
 
-The dataset is also available on GitHub (Bauer et al. 2018)
-
-[![DOI:10.14471/2018.38.006](http://img.shields.io/badge/DOI-10.14471/2018.38.006-informational.svg)](https://doi.org/10.14471/2018.38.006)
-
-<https://github.com/markus1bauer/2018_alluvial_forest_river_ammer/tree/main>
+The dataset is also available on [Zenodo](https://doi.org/10.5281/zenodo.6054867) (Bauer et al. [2018](https://doi.org/10.14471/2018.38.006))
 
 ## Load data
 
@@ -104,7 +101,7 @@ sites_spain <- read_delim(
   )
 
 species_ammer <- read_csv(
-  here("data", "processed", "data_processed_species.csv"),
+  here("data", "processed", "data_processed_species_ammer.csv"),
   col_names = TRUE, col_types = cols(
     .default = "?",
     accepted_name = "f"
@@ -112,7 +109,7 @@ species_ammer <- read_csv(
   )
 
 traits_ammer <- read_csv(
-  here("data", "processed", "data_processed_traits.csv"),
+  here("data", "processed", "data_processed_traits_ammer.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
 ```
@@ -276,7 +273,7 @@ With quantitative traits the `dbFD` function removes the species for which trait
 Let’s now use real data and let’s start with the NE Spain data described above. Let’s first check the dimension of the objects and if the species names are the same in the plot composition data and in the trait data:
 
 ```{r}
-rm(list = setdiff(ls(), c("species_ammer", "species_spain", "traits_ammer", "traits_spain")))
+rm(list = setdiff(ls(), c("species_ammer", "species_spain", "traits_ammer", "traits_spain", "sites_spain")))
 dim(species_spain)
 ```
 
@@ -348,28 +345,22 @@ species <- species_spain %>%
   mutate(value = log(value + 1)) %>%
   pivot_wider(names_from = "species", values_from = "value") %>%
   column_to_rownames(var = "plot")
-resCWM <- dbFD(traits, species, CWM.type = "all", w.abun = TRUE)
+resCWM <- dbFD(traits, species, CWM.type = "all", w.abun = TRUE, corr = "sqrt")
 resCWM %>%
-  head()
+  str()
 ```
 
 WELL DONE! we now have the CWM data. 
 
-### Saving and plotting
+### Plotting and saving
 
-The different growth forms tend to have different SLA. You can test this by using this line:
+Merge the CWMs in the sites data
 
 ```{r}
-ggplot(data = traits, aes(x = GrowhtForm, y = SLA)) +
-  geom_boxplot() +
-  labs(y = "log(SLA)")
-```
-```{r}
-data <- resCWM$CWM$SLA_log %>%
-  as.data.frame() %>%
+data <- data.frame(resCWM$FDis, resCWM$CWM$SLA_log) %>%
   rownames_to_column("id.plot") %>%
   rename(
-    "cwm.abu.sla" = "."
+    "cwm.abu.sla" = "resCWM.CWM.SLA_log"
   ) %>%
   mutate(
     across(where(is.numeric), ~ exp(.x)), # backtransform traits
@@ -381,7 +372,24 @@ sla <- data
 sites_spain <- sites_spain %>%
   rename(id.plot = Plots) %>%
   left_join(sla, by = "id.plot")
+```
 
+Plot the CWMs of SLA
+
+```{r}
+sites_spain %>%
+  ggplot(aes(x = cwm.abu.sla)) +
+  geom_density(color = "black", fill = "black", alpha = .1) +
+  labs(x = expression(CWM~SLA~"["*cm^2~g^-1*"]")) +
+  theme(
+    axis.line = element_line(color = "black"),
+    panel.background = element_rect(fill = "transparent")
+  )
+```
+
+Save the new sites data
+
+```{r}
 write_csv(
   sites_spain, here::here("data", "processed", "data_processed_sites_spain")
   )
@@ -396,12 +404,11 @@ write_csv(
 ### Preparation
 
 ```{r}
-rm(list = setdiff(ls(), c("species_ammer", "species_spain", "traits_ammer", "traits_spain")))
+rm(list = setdiff(ls(), c("species_ammer", "species_spain", "traits_ammer", "traits_spain", "sites_spain")))
 data_traits <- traits_ammer %>%
-  select(name.plant, sla, growth.form.1) %>%
-  filter(!is.na(sla) & !(growth.form.1 %in% c("shrub", "tree"))) %>%
-  select(-growth.form.1) %>%
-  mutate(sla = log(sla))
+  select(accepted_name, sla_mean, growth_form_2) %>%
+  filter(!is.na(sla_mean) & !(growth_form_2 %in% c("shrub", "tree"))) %>% # remove NAs of SLA and shrubs and trees
+  mutate(sla_log = log(sla_mean))
 
 data_species <- species_ammer %>%
   select(id.plot, name.plant, cover) %>%
@@ -437,7 +444,6 @@ data_traits <- data_traits %>%
 
 ### Calculation
 
-
 ```{r}
 data_abundance <- FD::dbFD(
   data_traits, data_species,
@@ -451,26 +457,38 @@ data_presence <- FD::dbFD(
 )
 ```
 
-### Saving and plotting
+### Plotting and saving
 
+Merge the CWMs in the sites data
 
 ```{r}
-data <- data_abundance$CWM$sla %>%
-  as.data.frame() %>%
+data <- data.frame(resCWM$FDis, resCWM$CWM$SLA_log) %>%
   rownames_to_column("id.plot") %>%
   rename(
-    "cwm.abu.sla" = "data_abundance$CWM$sla"
+    "cwm.abu.sla" = "resCWM.CWM.SLA_log"
   ) %>%
   mutate(
-    across(where(is.numeric), ~ exp(.x)),
-    across(where(is.numeric), ~ round(.x, digits = 2))
+    across(where(is.numeric), ~ exp(.x)), # backtransform traits
+    across(where(is.numeric), ~ round(.x, digits = 2)) # round outcomes
     ) %>%
   select(id.plot, cwm.abu.sla)
 sla <- data
+
+sites_ammer <- sites_ammer %>%
+  left_join(sla, by = "id.plot")
 ```
 
+Plot the CWMs of SLA
+
 ```{r}
-plot(cwm.abu.sla)
+sites_ammer %>%
+  ggplot(aes(x = cwm.abu.sla)) +
+  geom_density(color = "black", fill = "black", alpha = .1) +
+  labs(x = expression(CWM~SLA~"["*cm^2~g^-1*"]")) +
+  theme(
+    axis.line = element_line(color = "black"),
+    panel.background = element_rect(fill = "transparent")
+  )
 ```
 
  <a href="#top">Back to top</a>
