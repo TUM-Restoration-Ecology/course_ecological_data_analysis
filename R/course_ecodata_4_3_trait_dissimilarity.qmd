@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Ecological Data <br> Trait dissimilarity"
+title: "Analysis of Ecological Data <br> Trait dissimilarity among species"
 author: "<b>Markus Bauer</b> <br>"
 date: today
 date-format: iso
@@ -33,9 +33,8 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 # Tasks
 
-* !Include a plot to draw
 * !Introduce exercise better and write solution
-* Use gawdis::gawdis
+* Use gawdis::gawdis Bello et al. (2021) https://doi.org/10.1111/2041-210X.13537
 * Introduce clustering
 
 :::
@@ -46,13 +45,12 @@ This tutorial is based on Bello et al. ([2021](https://doi.org/10.1017/978110862
 
 ## Load libraries
 
-The FD package is of Laliberté & Legendre ([2010](https://doi.org/10.1890/08-2244.1)).
+The `FD` package is of Laliberté & Legendre ([2010](https://doi.org/10.1890/08-2244.1)) and `funspace` of Carmona et al. ([2024](https://doi.org/10.1111/ddi.13820)).
 
 ```{r libraries, message = FALSE}
 library(here)
 library(tidyverse)
 library(FD)
-library(gawdis)
 library(funspace)
 rm(list = ls())
 ```
@@ -319,7 +317,7 @@ dissim.colour # the computation done above, by hand, for this trait
 
 The differences are small, but not negligible. To the best of our understanding, which can be of course limited, we are not sure why `dis.colour.ktab` is not exactly as `dissim.colour` which, we understand, should be the preferred result. If we accept that the function `dist.ktab` provides the intended results (which we are not sure of) then we can also combine the trait colour with the other two traits in `traits_invented` as:
 
-```{r}
+```{r message = FALSE}
 list.traits <- list(
   traits_invented %>% select(bodysize, carnivory),
   colors.fuzzy2
@@ -347,97 +345,57 @@ As already shown above, an important issue with the computation of trait dissimi
 
 <a href="#top">Back to top</a>
 
-::: {.content-hidden when-format = "html"}
+# Plot trait dissimilarity
 
-# Plot functional diversity
+You can use the package `funspace` (Carmona et al. [2024](https://doi.org/10.1111/ddi.13820)) to plot the functional trait space. First, select the traits either 2 or several traits wich then requires a PCA (like in the example below). The functiona does not allow NAs. Therefore, you have to omit missing values or collect them. Here, we have a function which imputes missing trait values. You can also use a phlyogenetic tree for imputation, but we keep it simple here. For your own data, collect your missing traits yourself, or read the paper to understand how the imputation works.
 
-You can use the package `funspace` (Carmona et al. [2024](https://doi.org/10.1111/ddi.13820)).
-
-```{r}
+```{r message = FALSE, warning = FALSE}
 library(funspace)
 
 data <- traits_ammer %>%
-  select(accepted_name, seed_mass_mean, sla_mean) %>%
-  column_to_rownames("accepted_name")
-phylo.tree <- funspace::phylo
-imputed2 <- impute(traits = data)
-imputed <- impute(traits = data, phylo = phylo.tree, addingSpecies = TRUE)
-m1 <- funspace(x = data, PCs = c(1, 2), n_divisions = 300)
-plot(m1)
-funspace(data.aux)
+  select(accepted_name, sla_mean, plant_height_mean, seed_mass_mean) %>%
+  column_to_rownames("accepted_name") %>%
+  mutate(across(where(is.numeric), ~ scale(., center = TRUE, scale = TRUE)))
+imputed <- funspace::impute(traits = data, addingSpecies = TRUE)
+imputed2 <- imputed$imputed
 
-imputed <- impute(traits = data)
-# Load example data (traits already log10-transformed and scaled)
-data.aux <− funspace::GSPFF_missing()
-# Load the example tree (it must be an object of class phylo)
-# Imputing missing data (Because there are >10 k species, it takes long to run!)
-GSPFF_imputed <- impute(traits = data.aux, phylo = phylo.tree, addingSpecies = TRUE) # Output is a list
-# Save the imputed trait data in a separate object:
-imputed.traits <− GSPFF_imputed$imputed
-# Testing the number of dimensions defining the functional trait space
-funspaceDim(imputed.traits) # two dimensions retained
-# Run PCA
-pca.trait <− princomp(imputed.traits, cor = TRUE)
-# Building the functional trait space (using the first two PCs)
-trait_space_global <− funspace(x = pca.trait, PCs = c(1,2), n_divisions = 300)
-# Loading the taxonomic information
-tax_inf <− funspace::GSPFF_missing_tax
-# Defining a group to include four major families
-selFam <− c(“Pinaceae”, “Poaceae”, “Fabaceae”, “Lauraceae”)
-selRows <− which(tax_inf$family %in% selFam)
-tax_subset <− droplevels(tax_inf[selRows,])
-# Creating a subset of the GSPFF to retain target groups
-GSPFF_subset <− imputed.traits[selRows, ]
-# Run PCA on the subset
-PCA_subset <− princomp(GSPFF_subset)
-A grouping variable can be specified in funspace() by passing a vector including the variable to the group.vec argument.
-# Building the functional trait space (using the first two PCs) including groups
-trait_space_families <− funspace(x = PCA_subset, PCs = c(1,2), group.vec = tax_subset$family,
-n_divisions = 300)
-# We can print the outputs for both spaces:
-summary(trait_space_global)
-summary(trait_space_families)
+pca.trait <- princomp(imputed2, cor = TRUE) # Calculate PCA
 
-# Creating the GSPFF functional space:
-pca.gspff <− princomp(GSPFF, cor = TRUE)
-trait_space_gspff <− funspace(x = pca.gspff,
-PCs = c(1,2), n_divisions = 300)
-# Response variable we want to map
-y <− abs(pca.gspff$scores[, 1] * pca.
-gspff$scores[, 2]) + rnorm(nrow(GSPFF), 0, 1)
-# Fitting GAM for all data pooled (It takes few seconds to
-run!)
-fit.gam < − funspaceGAM(y = y,
-funspace = trait_space_gspff)
-
-# 1 – Plotting a functional space including a global (all data pooled) trait probability distribution. In this case, we will plot the trait_space_
-families object.
-plot(x = trait_space_families, # funspace object
-type = “global”, # plot the global TPD
-quant.plot = TRUE, # add quantile lines
-arrows = TRUE, # add arrows for PCA loadings
-arrows.length = 0.9) # make arrows a bit shorter than the default.
-The output is shown in Figure 2a.
-# Plotting an object created with the funspaceGAM() function: we will use the fit.gam object built in Box 2.
-plot(x = fit.gam,
-type = “global”,
-quant.plot = TRUE,
-quant.col = “grey80”) # a lighter tone for the quantiles
-The output is shown in Figure 2b.
-# To display the use of the ‘type’ argument, we also plot the functional trait space with an individual trait probability density function per
-each level of the grouping variable (Fabaceae, Lauraceae, Pinceae, Poaceae). The GAM output per each group is not shown, but it could
-be obtained replacing the trait_space_families object with the fit.gam one in the following code.
-par(mfrow = c(2, 2), mar = c(2,2,1,1), mgp = c(1, 0.1, 0))
-plot(x = trait_space_families,
-type = “groups”, # a plot for each group (family)
-quant.plot = TRUE,
-globalContour = T, # The contour of the global TPD
-pnt = T, # add points for species of each family
-pnt.cex = 0.1, # points should be small
-pnt.col = rgb(0.2, 0.8, 0.1, alpha = 0.2), # colour for points
-axis.title.line = 1)
+m1 <- funspace::funspace(
+  x = pca.trait, PCs = c(1, 2), n_divisions = 300,
+  group.vec = traits_ammer$growth_form_2 # include groups in calculation
+  )
+summary(m1)
 ```
 
-<a href="#top">Back to top</a>
+Let's plot the functional trait space
 
-:::
+```{r message = FALSE}
+plot(
+  x = m1,
+  type = "global", # plot the global TPD
+  quant.plot = TRUE,
+  arrows = TRUE,
+  arrows.length = 0.6 # make arrows a bit shorter than the default
+  )
+```
+
+We can plot the trait space for subgroups like different growth forms.
+
+```{r message = FALSE}
+par(mfrow = c(3, 2), mar = c(2,2,1,1), mgp = c(1, 0.1, 0))
+plot(
+  x = m1,
+  type = "groups", # a plot for each group (family)
+  quant.plot = TRUE,
+  globalContour = TRUE, # The contour of the global TPD
+  pnt = TRUE, # add points for species of each family
+  pnt.cex = 0.1, # points should be small
+  pnt.col = rgb(0.2, 0.8, 0.1, alpha = 0.2),
+  axis.title.line = 1
+  )
+```
+
+You can see that different growth forms have a different place in the functional trait space. However, be careful because there are problems in the 'growth_form_2' column. There are NAs, 'herbs' and 'forbs', and *Carex* species determined as herbs and not graminoids.
+
+<a href="#top">Back to top</a>

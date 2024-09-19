@@ -253,10 +253,10 @@ data <- species_ammer %>%
     parasite_1 = trait_value_1.5.1,
     plant_height_mean = trait_value_1.6.3,
     seed_mass_mean = trait_value_3.2.3,
-    flower_colour = trait_value_3.3.1,
-    dispersal_syndrome_1 = trait_value_3.6.1,
-    pollination_syndrome_1 = trait_value_3.7.1,
-    flowering_start = trait_value_3.21.1,
+    dispersal_syndrome_1 = trait_value_3.3.1,
+    pollination_syndrome_1 = trait_value_3.6.1,
+    flowering_start = trait_value_3.7.1,
+    flower_colour = trait_value_3.21.1,
     sla_mean = trait_value_4.1.3,
     nitrogen_fix_1 = trait_value_4.5.1
   )

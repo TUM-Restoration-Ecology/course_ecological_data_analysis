@@ -29,9 +29,9 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 [![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
 [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
 
-::: {.content-hidden when-format = "html"}
+::: {.content-hidden when-format="html"}
 
-# Tasks
+Tasks
 
 * Make Ammer working also with categorical traits
 * Include DHarma
@@ -43,7 +43,7 @@ This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426))
 
 # Preparation
 
-In this exercise we will learn how to compute one important index of community trait structure, i.e. Community Weighted Mean (CWM). This exercise follows the first part of Chapter 5 of the reference textbook, so all theoretical and mathematical issues beyond the indices described in this exercise can be found there.
+We studied trait dissimilarity among species and now we have a look at trait dissimilarity among communities. In this exercise we will learn how to compute one important index of community trait structure, i.e. Community Weighted Mean (CWM). This exercise follows the first part of Chapter 5 of the reference textbook, so all theoretical and mathematical issues beyond the indices described in this exercise can be found there.
 
 Load the libraries. The FD package is of (Laliberté & Legendre [2010](https://doi.org/10.1890/08-2244.1))
 
@@ -110,6 +110,11 @@ species_ammer <- read_csv(
 
 traits_ammer <- read_csv(
   here("data", "processed", "data_processed_traits_ammer.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+  )
+
+sites_ammer <- read_csv(
+  here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_sites.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
 ```
@@ -273,7 +278,7 @@ With quantitative traits the `dbFD` function removes the species for which trait
 Let’s now use real data and let’s start with the NE Spain data described above. Let’s first check the dimension of the objects and if the species names are the same in the plot composition data and in the trait data:
 
 ```{r}
-rm(list = setdiff(ls(), c("species_ammer", "species_spain", "traits_ammer", "traits_spain", "sites_spain")))
+rm(list = setdiff(ls(), c("species_ammer", "species_spain", "traits_ammer", "traits_spain", "sites_spain", "sites_ammer")))
 dim(species_spain)
 ```
 
@@ -380,7 +385,7 @@ Plot the CWMs of SLA
 sites_spain %>%
   ggplot(aes(x = cwm.abu.sla)) +
   geom_density(color = "black", fill = "black", alpha = .1) +
-  labs(x = expression(CWM~SLA~"["*cm^2~g^-1*"]")) +
+  labs(x = expression(CWM~SLA~"["*mm^2~mg^-1*"]")) +
   theme(
     axis.line = element_line(color = "black"),
     panel.background = element_rect(fill = "transparent")
@@ -404,42 +409,23 @@ write_csv(
 ### Preparation
 
 ```{r}
-rm(list = setdiff(ls(), c("species_ammer", "species_spain", "traits_ammer", "traits_spain", "sites_spain")))
+rm(list = setdiff(ls(), c("species_ammer", "species_spain", "traits_ammer", "traits_spain", "sites_spain", "sites_ammer")))
 data_traits <- traits_ammer %>%
   select(accepted_name, sla_mean, growth_form_2) %>%
   filter(!is.na(sla_mean) & !(growth_form_2 %in% c("shrub", "tree"))) %>% # remove NAs of SLA and shrubs and trees
-  mutate(sla_log = log(sla_mean))
+  mutate(sla_log = log(sla_mean)) %>%
+  arrange(accepted_name) %>%
+  select(accepted_name, sla_log)
 
 data_species <- species_ammer %>%
-  select(id.plot, name.plant, cover) %>%
-  semi_join(data_traits, by = "name.plant") %>% 
-  # only data from subtransects A1-A4, not T:
-  filter(!str_ends(id.plot, "T"))
-
-# Check duplicates
-data_species %>%
-  group_by(id.plot, name.plant) %>% 
-  count() %>%
-  filter(n > 1)
-# Check
-data_species %>%
-  dplyr::group_by(id.plot, name.plant) %>%
-  dplyr::summarise(n = dplyr::n(), .groups = "drop") %>%
-  dplyr::filter(n > 1L)
-
-data_species <- data_species %>%
-  arrange(name.plant) %>%
-  pivot_wider(
-    names_from = "name.plant", values_from = "cover", values_fill = 0,
-    values_fn = mean
-  ) %>%
-  filter(!is.na(id.plot)) %>% # no NA in dataset
-  column_to_rownames("id.plot")
+  semi_join(data_traits, by = "accepted_name") %>%
+  arrange(accepted_name) %>%
+  pivot_longer(-accepted_name, names_to = "plot_id", values_to = "value") %>%
+  pivot_wider(names_from = "accepted_name", values_from = "value") %>%
+  column_to_rownames(var = "plot_id")
 
 data_traits <- data_traits %>%
-  arrange(name.plant) %>%
-  filter(!is.na(name.plant)) %>% # no NA
-  column_to_rownames("name.plant")
+  column_to_rownames("accepted_name")
 ```
 
 ### Calculation
@@ -462,10 +448,10 @@ data_presence <- FD::dbFD(
 Merge the CWMs in the sites data
 
 ```{r}
-data <- data.frame(resCWM$FDis, resCWM$CWM$SLA_log) %>%
+data <- data.frame(data_abundance$FDis, data_abundance$CWM$sla_log) %>%
   rownames_to_column("id.plot") %>%
   rename(
-    "cwm.abu.sla" = "resCWM.CWM.SLA_log"
+    "cwm.abu.sla" = "data_abundance.CWM.sla_log"
   ) %>%
   mutate(
     across(where(is.numeric), ~ exp(.x)), # backtransform traits
@@ -475,6 +461,7 @@ data <- data.frame(resCWM$FDis, resCWM$CWM$SLA_log) %>%
 sla <- data
 
 sites_ammer <- sites_ammer %>%
+  rename(id.plot = id) %>%
   left_join(sla, by = "id.plot")
 ```
 
@@ -490,5 +477,29 @@ sites_ammer %>%
     panel.background = element_rect(fill = "transparent")
   )
 ```
+
+Let's compare the values of the Spanish dataset and the Ammer data:
+
+```{r}
+data_spain <- sites_spain %>%
+  select(id.plot, cwm.abu.sla) %>%
+  mutate(
+    location = "spain",
+    cwm.abu.sla = cwm.abu.sla * 10 # we have to correct the unit
+    )
+data_ammer <- sites_ammer %>%
+  select(id.plot, cwm.abu.sla) %>%
+  mutate(location = "ammer")
+
+bind_rows(data_spain, data_ammer) %>%
+  ggplot(aes(x = cwm.abu.sla, fill = location)) +
+  geom_density(color = "black", alpha = .1) +
+  labs(x = expression(CWM~SLA~"["*cm^2~g^-1*"]")) +
+  theme(
+    axis.line = element_line(color = "black"),
+    panel.background = element_rect(fill = "transparent")
+  )
+```
+
 
  <a href="#top">Back to top</a>

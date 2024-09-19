@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Markus Bauer  ">
-<meta name="dcterms.date" content="2024-08-12">
+<meta name="dcterms.date" content="2024-09-19">
 
 <title>Analysis of Ecological Data   Trait dissimilarity</title>
 <style>
@@ -125,6 +125,7 @@ window.Quarto = {
   <li><a href="#categorical-and-fuzzy-coded-traits" id="toc-categorical-and-fuzzy-coded-traits" class="nav-link" data-scroll-target="#categorical-and-fuzzy-coded-traits"><span class="header-section-number">2.2</span> Categorical and fuzzy coded traits</a></li>
   <li><a href="#missing-values-nas" id="toc-missing-values-nas" class="nav-link" data-scroll-target="#missing-values-nas"><span class="header-section-number">2.3</span> Missing values (NAs)</a></li>
   </ul></li>
+  <li><a href="#plot-trait-dissimilarity" id="toc-plot-trait-dissimilarity" class="nav-link" data-scroll-target="#plot-trait-dissimilarity"><span class="header-section-number">3</span> Plot trait dissimilarity</a></li>
   </ul>
 </nav>
 </div>
@@ -149,7 +150,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2024-08-12</p>
+      <p class="date">2024-09-19</p>
     </div>
   </div>
   
@@ -170,12 +171,12 @@ window.Quarto = {
 <h1 data-number="1"><span class="header-section-number">1</span> Preparation</h1>
 <section id="load-libraries" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="load-libraries"><span class="header-section-number">1.1</span> Load libraries</h2>
-<p>The FD package is of Laliberté &amp; Legendre (<a href="https://doi.org/10.1890/08-2244.1">2010</a>).</p>
+<p>The <code>FD</code> package is of Laliberté &amp; Legendre (<a href="https://doi.org/10.1890/08-2244.1">2010</a>) and <code>funspace</code> of Carmona et al.&nbsp;(<a href="https://doi.org/10.1111/ddi.13820">2024</a>).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FD)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gawdis)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(funspace)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -184,7 +185,7 @@ window.Quarto = {
 <p>Let us create first some ‘species x traits’ matrix by hand, just for simplicity. This will include 3 traits, a quantitative trait such as <em>body size</em> (t1), a qualitative trait transformed into a binary code, for example if species are <em>carnivorous</em> or not (t2; 1=yes, 0=no) and a categorical trait with multiple levels (i.e.&nbsp;a factor with more than 2 levels), species <em>color</em> in the example (t3) using fuzzy coding (i.e.&nbsp;more columns are used to characterize a trait; see the reference book). We explain in more detail below, a bit better, the reasoning behind such fuzzy coding.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>species_ammer <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_species.csv"</span>),</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_species_ammer.csv"</span>),</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="cn">TRUE</span>, <span class="at">col_types =</span> <span class="fu">cols</span>(</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> <span class="st">"?"</span>,</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">accepted_name =</span> <span class="st">"f"</span></span>
@@ -192,7 +193,7 @@ window.Quarto = {
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_traits.csv"</span>),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_traits_ammer.csv"</span>),</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="cn">TRUE</span>, <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">.default =</span> <span class="st">"?"</span>)</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
@@ -396,14 +397,14 @@ bodysize
 <div class="cell-output cell-output-stdout">
 <pre><code>   1 2 3 4 5 6 7 8 9
 2  1                
-3  1 1              
-4  1 1 0            
-5  0 1 1 1          
-6  1 0 1 1 1        
-7  1 1 0 0 1 1      
-8  0 1 1 1 0 1 1    
-9  1 1 0 0 1 1 0 1  
-10 1 0 1 1 1 0 1 1 1</code></pre>
+3  1 0              
+4  1 0 0            
+5  1 0 0 0          
+6  0 1 1 1 1        
+7  0 1 1 1 1 0      
+8  1 0 0 0 0 1 1    
+9  1 1 1 1 1 1 1 1  
+10 1 0 0 0 0 1 1 0 1</code></pre>
 </div>
 </div>
 <p>This basically works as for the dissimilarity with a binary trait. If the species are into the same category, then dissimilarity is 0 and vice-versa, if the species are into different categories, then dissimilarity is 1. So we could treat this into a binary type of traits, but since we have three levels (grass, forb, legume) we would need 3 columns. This can be done, for example as:</p>
@@ -413,16 +414,16 @@ bodysize
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  ade4<span class="sc">::</span><span class="fu">acm.disjonctif</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   ..forb ..grass ..legume
-1       1       0        0
-2       0       0        1
-3       0       1        0
-4       0       1        0
+1       0       1        0
+2       1       0        0
+3       1       0        0
+4       1       0        0
 5       1       0        0
-6       0       0        1
+6       0       1        0
 7       0       1        0
 8       1       0        0
-9       0       1        0
-10      0       0        1</code></pre>
+9       0       0        1
+10      1       0        0</code></pre>
 </div>
 </div>
 <p>This function creates the so called dummy variables, where each level of a factor gets its own column. Notice that each species as a value 1 for one column and 0 for the others. So the sum across 3 columns, for a given species, is 1 (the <code>rowsum</code> will be equal to 1). <strong>BE CAREFUL</strong>, the function <code>gowdis</code>, does not need we perform this step by hand, so we gave give the trait information directly as the, for example, “df” object above. So that life is easy in this specific case.</p>
@@ -613,7 +614,14 @@ sp7 0.0 1.0 0.5 1.0 0.8 1.0</code></pre>
 <span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  ade4<span class="sc">::</span><span class="fu">ktab.list.df</span>()</span>
 <span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>dissim.ktab <span class="ot">&lt;-</span> list.traits <span class="sc">%&gt;%</span></span>
 <span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  ade4<span class="sc">::</span><span class="fu">dist.ktab</span>(<span class="fu">c</span>(<span class="st">"Q"</span>, <span class="st">"F"</span>))</span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mean.dissim.all, dissim.ktab)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(mean.dissim.all, dissim.ktab) <span class="sc">%&gt;%</span></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mean.dissim.all, <span class="at">y =</span> dissim.ktab)) <span class="sc">+</span></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.line =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"black"</span>),</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"transparent"</span>)</span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -630,6 +638,111 @@ sp7 0.0 1.0 0.5 1.0 0.8 1.0</code></pre>
 <p>As already shown above, an important issue with the computation of trait dissimilarity is the case of missing trait values. In the case above of the matrix <code>traits_invented</code>, for the quantitative trait the dissimilarity between species 6 and the other species cannot be computed (i.e.&nbsp;NA). The good news is that dissimilarity can be still computed considering other traits when, and only when, there is at least one trait value available for species 6 (and the species to which species 6 is compared to). The resulting dissimilarity combining traits for species 6 is simply the average of the dissimilarity for those traits without NA. In case of the example above this would correspond to the average between dissimilarity for carnivory and for color only, excluding body size (because of the NA). Then, we can still use the dissimilarity resulting from other traits and discard, for the comparisons with species 6, the missing information about body size. For example, the distance between species 1 and 6 would consider both color and carnivory, i.e.&nbsp;0.5, since dissimilarity based on carnivory is equal to 0 and dissimilarity based on color is equal to 1, and so on. We will deal with the cases of filling NA values in another exercise related to Chapter 6.</p>
 <p><a href="#top">Back to top</a></p>
 </section>
+</section>
+<section id="plot-trait-dissimilarity" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Plot trait dissimilarity</h1>
+<p>You can use the package <code>funspace</code> (Carmona et al.&nbsp;<a href="https://doi.org/10.1111/ddi.13820">2024</a>) to plot the functional trait space. First, select the traits either 2 or several traits wich then requires a PCA (like in the example below). The functiona does not allow NAs. Therefore, you have to omit missing values or collect them. Here, we have a function which imputes missing trait values. You can also use a phlyogenetic tree for imputation, but we keep it simple here. For your own data, collect your missing traits yourself, or read the paper to understand how the imputation works.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(funspace)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> traits_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(accepted_name, sla_mean, plant_height_mean, seed_mass_mean) <span class="sc">%&gt;%</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="st">"accepted_name"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">scale</span>(., <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>imputed <span class="ot">&lt;-</span> funspace<span class="sc">::</span><span class="fu">impute</span>(<span class="at">traits =</span> data, <span class="at">addingSpecies =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>imputed2 <span class="ot">&lt;-</span> imputed<span class="sc">$</span>imputed</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>pca.trait <span class="ot">&lt;-</span> <span class="fu">princomp</span>(imputed2, <span class="at">cor =</span> <span class="cn">TRUE</span>) <span class="co"># Calculate PCA</span></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> funspace<span class="sc">::</span><span class="fu">funspace</span>(</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> pca.trait, <span class="at">PCs =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">n_divisions =</span> <span class="dv">300</span>,</span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">group.vec =</span> traits_ammer<span class="sc">$</span>growth_form_2 <span class="co"># include groups in calculation</span></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Functional space based on a PCA with 3 dimensions
+Dimensions 1 and 2 are considered in analyses
+
+Loadings:
+                  Comp.1 Comp.2 Comp.3
+sla_mean           0.676  0.650  0.348
+plant_height_mean -0.827 -0.003  0.562
+seed_mass_mean    -0.672  0.657 -0.342
+
+Percentage of variance explained for each trait:
+                  Comp.1 Comp.2 Overall_explained
+sla_mean           45.65  42.26             87.92
+plant_height_mean  68.45   0.00             68.45
+seed_mass_mean     45.19  43.12             88.31
+
+------------------------------------------------------------
+
+Functional diversity indicators:
+
+ ---&gt; For the global set of species:
+
+Functional richness (99.9% probability threshold) = 20.36
+
+Functional divergence  = 0.78
+
+ ---&gt; For each group:
+
+Functional richness (99.9% probability threshold; forb) = 8.32 
+Functional richness (99.9% probability threshold; graminoid) = 5.98 
+Functional richness (99.9% probability threshold; herb) = 5.77 
+Functional richness (99.9% probability threshold; shrub) = 6.66 
+Functional richness (99.9% probability threshold; subshrub) = 3.04 
+Functional richness (99.9% probability threshold; tree) = 13.95
+
+Functional divergence (forb) = 0.34 
+Functional divergence (graminoid) = 0.48 
+Functional divergence (herb) = 0.49 
+Functional divergence (shrub) = 0.49 
+Functional divergence (subshrub) = 0.33 
+Functional divergence (tree) = 0.76 </code></pre>
+</div>
+</div>
+<p>Let’s plot the functional trait space</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> m1,</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"global"</span>, <span class="co"># plot the global TPD</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">quant.plot =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">arrows =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">arrows.length =</span> <span class="fl">0.6</span> <span class="co"># make arrows a bit shorter than the default</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="course_ecodata_4_3_trait_dissimilarity_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can plot the trait space for subgroups like different growth forms.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.1</span>, <span class="dv">0</span>))</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> m1,</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"groups"</span>, <span class="co"># a plot for each group (family)</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">quant.plot =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">globalContour =</span> <span class="cn">TRUE</span>, <span class="co"># The contour of the global TPD</span></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">pnt =</span> <span class="cn">TRUE</span>, <span class="co"># add points for species of each family</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">pnt.cex =</span> <span class="fl">0.1</span>, <span class="co"># points should be small</span></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">pnt.col =</span> <span class="fu">rgb</span>(<span class="fl">0.2</span>, <span class="fl">0.8</span>, <span class="fl">0.1</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>),</span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">axis.title.line =</span> <span class="dv">1</span></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="course_ecodata_4_3_trait_dissimilarity_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>You can see that different growth forms have a different place in the functional trait space. However, be careful because there are problems in the ‘growth_form_2’ column. There are NAs, ‘herbs’ and ‘forbs’, and <em>Carex</em> species determined as herbs and not graminoids.</p>
+<p><a href="#top">Back to top</a></p>
 </section>
 
 </main>
