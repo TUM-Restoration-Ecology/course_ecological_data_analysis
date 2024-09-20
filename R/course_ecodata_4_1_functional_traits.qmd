@@ -33,7 +33,7 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 # Tasks
 
-* 
+* Include Ellenberg values (see last point)
 
 :::
 
@@ -47,6 +47,7 @@ You can always install missing libraries by `install.packages()` like `install.p
 library(here)
 library(tidyverse)
 library(GIFT)
+library(vegdata)
 library(TNRS)
 rm(list = ls())
 ```
@@ -290,4 +291,20 @@ write_csv(
 * Resolve names with TNRS
 * Note the version of the database from `metadata$version` and the sources of the names with `metadata$citations` for the material-and-methods section
 * Note the range of 'Overall_score' for your submitted species names.
- 
+
+::: {.content-hidden when-format="html"}
+
+# Ellenberg indicator values
+
+Tichý et al. ([2023](https://doi.org/10.1111/jvs.13168)) with available Ellenberg values on [Zenodo](https://doi.org/10.5281/zenodo.7427088)
+
+
+```{r save-files}
+library(vegdata)
+tv_home <- options(
+  tv_home = here("data", "raw", "GermanSL 1.5")
+  )
+tv_home
+ellenberg <- vegdata::tv.traits()
+```
+:::

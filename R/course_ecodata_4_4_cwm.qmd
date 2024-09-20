@@ -357,7 +357,7 @@ resCWM %>%
 
 WELL DONE! we now have the CWM data. 
 
-### Plotting and saving
+### Saving
 
 Merge the CWMs in the sites data
 
@@ -379,6 +379,16 @@ sites_spain <- sites_spain %>%
   left_join(sla, by = "id.plot")
 ```
 
+Save the new sites data
+
+```{r}
+write_csv(
+  sites_spain, here::here("data", "processed", "data_processed_sites_spain.csv")
+  )
+```
+
+### Plotting
+
 Plot the CWMs of SLA
 
 ```{r}
@@ -391,16 +401,6 @@ sites_spain %>%
     panel.background = element_rect(fill = "transparent")
   )
 ```
-
-Save the new sites data
-
-```{r}
-write_csv(
-  sites_spain, here::here("data", "processed", "data_processed_sites_spain")
-  )
-```
-
-
 
 <a href="#top">Back to top</a>
 
@@ -443,7 +443,7 @@ data_presence <- FD::dbFD(
 )
 ```
 
-### Plotting and saving
+### Saving
 
 Merge the CWMs in the sites data
 
@@ -464,6 +464,16 @@ sites_ammer <- sites_ammer %>%
   rename(id.plot = id) %>%
   left_join(sla, by = "id.plot")
 ```
+
+Save the new sites data
+
+```{r}
+write_csv(
+  sites_ammer, here::here("data", "processed", "data_processed_ammer_spain.csv")
+  )
+```
+
+### Plotting
 
 Plot the CWMs of SLA
 

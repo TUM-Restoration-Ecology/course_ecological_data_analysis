@@ -1,0 +1,17 @@
+id.plot,year,treatment,barrierDistance,ditchDistance,riverDistance,plotHeight,plotSize,treeCover,shrubCover,herbHeight,herbCover,deadwoodCover,bankType,structureType,easting,northing,photoID,surveyDate,cwm.abu.sla
+IN1,2017,behind_dam,205,16,NA,high,100,18.75,8.75,80,87.5,10,NA,lichter Grauerlenwald,4421900,5293363,107-0470,2017-06-10,201.7
+IN2,2017,behind_dam,239,16,NA,high,100,37.5,18.75,70,87.5,2,NA,lichter Eschen-Erlenwald,4421850,5293355,107-0472	 107-0473,2017-06-11,192.91
+IN3,2017,behind_dam,273,31,NA,high,100,37.5,18.75,50,87.5,18.75,NA,Grauerlenwald,4421837,5293341,107-0474	 107-0475,2017-06-11,231.92
+IN4,2017,behind_dam,353,22,NA,high,100,37.5,18.75,60,87.5,8.75,NA,Bruchwald,4421776,5293299,107-0476,2017-06-11,199.71
+IN5,2017,behind_dam,387,10,NA,high,100,87.5,18.75,40,87.5,8.75,NA,Erlen-Eschen-Bruchwald,4421755,5293258,107-0477	 107-0478,2017-06-11,265.31
+IN6,2017,behind_dam,421,11,NA,high,100,37.5,18.75,40,87.5,4,NA,Eschenwald,4421727,5293245,107-0479	 107-0480,2017-06-12,234.89
+AC1,2017,no_dam,205,NA,5,high,100,87.5,62.5,40,87.5,4,cutbank,Auwald,4422329,5293408,107-0488	 107-0489,2017-06-12,234.27
+AC2,2017,no_dam,239,NA,5,high,100,62.5,37.5,40,87.5,8.75,cutbank,Auwald,4422350,5293399,107-0490	 107-0491,2017-06-12,252.26
+AC3,2017,no_dam,273,NA,5,high,100,87.5,18.75,40,87.5,8.75,cutbank,Eschen-Ulmen-Auwald,4422394,5293405,107-0498	 107-0499,2017-06-12,250.65
+AC4,2017,no_dam,380,NA,17,high,100,62.5,18.75,40,87.5,4,point_bar,Grauerlenwald,4422477,5293390,107-0500	 107-0501,2017-06-13,241.8
+AC5,2017,no_dam,414,NA,37,high,100,62.5,18.75,50,87.5,4,point_bar,Grauerlenwald,4422509,5293398,107-0502	 107-0503,2017-06-13,223.06
+AC6,2017,no_dam,448,NA,44,high,100,62.5,37.5,50,87.5,18.75,point_bar,Mischauwald,4422540,5293408,107-0504	 107-0505,2017-06-13,244.64
+Extra1,2017,infront_dam,458,NA,6,high,100,18.75,2,90,87.5,2,point_bar,Erlenauwald,4421706,5293185,107-0640,2017-07-05,206.81
+Extra2,2017,infront_dam,492,NA,15,high,100,62.5,8.75,60,87.5,0.5,point_bar,Auwald,4421672,5293180,107-0642,2017-07-05,226.2
+Extra3,2017,infront_dam,526,NA,17,high,100,87.5,18.75,60,87.5,2,point_bar,Auwald,4421649,5293151,107-0645,2017-07-06,224.27
+Extra4,2017,infront_dam,560,NA,11,high,100,18.75,37.5,70,87.5,2,point_bar,Auwald mit viel Erlenaufwuchs in Strauchschicht und viel Fichtenaufwuchs in Krautschicht,4421637,5293148,107-0651,2017-07-06,212.99
