@@ -36,6 +36,7 @@ Tasks
 * Make Ammer working also with categorical traits
 * Include DHarma
 * Include data exploration
+* Write learning objectives
 
 :::
 

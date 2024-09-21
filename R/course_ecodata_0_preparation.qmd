@@ -33,6 +33,16 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 [christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
+::: {.content-hidden when-format="html"}
+
+# Tasks
+
+* Write learning objectives
+* Introduce data sets
+* Exploring the dataset: https://r.qcbs.ca/workshop10/book-en/exploration.html
+
+:::
+
 # Welcome
 
 Dear students, 

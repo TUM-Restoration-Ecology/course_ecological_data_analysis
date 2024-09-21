@@ -34,6 +34,7 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 # Tasks
 
 * Subsitute NA values of Ammer dataset
+* Write learning objectives
 
 :::
 

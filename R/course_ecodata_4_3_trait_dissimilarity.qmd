@@ -36,6 +36,7 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 * !Introduce exercise better and write solution
 * Use gawdis::gawdis Bello et al. (2021) https://doi.org/10.1111/2041-210X.13537
 * Introduce clustering
+* Write learning objectives
 
 :::
 

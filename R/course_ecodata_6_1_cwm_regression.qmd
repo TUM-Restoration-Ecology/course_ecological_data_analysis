@@ -33,10 +33,7 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 # Tasks
 
-* !Introduce exercise better and write solution
-* !Include a plot to draw
-* Use gawdis::gawdis
-* Introduce clustering
+* Write learning objectives
 
 :::
 ---

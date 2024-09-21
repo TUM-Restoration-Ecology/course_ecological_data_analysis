@@ -38,6 +38,7 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 * Select suitable values for SLA
 * NMDS only possible with 9-15 communities
 * Use package Landscape metrics with CORINE landcover
+* Write learning objectives
 
 :::
 

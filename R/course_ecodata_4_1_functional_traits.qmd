@@ -34,6 +34,7 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 # Tasks
 
 * Include Ellenberg values (see last point)
+* Write learning objectives
 
 :::
 
