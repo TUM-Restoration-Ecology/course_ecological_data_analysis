@@ -34,9 +34,7 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 # Tasks
 
-* Include family data in Ammer traits data
-* Define species composition for Ammer data
-* Select suitable values for SLA
+* Change order of high and intermediate
 * Use package Landscape metrics with CORINE landcover
 * Write learning objectives
 * Create 9-15 species composition and use then a NMDS
@@ -53,7 +51,7 @@ The package `Select` determines species probabilities (i.e., relative abundances
 
 The Select package is of Laughlin et al. ([2018](https://doi.org/10.1111/2041-210X.13023))
 
-```{r}
+```{r message = FALSE, warning = FALSE}
 library(here)
 library(tidyverse)
 library(Select)
@@ -316,7 +314,7 @@ Select::plotProbs(mix_intermediate, traits)
 
 ### Control species composition
 
-```{r results = FALSE}
+```{r}
 mix_low$prob %>%
   as.data.frame() %>%
   rownames_to_column("name") %>%
@@ -348,7 +346,7 @@ mix_intermediate$prob %>%
 
 <a href="#top">Back to top</a>
 
-::: {.content-hidden when-format = "html"}
+::: {.content-hidden when-format="html"}
 
 ### Create a NMDS
 
