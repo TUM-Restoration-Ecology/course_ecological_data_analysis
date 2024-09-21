@@ -102,7 +102,7 @@ sites_spain <- read_delim(
   )
 
 species_ammer <- read_csv(
-  here("data", "processed", "data_processed_species_ammer.csv"),
+  here("data", "processed", "data_processed_species_ammer_4.1.csv"),
   col_names = TRUE, col_types = cols(
     .default = "?",
     accepted_name = "f"
@@ -110,7 +110,7 @@ species_ammer <- read_csv(
   )
 
 traits_ammer <- read_csv(
-  here("data", "processed", "data_processed_traits_ammer.csv"),
+  here("data", "processed", "data_processed_traits_ammer_4.1.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
 
@@ -384,7 +384,9 @@ Save the new sites data
 
 ```{r}
 write_csv(
-  sites_spain, here::here("data", "processed", "data_processed_sites_spain.csv")
+  sites_spain, here::here(
+    "data", "processed", "data_processed_sites_spain_4.4.csv"
+    )
   )
 ```
 
@@ -470,7 +472,7 @@ Save the new sites data
 
 ```{r}
 write_csv(
-  sites_ammer, here::here("data", "processed", "data_processed_ammer_spain.csv")
+  sites_ammer, here::here("data", "processed", "data_processed_ammer_4.4.csv")
   )
 ```
 

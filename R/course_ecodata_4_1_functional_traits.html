@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Markus Bauer  ">
-<meta name="dcterms.date" content="2024-09-19">
+<meta name="dcterms.date" content="2024-09-21">
 
 <title>Analysis of Ecological Data   How to get functional traits?</title>
 <style>
@@ -99,9 +99,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   </ul></li>
   <li><a href="#name-resolving" id="toc-name-resolving" class="nav-link" data-scroll-target="#name-resolving"><span class="header-section-number">4</span> Name resolving</a></li>
-  <li><a href="#merge" id="toc-merge" class="nav-link" data-scroll-target="#merge"><span class="header-section-number">5</span> Merge</a></li>
-  <li><a href="#save" id="toc-save" class="nav-link" data-scroll-target="#save"><span class="header-section-number">6</span> Save</a></li>
-  <li><a href="#your-own-dataset" id="toc-your-own-dataset" class="nav-link" data-scroll-target="#your-own-dataset"><span class="header-section-number">7</span> Your own dataset</a></li>
+  <li><a href="#merge-tnrs-names-with-species-and-traits-table" id="toc-merge-tnrs-names-with-species-and-traits-table" class="nav-link" data-scroll-target="#merge-tnrs-names-with-species-and-traits-table"><span class="header-section-number">5</span> Merge TNRS names with species and traits table</a></li>
+  <li><a href="#ellenberg-indicator-values" id="toc-ellenberg-indicator-values" class="nav-link" data-scroll-target="#ellenberg-indicator-values"><span class="header-section-number">6</span> Ellenberg indicator values</a></li>
+  <li><a href="#save" id="toc-save" class="nav-link" data-scroll-target="#save"><span class="header-section-number">7</span> Save</a></li>
+  <li><a href="#tasks-1" id="toc-tasks-1" class="nav-link" data-scroll-target="#tasks-1"><span class="header-section-number">8</span> Tasks</a></li>
   </ul>
 </nav>
 </div>
@@ -126,7 +127,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2024-09-19</p>
+      <p class="date">2024-09-21</p>
     </div>
   </div>
   
@@ -177,16 +178,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="calculate-traits-from-measured-values" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Calculate traits from measured values</h1>
-<p>A short example how to calculate functional traits by your own. For example the specific leaf area (SLA) of trees (<em>Acer platanoides</em> and <em>Tilia cordata</em>) in a greenhouse experiment in Dürnast (Bauer et al.&nbsp;<a href="https://doi.org/10.1007/s00468-023-02391-8">2023</a>).</p>
+<p>A short example how to calculate functional traits by your own. For example the specific leaf area (SLA) of trees (<a href="https://floraveg.eu/taxon/overview/Acer%20platanoides"><em>Acer platanoides</em></a> and <a href="https://floraveg.eu/taxon/overview/Tilia%20cordata"><em>Tilia cordata</em></a>) in a greenhouse experiment in Dürnast (Bauer et al.&nbsp;<a href="https://doi.org/10.1007/s00468-023-02391-8">2023</a>).</p>
 <p>Per tree, three leaves were chosen and the leaf area was measured and latter the dry weight (Perez-Harguindeguy et al.&nbsp;<a href="https://www.uv.es/jgpausas/papers/PerezHarguindeguy-2013-AJB_traits-handbook2.pdf">2013</a>, section 3.1).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>traits_bricks <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"raw"</span>, <span class="st">"example_course_brick_trees_mb"</span>, <span class="st">"data_raw.csv"</span>),</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="cn">TRUE</span>, <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">.default =</span> <span class="st">"?"</span>)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>traits_bricks <span class="sc">%&gt;%</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(plot, block, species, <span class="fu">starts_with</span>(<span class="st">"leaf"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>traits_bricks <span class="sc">%&gt;%</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(plot, block, species, <span class="fu">starts_with</span>(<span class="st">"leaf"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 9
   plot      block species leaf1Mass leaf2Mass leaf3Mass leaf1Area leaf2Area
@@ -233,15 +235,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="traits-from-databases" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> Traits from databases</h1>
-<p><a href="https://biogeomacro.github.io/GIFT/articles/GIFT.html#trait-data">Original vignette</a> (Denelle &amp; Weigelt 2024)</p>
+<p><a href="https://biogeomacro.github.io/GIFT/articles/GIFT.html#trait-data">Original vignette</a> by Denelle &amp; Weigelt (2024)</p>
 <p>Get the functional trait values from the Global Inventory of Floras and Traits (GIFT) database (Weigelt et al.&nbsp;<a href="https://doi.org/10.1111/jbi.13623">2023</a>) with the package <code>GIFT</code> (Denelle et al.&nbsp;<a href="https://doi.org/10.1111/2041-210X.14213">2023</a>).</p>
 <section id="metadata-of-traits" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="metadata-of-traits"><span class="header-section-number">3.1</span> Metadata of traits</h2>
 <p>There are many functional traits available in the GIFT database. Each of these traits has an identification number called <code>trait_ID</code>. Since the two functions for retrieving trait values, <code>GIFT_traits()</code> and <code>GIFT_traits_raw()</code>, rely on these IDs, the first step is to call the function <code>GIFT_traits_meta()</code> to know what the ID of the desired trait is. For example, let’s say we want to retrieve the maximum vegetative heights of plant species.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>trait_meta <span class="ot">&lt;-</span> GIFT<span class="sc">::</span><span class="fu">GIFT_traits_meta</span>()</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>trait_meta <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Trait2, <span class="st">"height"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>trait_meta <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(Trait2, <span class="st">"height"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>comment) <span class="sc">%&gt;%</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  Lvl1     Category Lvl2       Trait1   Lvl3            Trait2 Units    type
 1    1   Morphology  1.6 Plant height  1.6.1  Plant_height_min     m numeric
@@ -252,15 +257,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 6    3 Reproduction 3.15 Fruit height 3.15.1  Fruit_height_min    cm numeric
 7    3 Reproduction 3.15 Fruit height 3.15.2  Fruit_height_max    cm numeric
 8    3 Reproduction 3.15 Fruit height 3.15.3 Fruit_height_mean    cm numeric
-  comment count
-1    &lt;NA&gt; 43353
-2    &lt;NA&gt; 70367
-3    &lt;NA&gt; 23219
-4    &lt;NA&gt;     7
-5    &lt;NA&gt;   148
-6    &lt;NA&gt;    54
-7    &lt;NA&gt;    54
-8    &lt;NA&gt;    54</code></pre>
+  count
+1 43353
+2 70367
+3 23219
+4     7
+5   148
+6    54
+7    54
+8    54</code></pre>
 </div>
 </div>
 <p>We can see that the ID of this trait is 1.6.2. Now that we have the ID, we can use <code>GIFT_traits()</code> to retrieve the growth form values for different plant species.</p>
@@ -278,14 +283,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>height_raw <span class="ot">&lt;-</span> GIFT<span class="sc">::</span><span class="fu">GIFT_traits_raw</span>(<span class="at">trait_IDs =</span> <span class="fu">c</span>(<span class="st">"1.6.2"</span>))</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Raw values</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>height_raw <span class="sc">%&gt;%</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(work_species, trait_ID, trait_value) <span class="sc">%&gt;%</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(work_species <span class="sc">==</span> <span class="st">"Fagus sylvatica"</span>)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Aggregated value</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>height <span class="sc">%&gt;%</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(work_species <span class="sc">==</span> <span class="st">"Fagus sylvatica"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>height_raw <span class="sc">%&gt;%</span> <span class="co"># Raw values</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(work_species, trait_ID, trait_value) <span class="sc">%&gt;%</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(work_species <span class="sc">==</span> <span class="st">"Fagus sylvatica"</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>height <span class="sc">%&gt;%</span> <span class="co"># Aggregated value</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(work_species <span class="sc">==</span> <span class="st">"Fagus sylvatica"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>There were three maximum heights for Fagus sylvatica, 30, 35, and 50 meters, which led to an aggregated value of 50 meters.</p>
 <p><a href="#top">Back to top</a></p>
@@ -317,15 +320,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"4.1.3"</span>, <span class="st">"4.5.1"</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>trait_meta <span class="sc">%&gt;%</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>GIFT<span class="sc">::</span><span class="fu">GIFT_traits_meta</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Lvl3 <span class="sc">%in%</span> trait_ids) <span class="co"># Get an overview of selected traits</span></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>data_gift <span class="ot">&lt;-</span> GIFT<span class="sc">::</span><span class="fu">GIFT_traits</span>(</span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">trait_IDs =</span> trait_ids,</span>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">agreement =</span> <span class="fl">0.66</span>, <span class="at">bias_ref =</span> <span class="cn">FALSE</span>, <span class="at">bias_deriv =</span> <span class="cn">FALSE</span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">setdiff</span>(<span class="fu">ls</span>(), <span class="fu">c</span>(<span class="st">"species_ammer"</span>, <span class="st">"traits_ammer"</span>, <span class="st">"data_gift"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><a href="#top">Back to top</a></p>
 </section>
@@ -333,91 +334,289 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="name-resolving" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Name resolving</h1>
-<p><a href="https://cran.r-project.org/web/packages/TNRS/vignettes/TNRS_vignette.html">Original vignette</a> (Maitner 2024)</p>
-<p>Use the Taxonomic Names Resolution Service (<a href="https://tnrs.biendata.org/">TNRS</a>) with the package <code>TNRS</code> (Boyle et al.<a href="https://doi.org/10.1186/1471-2105-14-16">2013</a>) for name resolving and the taxonoic resouces World Checklist of Vascular Plants of Kew Gardens (Govaerts <a href="http://sftp.kew.org/pub/data-repositories/WCVP/">2023</a>) and World Flora Online (WFO Consortium <a href="https://doi.org/10.5281/zenodo.8079052">2023</a>)</p>
+<p><a href="https://cran.r-project.org/web/packages/TNRS/vignettes/TNRS_vignette.html">Original vignette</a> by Maitner (2024)</p>
+<p>Use the Taxonomic Names Resolution Service (<a href="https://tnrs.biendata.org/">TNRS</a>) with the package <code>TNRS</code> (Boyle et al.<a href="https://doi.org/10.1186/1471-2105-14-16">2013</a>) for name resolving and the taxonoic resouces World Checklist of Vascular Plants of Kew Gardens (WCVP; Govaerts <a href="http://sftp.kew.org/pub/data-repositories/WCVP/">2023</a>) and World Flora Online (WFO Consortium <a href="https://doi.org/10.5281/zenodo.8079052">2023</a>)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>metadata <span class="ot">&lt;-</span> TNRS<span class="sc">::</span><span class="fu">TNRS_metadata</span>()</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> species_ammer <span class="sc">%&gt;%</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowid_to_column</span>(<span class="st">"id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, name) <span class="sc">%&gt;%</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  TNRS<span class="sc">::</span><span class="fu">TNRS</span>(</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">sources =</span> <span class="fu">c</span>(<span class="st">"wcvp"</span>, <span class="st">"wfo"</span>),</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">classification =</span> <span class="st">"wfo"</span>, <span class="co"># family classification</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">"resolve"</span></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>names <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    Name_submitted, Taxonomic_status, Accepted_name, Accepted_name_url,</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    Accepted_family</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(tolower)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">setdiff</span>(<span class="fu">ls</span>(), <span class="fu">c</span>(<span class="st">"species_ammer"</span>, <span class="st">"traits_ammer"</span>, <span class="st">"data_gift"</span>)))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>metadata <span class="ot">&lt;-</span> TNRS<span class="sc">::</span><span class="fu">TNRS_metadata</span>()</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> species_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowid_to_column</span>(<span class="st">"id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, name) <span class="sc">%&gt;%</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  TNRS<span class="sc">::</span><span class="fu">TNRS</span>(</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">sources =</span> <span class="fu">c</span>(<span class="st">"wcvp"</span>, <span class="st">"wfo"</span>), <span class="co"># first use WCVP and alternatively WFO</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">classification =</span> <span class="st">"wfo"</span>, <span class="co"># family classification</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">"resolve"</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>data_names <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    Name_submitted, Taxonomic_status, Accepted_name, Accepted_name_url,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    Accepted_family</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(tolower)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><a href="#top">Back to top</a></p>
 </section>
-<section id="merge" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Merge</h1>
+<section id="merge-tnrs-names-with-species-and-traits-table" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Merge TNRS names with species and traits table</h1>
 <p>Merge the resolved species names and the functional plant traits into the existing tables ‘species’ and create a new one ‘traits’. First, you have to check for duplicates in the column ‘accepted_name’ created by name resolving. Second, summarize duplicates by summing the abundances.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> species_ammer <span class="sc">%&gt;%</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">name_submitted =</span> name) <span class="sc">%&gt;%</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    names <span class="sc">%&gt;%</span> <span class="fu">select</span>(name_submitted, accepted_name), <span class="at">by =</span> <span class="st">"name_submitted"</span></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>duplicates <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">duplicated</span>(accepted_name))</span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">setdiff</span>(<span class="fu">ls</span>(), <span class="fu">c</span>(<span class="st">"species_ammer"</span>, <span class="st">"data_names"</span>, <span class="st">"data_gift"</span>)))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> species_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">name_submitted =</span> name) <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    data_names <span class="sc">%&gt;%</span> <span class="fu">select</span>(name_submitted, accepted_name), <span class="at">by =</span> <span class="st">"name_submitted"</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>data2 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(accepted_name) <span class="sc">%&gt;%</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">sum</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>species_ammer <span class="ot">&lt;-</span> data2</span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> species_ammer <span class="sc">%&gt;%</span></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(accepted_name) <span class="sc">%&gt;%</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    data_gift <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">accepted_name =</span> work_species), <span class="at">by =</span> <span class="st">"accepted_name"</span></span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">growth_form_2 =</span> trait_value_1.<span class="fl">2.2</span>,</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">parasite_1 =</span> trait_value_1.<span class="fl">5.1</span>,</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">plant_height_mean =</span> trait_value_1.<span class="fl">6.3</span>,</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed_mass_mean =</span> trait_value_3.<span class="fl">2.3</span>,</span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">dispersal_syndrome_1 =</span> trait_value_3.<span class="fl">3.1</span>,</span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">pollination_syndrome_1 =</span> trait_value_3.<span class="fl">6.1</span>,</span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">flowering_start =</span> trait_value_3.<span class="fl">7.1</span>,</span>
-<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">flower_colour =</span> trait_value_3.<span class="fl">21.1</span>,</span>
-<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">sla_mean =</span> trait_value_4.<span class="fl">1.3</span>,</span>
-<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">nitrogen_fix_1 =</span> trait_value_4.<span class="fl">5.1</span></span>
-<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
-<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>work_ID, <span class="sc">-</span>work_author, <span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">"references"</span>))</span>
-<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">setdiff</span>(<span class="fu">ls</span>(), <span class="fu">c</span>(<span class="st">"species_ammer"</span>, <span class="st">"traits_ammer"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">duplicated</span>(accepted_name))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 18
+  name_submitted       IN1   IN2   IN3   IN4   IN5   IN6   AC1   AC2   AC3   AC4
+  &lt;chr&gt;              &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 Mentha_aquatica_x…     0     0     0     0     0     0     0     0     0   0.5
+# ℹ 7 more variables: AC5 &lt;dbl&gt;, AC6 &lt;dbl&gt;, Extra1 &lt;dbl&gt;, Extra2 &lt;dbl&gt;,
+#   Extra3 &lt;dbl&gt;, Extra4 &lt;dbl&gt;, accepted_name &lt;chr&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>data2 <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(accepted_name) <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">sum</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>data2 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">duplicated</span>(accepted_name))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 17
+# ℹ 17 variables: accepted_name &lt;chr&gt;, IN1 &lt;dbl&gt;, IN2 &lt;dbl&gt;, IN3 &lt;dbl&gt;,
+#   IN4 &lt;dbl&gt;, IN5 &lt;dbl&gt;, IN6 &lt;dbl&gt;, AC1 &lt;dbl&gt;, AC2 &lt;dbl&gt;, AC3 &lt;dbl&gt;,
+#   AC4 &lt;dbl&gt;, AC5 &lt;dbl&gt;, AC6 &lt;dbl&gt;, Extra1 &lt;dbl&gt;, Extra2 &lt;dbl&gt;, Extra3 &lt;dbl&gt;,
+#   Extra4 &lt;dbl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>species_ammer <span class="ot">&lt;-</span> data2</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>data3 <span class="ot">&lt;-</span> data_names <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(accepted_name, accepted_name_url, accepted_family) <span class="sc">%&gt;%</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(accepted_name) <span class="sc">%&gt;%</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="co"># use only 1 row of accepted name (e.g. of Mentha aquatica)</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    data_gift <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">accepted_name =</span> work_species), <span class="at">by =</span> <span class="st">"accepted_name"</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="ot">&lt;-</span> data3 <span class="sc">%&gt;%</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"accepted_"</span>), <span class="fu">starts_with</span>(<span class="st">"trait_value"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">growth_form_2 =</span> trait_value_1.<span class="fl">2.2</span>,</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">parasite_1 =</span> trait_value_1.<span class="fl">5.1</span>,</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">plant_height_mean =</span> trait_value_1.<span class="fl">6.3</span>,</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed_mass_mean =</span> trait_value_3.<span class="fl">2.3</span>,</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">dispersal_syndrome_1 =</span> trait_value_3.<span class="fl">3.1</span>,</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">pollination_syndrome_1 =</span> trait_value_3.<span class="fl">6.1</span>,</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">flowering_start =</span> trait_value_3.<span class="fl">7.1</span>,</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">flower_colour =</span> trait_value_3.<span class="fl">21.1</span>,</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">sla_mean =</span> trait_value_4.<span class="fl">1.3</span>,</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">nitrogen_fix_1 =</span> trait_value_4.<span class="fl">5.1</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><a href="#top">Back to top</a></p>
 </section>
-<section id="save" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Save</h1>
+<section id="ellenberg-indicator-values" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Ellenberg indicator values</h1>
+<p>You can work with the classical Ellenberg indicator values (EIV) like with functional plant traits. Tichý et al.&nbsp;(<a href="https://doi.org/10.1111/jvs.13168">2023</a>) provide European Ellenberg values on on <a href="https://floraveg.eu/download/">FloraVeg.EU</a> (file “Ellenberg-type indicator values”; also documented on <a href="https://doi.org/10.5281/zenodo.7427088">Zenodo</a>). Use the sheet “Tab-OriginalNamesValues” and filter “Source = Ellenberg” to get the German EIV. If you analyse data across several European countries, you should load the sheet “Tab-IVs-Tichy-et-al2022”.</p>
+<p>This time we do not harmonize the ‘traits_ellenberg’ table with <code>TNRS</code>, but make to attempts to join and then we rename the species by hand.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  species_ammer, <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_species_ammer.csv"</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  traits_ammer, <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_traits_ammer.csv"</span>)</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>traits_ellenberg <span class="ot">&lt;-</span> readxl<span class="sc">::</span><span class="fu">read_excel</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"raw"</span>, <span class="st">"Indicator_values_Tichy_et_al 2022-11-29.xlsx"</span>),</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sheet =</span> <span class="st">"Tab-OriginalNamesValues"</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="cn">TRUE</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Taxon.Original, Taxon, Source, L, <span class="st">"T"</span>, M, R, N, S) <span class="sc">%&gt;%</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(tolower)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Join with 'taxon.original'</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> traits_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(accepted_name) <span class="sc">%&gt;%</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    traits_ellenberg <span class="sc">%&gt;%</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="at">accepted_name =</span> taxon.original) <span class="sc">%&gt;%</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"Ellenberg"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>taxon),</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"accepted_name"</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Join with 'taxon'</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>data2 <span class="ot">&lt;-</span> traits_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    traits_ellenberg <span class="sc">%&gt;%</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="at">accepted_name =</span> taxon.original) <span class="sc">%&gt;%</span> <span class="co"># Which have no counterpart in 'traits_ellenberg$taxon.original'</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"Ellenberg"</span>),</span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"accepted_name"</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>    traits_ellenberg <span class="sc">%&gt;%</span></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="at">accepted_name =</span> taxon) <span class="sc">%&gt;%</span></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"Ellenberg"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>taxon.original),</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"accepted_name"</span></span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>data2 <span class="sc">%&gt;%</span></span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">duplicated</span>(accepted_name))</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Join with 'taxon' but account for duplicates</span></span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>data3 <span class="ot">&lt;-</span> traits_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>    traits_ellenberg <span class="sc">%&gt;%</span></span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="at">accepted_name =</span> taxon.original) <span class="sc">%&gt;%</span> <span class="co"># Which have no counterpart in 'traits_ellenberg$taxon.original'</span></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"Ellenberg"</span>),</span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"accepted_name"</span></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>    traits_ellenberg <span class="sc">%&gt;%</span></span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="at">accepted_name =</span> taxon) <span class="sc">%&gt;%</span></span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(</span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>        source <span class="sc">==</span> <span class="st">"Ellenberg"</span> <span class="sc">&amp;</span></span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>          <span class="sc">!</span>(taxon.original <span class="sc">==</span> <span class="st">"Pimpinella major ssp. rubra"</span>) <span class="co">#  avoid duplicate</span></span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>taxon.original),</span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"accepted_name"</span></span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>missing_species <span class="ot">&lt;-</span> traits_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(accepted_name) <span class="sc">%&gt;%</span></span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(</span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a>    traits_ellenberg <span class="sc">%&gt;%</span></span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="at">accepted_name =</span> taxon.original) <span class="sc">%&gt;%</span> <span class="co"># Which have no counterpart in 'traits_ellenberg$taxon.original'</span></span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"Ellenberg"</span>),</span>
+<span id="cb18-65"><a href="#cb18-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"accepted_name"</span></span>
+<span id="cb18-66"><a href="#cb18-66" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-67"><a href="#cb18-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(</span>
+<span id="cb18-68"><a href="#cb18-68" aria-hidden="true" tabindex="-1"></a>    traits_ellenberg <span class="sc">%&gt;%</span></span>
+<span id="cb18-69"><a href="#cb18-69" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="at">accepted_name =</span> taxon) <span class="sc">%&gt;%</span> <span class="co"># Which have neither a counterpart in 'traits_ellenberg$taxon'</span></span>
+<span id="cb18-70"><a href="#cb18-70" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"Ellenberg"</span>),</span>
+<span id="cb18-71"><a href="#cb18-71" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"accepted_name"</span></span>
+<span id="cb18-72"><a href="#cb18-72" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>From ‘missing_species’ you know the species which have no match in ‘traits_ellenberg’. Therefore, you have to search this dataset by hand and rename the species names:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>data4 <span class="ot">&lt;-</span> traits_ellenberg <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">taxon.original =</span> <span class="fu">factor</span>(taxon.original),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">taxon.original =</span> <span class="fu">fct_recode</span>(</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>      taxon.original,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Dryopteris carthusiana"</span> <span class="ot">=</span> <span class="st">"Dryopteris carthusiana (spinulosa)"</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Galium mollugo"</span> <span class="ot">=</span> <span class="st">"Galium mollugo (elatum)"</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Leucanthemum vulgare"</span> <span class="ot">=</span> <span class="st">"Leucanthemum vulgare (leucanthem.)"</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Myosotis scorpioides"</span> <span class="ot">=</span> <span class="st">"Myosotis palustris (scorpioides)"</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Rosa canina"</span> <span class="ot">=</span> <span class="st">"Rosa canina agg."</span>,</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Senecio ovatus"</span> <span class="ot">=</span> <span class="st">"Senecio fuchsii (ovatus)"</span>,</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Valeriana excelsa subsp. excelsa"</span> <span class="ot">=</span> <span class="st">"Valeriana procurrens (repens)"</span>,</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Valeriana officinalis"</span> <span class="ot">=</span> <span class="st">"Valeriana (exaltata)"</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, we merge the datasets.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>data5 <span class="ot">&lt;-</span> traits_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    data4 <span class="sc">%&gt;%</span> <span class="co"># Use data4 with renamed taxon names</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(source <span class="sc">==</span> <span class="st">"Ellenberg"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="at">accepted_name =</span> taxon.original) <span class="sc">%&gt;%</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>taxon),</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"accepted_name"</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(data3) <span class="co"># Join with matched species of column 'taxon'</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>missing_completely <span class="ot">&lt;-</span> traits_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(data5, <span class="at">by =</span> <span class="st">"accepted_name"</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>data6 <span class="ot">&lt;-</span> data5 <span class="sc">%&gt;%</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(missing_completely)</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="ot">&lt;-</span> data6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><a href="#top">Back to top</a></p>
 </section>
-<section id="your-own-dataset" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> Your own dataset</h1>
+<section id="save" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Save</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">setdiff</span>(<span class="fu">ls</span>(), <span class="fu">c</span>(<span class="st">"species_ammer"</span>, <span class="st">"traits_ammer"</span>)))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  species_ammer, <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_species_ammer_4.1.csv"</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  traits_ammer, <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_traits_ammer_4.2.csv"</span>)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><a href="#top">Back to top</a></p>
+</section>
+<section id="tasks-1" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Tasks</h1>
 <ul>
 <li><p>Select at least five functional plant traits.</p></li>
-<li><p>Note the categories, IDs, unit and the version of the GIFT database for the material-and-methods section.</p></li>
+<li><p>Note the categories, IDs, unit, and the version of the GIFT database for the material-and-methods section.</p></li>
 <li><p>Get aggregated trait values from the GIFT database</p></li>
 <li><p>Resolve names with TNRS</p></li>
 <li><p>Note the version of the database from <code>metadata$version</code> and the sources of the names with <code>metadata$citations</code> for the material-and-methods section</p></li>
 <li><p>Note the range of ‘Overall_score’ for your submitted species names.</p></li>
 </ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.4.1 (2024-06-14 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 22631)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=German_Germany.utf8  LC_CTYPE=German_Germany.utf8   
+[3] LC_MONETARY=German_Germany.utf8 LC_NUMERIC=C                   
+[5] LC_TIME=German_Germany.utf8    
+
+time zone: Europe/Berlin
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] readxl_1.4.3    TNRS_0.3.6      GIFT_1.3.2      lubridate_1.9.3
+ [5] forcats_1.0.0   stringr_1.5.1   dplyr_1.1.4     purrr_1.0.2    
+ [9] readr_2.1.5     tidyr_1.3.1     tibble_3.2.1    ggplot2_3.5.1  
+[13] tidyverse_2.0.0 here_1.0.1     
+
+loaded via a namespace (and not attached):
+ [1] tidyselect_1.2.1        phytools_2.3-0          optimParallel_1.0-2    
+ [4] fastmap_1.2.0           combinat_0.0-8          digest_0.6.36          
+ [7] timechange_0.3.0        lifecycle_1.0.4         sf_1.0-16              
+[10] magrittr_2.0.3          compiler_4.4.1          rlang_1.1.4            
+[13] tools_4.4.1             igraph_2.0.3            utf8_1.2.4             
+[16] yaml_2.3.9              knitr_1.48              phangorn_2.11.1        
+[19] clusterGeneration_1.3.8 htmlwidgets_1.6.4       curl_5.2.1             
+[22] bit_4.0.5               classInt_0.4-10         mnormt_2.1.1           
+[25] scatterplot3d_0.3-44    KernSmooth_2.23-24      expm_0.999-9           
+[28] withr_3.0.0             numDeriv_2016.8-1.1     grid_4.4.1             
+[31] fansi_1.0.6             e1071_1.7-14            colorspace_2.1-0       
+[34] scales_1.3.0            iterators_1.0.14        MASS_7.3-60.2          
+[37] cli_3.6.3               crayon_1.5.3            rmarkdown_2.27         
+[40] generics_0.1.3          rstudioapi_0.16.0       httr_1.4.7             
+[43] tzdb_0.4.0              DBI_1.2.3               ape_5.8                
+[46] proxy_0.4-27            maps_3.4.2              parallel_4.4.1         
+[49] cellranger_1.1.0        BiocManager_1.30.25     vctrs_0.6.5            
+[52] Matrix_1.7-0            jsonlite_1.8.8          hms_1.1.3              
+[55] bit64_4.0.5             foreach_1.5.2           units_0.8-5            
+[58] glue_1.7.0              codetools_0.2-20        DEoptim_2.2-8          
+[61] stringi_1.8.4           gtable_0.3.5            quadprog_1.5-8         
+[64] munsell_0.5.1           pillar_1.9.0            rappdirs_0.3.3         
+[67] htmltools_0.5.8.1       httr2_1.0.2             R6_2.5.1               
+[70] doParallel_1.0.17       rprojroot_2.0.4         vroom_1.6.5            
+[73] evaluate_0.24.0         lattice_0.22-6          renv_1.0.7             
+[76] class_7.3-22            Rcpp_1.0.12             fastmatch_1.1-4        
+[79] coda_0.19-4.1           nlme_3.1-164            xfun_0.45              
+[82] pkgconfig_2.0.3        </code></pre>
+</div>
+</div>
 </section>
 
 </main>

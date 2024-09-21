@@ -29,20 +29,21 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 [![GoogleScholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
 [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
 
-::: {.content-hidden when-format = "html"}
+
+::: {.content-hidden when-format="html"}
 
 # Tasks
 
 * Include family data in Ammer traits data
 * Define species composition for Ammer data
 * Select suitable values for SLA
-* NMDS only possible with 9-15 communities
 * Use package Landscape metrics with CORINE landcover
 * Write learning objectives
+* Create 9-15 species composition and use then a NMDS
 
 :::
 
-[Original vignette](https://cran.r-project.org/web/packages/Select/vignettes/selectSpecies.html) (Laughlin et al. 2018)
+[Original vignette](https://cran.r-project.org/web/packages/Select/vignettes/selectSpecies.html) by Laughlin et al. (2018)
 
 # Preparation
 
@@ -62,17 +63,10 @@ rm(list = ls())
 ## Load data
 
 ```{r}
-species_ammer <- read_csv(
-  here("data", "processed", "data_processed_species.csv"),
-  col_names = TRUE, col_types = cols(.default = "?")
-  ) %>%
-  column_to_rownames("accepted_name")
-
 traits_ammer <- read_csv(
-  here("data", "processed", "data_processed_traits_ammer.csv"),
+  here("data", "processed", "data_processed_traits_ammer_4.1.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
-  ) %>%
-  column_to_rownames("accepted_name")
+  )
 ```
 
  <a href="#top">Back to top</a>
@@ -228,22 +222,33 @@ Select::plotProbs(result6, traits_two, cex.lab = 0.7)
 You have to select a species composition out of your species pool
 
 ```{r}
-# family is missing in traits_ammer!!
-# traits <- traits_ammer %>%
-#   mutate(
-#     functional_group = if_else(
-#       !(family == "Poaceae" | family == "Fabaceae" | family == "Cyperaceae" | family == "Juncaceae"), "forb", if_else(
-#         family == "Poaceae" | family == "Juncaceae" | family == "Cyperaceae", "graminoid", if_else(
-#           family == "Fabaceae", "legume", "other"
-#         )
-#       )
-#       )
-#       )
+rm(list = setdiff(ls(), c("traits_ammer")))
 
-#   comp <- c(sample(herbs$name, 12),
-#             sample(grass$name, 5),
-#             sample(legume$name, 3)
-#             )
+traits_ammer <- traits_ammer %>%
+  rename(family = accepted_family) %>%
+  mutate(
+    functional_group = if_else(
+      !(family == "Poaceae" | family == "Fabaceae" | family == "Cyperaceae" | family == "Juncaceae"), "forb", if_else(
+        family == "Poaceae" | family == "Juncaceae" | family == "Cyperaceae", "graminoid", if_else(
+          family == "Fabaceae", "legume", "other"
+        )
+      )
+      )
+      )
+
+traits_ammer_subsample <- traits_ammer %>%
+  filter(
+    !(growth_form_2 %in% c("shrub", "tree")) &
+      seed_mass_mean < 0.1  & 
+      !is.na(sla_mean) &
+      !is.na(seed_mass_mean)
+    ) %>%
+  mutate(
+    sla_mean = sla_mean / 100,
+    seed_mass_mean = seed_mass_mean * 100
+    ) %>%
+  group_split(functional_group) %>%
+  map2_dfr(c(14, 5, 1), ~ slice_sample(.x, n = .y))
 ```
 
 ### Calculate species composition
@@ -254,10 +259,10 @@ compositions.
 First, calculate a species composition with a low CWM of SLA.
 
 ```{r}
-rm(list = setdiff(ls(), c("species_ammer", "species_spain", "traits_ammer", "traits_spain", "sites_spain", "sites_ammer")))
+rm(list = setdiff(ls(), c("traits_ammer", "traits_ammer_subsample")))
 
-traits <- traits_ammer %>%
-  filter(!is.na(sla_mean) & !is.na(seed_mass_mean) & seed_mass_mean < 1) %>%
+traits <- traits_ammer_subsample %>%
+  column_to_rownames(var = "accepted_name") %>%
   select(sla_mean, seed_mass_mean)
 
 traits_x <- traits %>%
@@ -270,7 +275,7 @@ traits_y <-  traits %>%
 
 mix_low <- Select::selectSpecies(
   t2c = traits_x,
-  constraints = c(sla_mean = 290),
+  constraints = c(sla_mean = 2.9),
   t2d = traits_y,
   obj = "QH",
   capd = TRUE
@@ -284,7 +289,7 @@ Second, calculate a species composition with a high CWM of SLA.
 ```{r}
 mix_high <- Select::selectSpecies(
   t2c = traits_x,
-  constraints = c(sla_mean = 350),
+  constraints = c(sla_mean = 3.5),
   t2d = traits_y,
   obj = "QH",
   capd = TRUE
@@ -298,7 +303,7 @@ Third, calculate a species composition with an intermediate CWM of SLA.
 ```{r}
 mix_intermediate <- Select::selectSpecies(
   t2c = traits_x,
-  constraints = c(sla_mean = 320),
+  constraints = c(sla_mean = 3.2),
   t2d = traits_y,
   obj = "QH",
   capd = TRUE
@@ -318,7 +323,7 @@ mix_low$prob %>%
   as_tibble() %>%
   mutate(across(where(is.numeric), ~ round(.x, digits = 3))) %>%
   arrange(V1) %>%
-  head(n = 10)
+  head(n = 5)
 
 mix_high$prob %>%
   as.data.frame() %>%
@@ -326,7 +331,7 @@ mix_high$prob %>%
   as_tibble() %>%
   mutate(across(where(is.numeric), ~ round(.x, digits = 3))) %>%
   arrange(V1) %>%
-  head(n = 10)
+  head(n = 5)
 
 mix_intermediate$prob %>%
   as.data.frame() %>%
@@ -334,12 +339,20 @@ mix_intermediate$prob %>%
   as_tibble() %>%
   mutate(across(where(is.numeric), ~ round(.x, digits = 3))) %>%
   arrange(V1) %>%
-  head(n = 10)
+  head(n = 5)
 ```
+
+### Task
+
+* Create own species compositions from the species pool of your data.
 
 <a href="#top">Back to top</a>
 
+::: {.content-hidden when-format = "html"}
+
 ### Create a NMDS
+
+# NMDS only possible with 9-15 communities
 
 ```{r}
 # data1 <- mix_low$prob %>%
@@ -363,9 +376,9 @@ mix_intermediate$prob %>%
 #   )
 ```
 
-Create own species compositions from your data
-
 <a href="#top">Back to top</a>
+
+:::
 
 ```{r}
 sessionInfo()

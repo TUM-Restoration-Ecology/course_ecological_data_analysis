@@ -68,34 +68,38 @@ source(here::here("data", "raw", "bello_etal-2021",  "chapter5", "Rao.r"))
 
 ```{r load-data}
 species_spain <- read_delim(
-  here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXplotsNE.txt"),
+  here::here(
+    "data", "raw", "bello_etal-2021", "chapter5", "speciesXplotsNE.txt"
+    ),
   col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
   ) %>%
   column_to_rownames("species")
 
 traits_spain <- read_delim(
-  here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXtraitsNE.txt"),
+  here::here(
+    "data", "raw", "bello_etal-2021", "chapter5", "speciesXtraitsNE.txt"
+    ),
   col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
   ) %>%
   column_to_rownames("species")
 
 sites_spain <- read_delim(
-  here::here("data", "raw", "bello_etal-2021", "chapter5", "environXplotsNE.txt"),
+  here::here("data", "processed", "data_processed_species_spain_4.4.csv"),
   col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
   )
 
 species_ammer <- read_csv(
-  here("data", "processed", "data_processed_species_ammer.csv"),
+  here::here("data", "processed", "data_processed_species_ammer_4.1.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
 
 traits_ammer <- read_csv(
-  here("data", "processed", "data_processed_traits_ammer.csv"),
+  here::here("data", "processed", "data_processed_traits_ammer_4.1.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
 
 sites_ammer <- read_csv(
-  here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_sites.csv"),
+  herehere("data", "processed", "data_processed_sites_4.4.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
 ```
@@ -286,7 +290,7 @@ Save the new sites data
 
 ```{r}
 write_csv(
-  sites_spain, here::here("data", "processed", "data_processed_sites_spain.csv")
+  sites_spain, here::here("data", "processed", "data_processed_sites_spain_4.5.csv")
   )
 ```
 
@@ -385,7 +389,7 @@ Save the new sites data
 
 ```{r}
 write_csv(
-  sites_ammer, here::here("data", "processed", "data_processed_sites_ammer.csv")
+  sites_ammer, here::here("data", "processed", "data_processed_sites_ammer_4.5.csv")
   )
 ```
 

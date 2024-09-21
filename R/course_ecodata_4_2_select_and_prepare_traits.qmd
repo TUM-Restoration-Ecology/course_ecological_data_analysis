@@ -61,12 +61,12 @@ names <- paste("sp", 1:7, sep = "")
 traits_invented <- tibble(names, bodysize, carnivory, red, yellow, blue)
 
 species_ammer <- read_csv(
-  here("data", "processed", "data_processed_species_ammer.csv"),
+  here("data", "processed", "data_processed_species_ammer_4.1.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
 
 traits_ammer <- read_csv(
-  here("data", "processed", "data_processed_traits_ammer.csv"),
+  here("data", "processed", "data_processed_traits_ammer_4.1.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
 
@@ -188,7 +188,7 @@ data_gift <- GIFT::GIFT_traits(
 
 ```{r save}
 write_csv(
-  traits_invented, here("data", "processed", "data_processed_traits_invented.csv")
+  traits_invented, here("data", "processed", "data_processed_traits_invented_4.2.csv")
 )
 ```
 

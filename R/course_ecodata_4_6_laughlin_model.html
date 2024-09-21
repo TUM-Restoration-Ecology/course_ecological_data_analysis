@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Markus Bauer  ">
-<meta name="dcterms.date" content="2024-09-20">
+<meta name="dcterms.date" content="2024-09-21">
 
 <title>Analysis of Ecological Data   Calculate communities based on traits</title>
 <style>
@@ -106,9 +106,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#define-a-seed-mix" id="toc-define-a-seed-mix" class="nav-link" data-scroll-target="#define-a-seed-mix"><span class="header-section-number">3.3.1</span> Define a seed mix</a></li>
   <li><a href="#calculate-species-composition" id="toc-calculate-species-composition" class="nav-link" data-scroll-target="#calculate-species-composition"><span class="header-section-number">3.3.2</span> Calculate species composition</a></li>
   <li><a href="#control-species-composition" id="toc-control-species-composition" class="nav-link" data-scroll-target="#control-species-composition"><span class="header-section-number">3.3.3</span> Control species composition</a></li>
-  <li><a href="#create-a-nmds" id="toc-create-a-nmds" class="nav-link" data-scroll-target="#create-a-nmds"><span class="header-section-number">3.3.4</span> Create a NMDS</a></li>
+  <li><a href="#task" id="toc-task" class="nav-link" data-scroll-target="#task"><span class="header-section-number">3.3.4</span> Task</a></li>
+  <li><a href="#create-a-nmds" id="toc-create-a-nmds" class="nav-link" data-scroll-target="#create-a-nmds"><span class="header-section-number">3.3.5</span> Create a NMDS</a></li>
   </ul></li>
   </ul></li>
+  <li><a href="#nmds-only-possible-with-9-15-communities" id="toc-nmds-only-possible-with-9-15-communities" class="nav-link" data-scroll-target="#nmds-only-possible-with-9-15-communities"><span class="header-section-number">4</span> NMDS only possible with 9-15 communities</a></li>
   </ul>
 </nav>
 </div>
@@ -133,7 +135,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2024-09-20</p>
+      <p class="date">2024-09-21</p>
     </div>
   </div>
   
@@ -156,11 +158,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Include family data in Ammer traits data</li>
 <li>Define species composition for Ammer data</li>
 <li>Select suitable values for SLA</li>
-<li>NMDS only possible with 9-15 communities</li>
 <li>Use package Landscape metrics with CORINE landcover</li>
+<li>Write learning objectives</li>
+<li>Create 9-15 species composition and use then a NMDS</li>
 </ul>
 <p>:::</p>
-<p><a href="https://cran.r-project.org/web/packages/Select/vignettes/selectSpecies.html">Original vignette</a> (Laughlin et al.&nbsp;2018)</p>
+<p><a href="https://cran.r-project.org/web/packages/Select/vignettes/selectSpecies.html">Original vignette</a> by Laughlin et al.&nbsp;(2018)</p>
 </section>
 <section id="preparation" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Preparation</h1>
@@ -195,17 +198,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="load-data" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="load-data"><span class="header-section-number">2.2</span> Load data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>species_ammer <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_species.csv"</span>),</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_traits_ammer_4.1.csv"</span>),</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="cn">TRUE</span>, <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">.default =</span> <span class="st">"?"</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="st">"accepted_name"</span>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_traits_ammer.csv"</span>),</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="cn">TRUE</span>, <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">.default =</span> <span class="st">"?"</span>)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="st">"accepted_name"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><a href="#top">Back to top</a></p>
 </section>
@@ -368,22 +364,33 @@ solnp--&gt; Completed in 2 iterations</code></pre>
 <h3 data-number="3.3.1" class="anchored" data-anchor-id="define-a-seed-mix"><span class="header-section-number">3.3.1</span> Define a seed mix</h3>
 <p>You have to select a species composition out of your species pool</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># family is missing in traits_ammer!!</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># traits &lt;- traits_ammer %&gt;%</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     functional_group = if_else(</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co">#       !(family == "Poaceae" | family == "Fabaceae" | family == "Cyperaceae" | family == "Juncaceae"), "forb", if_else(</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co">#         family == "Poaceae" | family == "Juncaceae" | family == "Cyperaceae", "graminoid", if_else(</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="co">#           family == "Fabaceae", "legume", "other"</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="co">#         )</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="co">#       )</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co">#       )</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co">#       )</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   comp &lt;- c(sample(herbs$name, 12),</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a><span class="co">#             sample(grass$name, 5),</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="co">#             sample(legume$name, 3)</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co">#             )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">setdiff</span>(<span class="fu">ls</span>(), <span class="fu">c</span>(<span class="st">"traits_ammer"</span>)))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="ot">&lt;-</span> traits_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">family =</span> accepted_family) <span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">functional_group =</span> <span class="fu">if_else</span>(</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span>(family <span class="sc">==</span> <span class="st">"Poaceae"</span> <span class="sc">|</span> family <span class="sc">==</span> <span class="st">"Fabaceae"</span> <span class="sc">|</span> family <span class="sc">==</span> <span class="st">"Cyperaceae"</span> <span class="sc">|</span> family <span class="sc">==</span> <span class="st">"Juncaceae"</span>), <span class="st">"forb"</span>, <span class="fu">if_else</span>(</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        family <span class="sc">==</span> <span class="st">"Poaceae"</span> <span class="sc">|</span> family <span class="sc">==</span> <span class="st">"Juncaceae"</span> <span class="sc">|</span> family <span class="sc">==</span> <span class="st">"Cyperaceae"</span>, <span class="st">"graminoid"</span>, <span class="fu">if_else</span>(</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>          family <span class="sc">==</span> <span class="st">"Fabaceae"</span>, <span class="st">"legume"</span>, <span class="st">"other"</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>traits_ammer_subsample <span class="ot">&lt;-</span> traits_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span>(growth_form_2 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"shrub"</span>, <span class="st">"tree"</span>)) <span class="sc">&amp;</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>      seed_mass_mean <span class="sc">&lt;</span> <span class="fl">0.1</span>  <span class="sc">&amp;</span> </span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(sla_mean) <span class="sc">&amp;</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(seed_mass_mean)</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">sla_mean =</span> sla_mean <span class="sc">/</span> <span class="dv">100</span>,</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">seed_mass_mean =</span> seed_mass_mean <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_split</span>(functional_group) <span class="sc">%&gt;%</span></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map2_dfr</span>(<span class="fu">c</span>(<span class="dv">14</span>, <span class="dv">5</span>, <span class="dv">1</span>), <span class="sc">~</span> <span class="fu">slice_sample</span>(.x, <span class="at">n =</span> .y))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="calculate-species-composition" class="level3" data-number="3.3.2">
@@ -391,10 +398,10 @@ solnp--&gt; Completed in 2 iterations</code></pre>
 <p>You can calculate with the Ammer data three different species compositions.</p>
 <p>First, calculate a species composition with a low CWM of SLA.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">setdiff</span>(<span class="fu">ls</span>(), <span class="fu">c</span>(<span class="st">"species_ammer"</span>, <span class="st">"species_spain"</span>, <span class="st">"traits_ammer"</span>, <span class="st">"traits_spain"</span>, <span class="st">"sites_spain"</span>, <span class="st">"sites_ammer"</span>)))</span>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">setdiff</span>(<span class="fu">ls</span>(), <span class="fu">c</span>(<span class="st">"traits_ammer"</span>, <span class="st">"traits_ammer_subsample"</span>)))</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>traits <span class="ot">&lt;-</span> traits_ammer <span class="sc">%&gt;%</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(sla_mean) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(seed_mass_mean) <span class="sc">&amp;</span> seed_mass_mean <span class="sc">&lt;</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>traits <span class="ot">&lt;-</span> traits_ammer_subsample <span class="sc">%&gt;%</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">"accepted_name"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(sla_mean, seed_mass_mean)</span>
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>traits_x <span class="ot">&lt;-</span> traits <span class="sc">%&gt;%</span></span>
@@ -407,15 +414,15 @@ solnp--&gt; Completed in 2 iterations</code></pre>
 <span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>mix_low <span class="ot">&lt;-</span> Select<span class="sc">::</span><span class="fu">selectSpecies</span>(</span>
 <span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">t2c =</span> traits_x,</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">constraints =</span> <span class="fu">c</span>(<span class="at">sla_mean =</span> <span class="dv">290</span>),</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">constraints =</span> <span class="fu">c</span>(<span class="at">sla_mean =</span> <span class="fl">2.9</span>),</span>
 <span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">t2d =</span> traits_y,</span>
 <span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> <span class="st">"QH"</span>,</span>
 <span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">capd =</span> <span class="cn">TRUE</span></span>
 <span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-Iter: 1 fn: -2.2753  Pars:  0.008624 0.009391 0.010538 0.009424 0.011049 0.009031 0.010180 0.010124 0.014050 0.007857 0.011566 0.008301 0.009626 0.009788 0.010838 0.008179 0.010893 0.008298 0.007892 0.010958 0.010368 0.009106 0.008208 0.010794 0.009691 0.010839 0.008734 0.015781 0.007799 0.009775 0.010828 0.008993 0.016458 0.010624 0.008746 0.009691 0.008145 0.011779 0.010167 0.011695 0.011327 0.012607 0.011763 0.011617 0.013034 0.009637 0.010232 0.009747 0.012072 0.012644 0.014342 0.009307 0.011105 0.009956 0.008824 0.007713 0.009902 0.019973 0.010064 0.010525 0.010772 0.009961 0.008884 0.013721 0.009293 0.009712 0.008349 0.007054 0.009563 0.008850 0.010635 0.011247 0.010685 0.009468 0.010721 0.009785 0.007943 0.008834 0.009861 0.007687 0.016678 0.009354 0.010006 0.012851 0.008988 0.013406 0.009866 0.011666 0.009333 0.010479 0.010837 0.013258 0.008444 0.010160 0.009782 0.010651
-Iter: 2 fn: -2.2753  Pars:  0.008623 0.009393 0.010537 0.009426 0.011047 0.009033 0.010181 0.010125 0.014051 0.007854 0.011563 0.008300 0.009629 0.009790 0.010836 0.008178 0.010891 0.008297 0.007889 0.010956 0.010368 0.009108 0.008207 0.010792 0.009693 0.010840 0.008733 0.015788 0.007797 0.009777 0.010828 0.008995 0.016466 0.010623 0.008745 0.009693 0.008142 0.011775 0.010168 0.011691 0.011324 0.012603 0.011759 0.011613 0.013030 0.009639 0.010232 0.009749 0.012067 0.012642 0.014344 0.009310 0.011103 0.009958 0.008825 0.007711 0.009904 0.019970 0.010065 0.010525 0.010771 0.009963 0.008886 0.013720 0.009296 0.009714 0.008348 0.007061 0.009565 0.008852 0.010634 0.011244 0.010684 0.009469 0.010720 0.009787 0.007940 0.008835 0.009863 0.007685 0.016687 0.009356 0.010007 0.012848 0.008990 0.013404 0.009868 0.011662 0.009335 0.010479 0.010835 0.013255 0.008442 0.010161 0.009784 0.010650
+Iter: 1 fn: -1.4635  Pars:  0.05413 0.04424 0.01124 0.03298 0.06173 0.06475 0.16910 0.04788 0.01830 0.07560 0.04345 0.01820 0.02783 0.06637 0.03060 0.06092 0.06964 0.02716 0.01906 0.05684
+Iter: 2 fn: -1.4635  Pars:  0.05413 0.04424 0.01124 0.03298 0.06173 0.06474 0.16910 0.04787 0.01830 0.07559 0.04346 0.01820 0.02783 0.06637 0.03059 0.06092 0.06965 0.02715 0.01906 0.05684
 solnp--&gt; Completed in 2 iterations</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>Select<span class="sc">::</span><span class="fu">plotProbs</span>(mix_low, traits)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -431,15 +438,15 @@ solnp--&gt; Completed in 2 iterations</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>mix_high <span class="ot">&lt;-</span> Select<span class="sc">::</span><span class="fu">selectSpecies</span>(</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">t2c =</span> traits_x,</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">constraints =</span> <span class="fu">c</span>(<span class="at">sla_mean =</span> <span class="dv">350</span>),</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">constraints =</span> <span class="fu">c</span>(<span class="at">sla_mean =</span> <span class="fl">3.5</span>),</span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">t2d =</span> traits_y,</span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> <span class="st">"QH"</span>,</span>
 <span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">capd =</span> <span class="cn">TRUE</span></span>
 <span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-Iter: 1 fn: -2.1528  Pars:  0.004594 0.006385 0.009285 0.006461 0.010821 0.005632 0.008296 0.008145 0.023751 0.003593 0.012558 0.004290 0.006926 0.007307 0.010173 0.004088 0.010340 0.004285 0.003645 0.010541 0.008800 0.005785 0.004136 0.010034 0.007074 0.009642 0.004789 0.034394 0.003330 0.007279 0.009611 0.005536 0.039791 0.009531 0.004796 0.007078 0.003820 0.013270 0.008266 0.013004 0.011735 0.016648 0.013276 0.012738 0.018554 0.006940 0.008432 0.007208 0.014443 0.016597 0.025300 0.006192 0.011008 0.007621 0.005225 0.003262 0.007194 0.074825 0.007994 0.009246 0.009967 0.007706 0.005341 0.021988 0.006176 0.007128 0.004369 0.002494 0.006778 0.005273 0.009562 0.011470 0.009715 0.006214 0.009808 0.007274 0.003522 0.005236 0.007328 0.003347 0.041604 0.006307 0.007844 0.017722 0.005544 0.020362 0.007428 0.012918 0.006182 0.009112 0.010168 0.019626 0.004296 0.007799 0.007264 0.009604
-Iter: 2 fn: -2.1528  Pars:  0.004596 0.006386 0.009285 0.006461 0.010821 0.005632 0.008297 0.008146 0.023749 0.003589 0.012559 0.004289 0.006925 0.007306 0.010173 0.004089 0.010340 0.004284 0.003642 0.010541 0.008800 0.005785 0.004136 0.010033 0.007074 0.009643 0.004792 0.034394 0.003327 0.007279 0.009613 0.005535 0.039792 0.009531 0.004799 0.007077 0.003824 0.013271 0.008267 0.013005 0.011736 0.016647 0.013277 0.012739 0.018556 0.006940 0.008433 0.007208 0.014441 0.016595 0.025302 0.006194 0.011008 0.007620 0.005224 0.003263 0.007194 0.074825 0.007994 0.009246 0.009966 0.007706 0.005340 0.021985 0.006177 0.007128 0.004369 0.002494 0.006778 0.005272 0.009561 0.011471 0.009714 0.006216 0.009807 0.007273 0.003524 0.005235 0.007328 0.003351 0.041604 0.006307 0.007844 0.017723 0.005543 0.020361 0.007427 0.012919 0.006183 0.009112 0.010167 0.019627 0.004294 0.007797 0.007264 0.009604
+Iter: 1 fn: -0.8076  Pars:  0.0259310 0.0097520 0.0003229 0.0063668 0.0345617 0.0414202 0.6267069 0.0174495 0.0005945 0.0664807 0.0095904 0.0012017 0.0037044 0.0433536 0.0052150 0.0344417 0.0529359 0.0035561 0.0013246 0.0150905
+Iter: 2 fn: -0.8076  Pars:  0.0259273 0.0097514 0.0003225 0.0063697 0.0345600 0.0414188 0.6267070 0.0174475 0.0005959 0.0664860 0.0095878 0.0012024 0.0037062 0.0433594 0.0052151 0.0344392 0.0529336 0.0035575 0.0013220 0.0150905
 solnp--&gt; Completed in 2 iterations</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>Select<span class="sc">::</span><span class="fu">plotProbs</span>(mix_high, traits)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -455,15 +462,15 @@ solnp--&gt; Completed in 2 iterations</code></pre>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>mix_intermediate <span class="ot">&lt;-</span> Select<span class="sc">::</span><span class="fu">selectSpecies</span>(</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">t2c =</span> traits_x,</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">constraints =</span> <span class="fu">c</span>(<span class="at">sla_mean =</span> <span class="dv">320</span>),</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">constraints =</span> <span class="fu">c</span>(<span class="at">sla_mean =</span> <span class="fl">3.2</span>),</span>
 <span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">t2d =</span> traits_y,</span>
 <span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">obj =</span> <span class="st">"QH"</span>,</span>
 <span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">capd =</span> <span class="cn">TRUE</span></span>
 <span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-Iter: 1 fn: -2.2296  Pars:  0.006301 0.007842 0.010140 0.007905 0.011265 0.007188 0.009387 0.009269 0.019340 0.005275 0.012484 0.005959 0.008289 0.008599 0.010795 0.005762 0.010916 0.005955 0.005328 0.011062 0.009776 0.007323 0.005809 0.010694 0.008411 0.010489 0.006482 0.024979 0.005040 0.008576 0.010466 0.007106 0.027585 0.010324 0.006491 0.008413 0.005547 0.012974 0.009363 0.012789 0.011912 0.015149 0.012969 0.012606 0.016329 0.008302 0.009493 0.008520 0.013739 0.015141 0.020216 0.007680 0.011397 0.008869 0.006825 0.004967 0.008572 0.042597 0.009149 0.010111 0.010645 0.008925 0.006929 0.018340 0.007663 0.008454 0.006037 0.004114 0.008168 0.006868 0.010347 0.011726 0.010459 0.007753 0.010530 0.008577 0.005246 0.006836 0.008642 0.005024 0.028424 0.007775 0.009031 0.015819 0.007110 0.017404 0.008709 0.012728 0.007682 0.010011 0.010791 0.016972 0.006010 0.009064 0.008570 0.010379
-Iter: 2 fn: -2.2296  Pars:  0.006297 0.007839 0.010139 0.007903 0.011267 0.007188 0.009386 0.009269 0.019339 0.005271 0.012483 0.005958 0.008289 0.008601 0.010796 0.005766 0.010918 0.005954 0.005323 0.011064 0.009774 0.007322 0.005812 0.010695 0.008412 0.010488 0.006480 0.024983 0.005040 0.008578 0.010464 0.007107 0.027585 0.010323 0.006490 0.008414 0.005547 0.012973 0.009362 0.012788 0.011914 0.015148 0.012967 0.012605 0.016329 0.008303 0.009492 0.008521 0.013737 0.015141 0.020218 0.007677 0.011400 0.008870 0.006827 0.004971 0.008572 0.042590 0.009149 0.010110 0.010646 0.008926 0.006931 0.018337 0.007661 0.008455 0.006035 0.004114 0.008167 0.006870 0.010346 0.011728 0.010459 0.007752 0.010530 0.008579 0.005247 0.006838 0.008644 0.005023 0.028432 0.007772 0.009031 0.015819 0.007111 0.017401 0.008710 0.012727 0.007680 0.010010 0.010792 0.016970 0.006011 0.009065 0.008571 0.010379
+Iter: 1 fn: -1.2132  Pars:  0.044990 0.025820 0.002513 0.017979 0.055236 0.061587 0.364084 0.035005 0.004384 0.083373 0.025363 0.006040 0.012792 0.063735 0.015748 0.054672 0.071727 0.012356 0.006467 0.036130
+Iter: 2 fn: -1.2132  Pars:  0.044995 0.025813 0.002513 0.017972 0.055230 0.061590 0.364088 0.035014 0.004384 0.083367 0.025356 0.006040 0.012788 0.063741 0.015755 0.054666 0.071720 0.012361 0.006468 0.036139
 solnp--&gt; Completed in 2 iterations</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>Select<span class="sc">::</span><span class="fu">plotProbs</span>(mix_intermediate, traits)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -486,7 +493,7 @@ solnp--&gt; Completed in 2 iterations</code></pre>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="at">digits =</span> <span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
 <span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(V1) <span class="sc">%&gt;%</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">5</span>)</span>
 <span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>mix_high<span class="sc">$</span>prob <span class="sc">%&gt;%</span></span>
 <span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
@@ -494,7 +501,7 @@ solnp--&gt; Completed in 2 iterations</code></pre>
 <span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="at">digits =</span> <span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
 <span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(V1) <span class="sc">%&gt;%</span></span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">5</span>)</span>
 <span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>mix_intermediate<span class="sc">$</span>prob <span class="sc">%&gt;%</span></span>
 <span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
@@ -502,12 +509,24 @@ solnp--&gt; Completed in 2 iterations</code></pre>
 <span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">%&gt;%</span></span>
 <span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">round</span>(.x, <span class="at">digits =</span> <span class="dv">3</span>))) <span class="sc">%&gt;%</span></span>
 <span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(V1) <span class="sc">%&gt;%</span></span>
-<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><a href="#top">Back to top</a></p>
 </section>
-<section id="create-a-nmds" class="level3" data-number="3.3.4">
-<h3 data-number="3.3.4" class="anchored" data-anchor-id="create-a-nmds"><span class="header-section-number">3.3.4</span> Create a NMDS</h3>
+<section id="task" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="task"><span class="header-section-number">3.3.4</span> Task</h3>
+<ul>
+<li>Create own species compositions from the species pool of your data.</li>
+</ul>
+<p><a href="#top">Back to top</a></p>
+<p>::: {.content-hidden when-format = “html”}</p>
+</section>
+<section id="create-a-nmds" class="level3" data-number="3.3.5">
+<h3 data-number="3.3.5" class="anchored" data-anchor-id="create-a-nmds"><span class="header-section-number">3.3.5</span> Create a NMDS</h3>
+</section>
+</section>
+</section>
+<section id="nmds-only-possible-with-9-15-communities" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> NMDS only possible with 9-15 communities</h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># data1 &lt;- mix_low$prob %&gt;%</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   as.data.frame() %&gt;%</span></span>
@@ -529,10 +548,56 @@ solnp--&gt; Completed in 2 iterations</code></pre>
 <span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   data, distance = "bray", k = 2, trymax = 20, autotransform = TRUE</span></span>
 <span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Create own species compositions from your data</p>
 <p><a href="#top">Back to top</a></p>
-</section>
-</section>
+<p>:::</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.4.1 (2024-06-14 ucrt)
+Platform: x86_64-w64-mingw32/x64
+Running under: Windows 11 x64 (build 22631)
+
+Matrix products: default
+
+
+locale:
+[1] LC_COLLATE=German_Germany.utf8  LC_CTYPE=German_Germany.utf8   
+[3] LC_MONETARY=German_Germany.utf8 LC_NUMERIC=C                   
+[5] LC_TIME=German_Germany.utf8    
+
+time zone: Europe/Berlin
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] Select_1.4      lubridate_1.9.3 forcats_1.0.0   stringr_1.5.1  
+ [5] dplyr_1.1.4     purrr_1.0.2     readr_2.1.5     tidyr_1.3.1    
+ [9] tibble_3.2.1    ggplot2_3.5.1   tidyverse_2.0.0 here_1.0.1     
+
+loaded via a namespace (and not attached):
+ [1] utf8_1.2.4          generics_0.1.3      renv_1.0.7         
+ [4] jpeg_0.1-10         lattice_0.22-6      stringi_1.8.4      
+ [7] hms_1.1.3           digest_0.6.36       magrittr_2.0.3     
+[10] RColorBrewer_1.1-3  evaluate_0.24.0     grid_4.4.1         
+[13] timechange_0.3.0    fastmap_1.2.0       rprojroot_2.0.4    
+[16] jsonlite_1.8.8      BiocManager_1.30.25 fansi_1.0.6        
+[19] scales_1.3.0        truncnorm_1.0-9     ade4_1.7-22        
+[22] cli_3.6.3           rlang_1.1.4         crayon_1.5.3       
+[25] bit64_4.0.5         munsell_0.5.1       withr_3.0.0        
+[28] yaml_2.3.9          tools_4.4.1         parallel_4.4.1     
+[31] deldir_2.0-4        tzdb_0.4.0          interp_1.1-6       
+[34] colorspace_2.1-0    png_0.1-8           vctrs_0.6.5        
+[37] R6_2.5.1            lifecycle_1.0.4     htmlwidgets_1.6.4  
+[40] bit_4.0.5           Rsolnp_1.16         MASS_7.3-60.2      
+[43] vroom_1.6.5         pkgconfig_2.0.3     pillar_1.9.0       
+[46] gtable_0.3.5        Rcpp_1.0.12         glue_1.7.0         
+[49] xfun_0.45           tidyselect_1.2.1    latticeExtra_0.6-30
+[52] rstudioapi_0.16.0   knitr_1.48          htmltools_0.5.8.1  
+[55] rmarkdown_2.27      compiler_4.4.1     </code></pre>
+</div>
+</div>
 </section>
 
 </main>
