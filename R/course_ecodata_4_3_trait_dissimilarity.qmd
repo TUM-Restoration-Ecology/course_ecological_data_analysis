@@ -399,3 +399,7 @@ plot(
 You can see that different growth forms have a different place in the functional trait space. However, be careful because there are problems in the 'growth_form_2' column. There are NAs, 'herbs' and 'forbs', and *Carex* species determined as herbs and not graminoids.
 
 <a href="#top">Back to top</a>
+
+```{r}
+sessionInfo()
+```

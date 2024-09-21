@@ -307,6 +307,25 @@
       ],
       "Hash": "45f0398006e83a5b10b72a90663d8d8c"
     },
+    "RSQLite": {
+      "Package": "RSQLite",
+      "Version": "2.3.7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "DBI",
+        "R",
+        "bit64",
+        "blob",
+        "cpp11",
+        "memoise",
+        "methods",
+        "pkgconfig",
+        "plogr",
+        "rlang"
+      ],
+      "Hash": "46b45a4dd7bb0e0f4e3fc22245817240"
+    },
     "Rcpp": {
       "Package": "Rcpp",
       "Version": "1.0.12",
@@ -1673,6 +1692,18 @@
       ],
       "Hash": "b59377caa7ed00fa41808342002138f9"
     },
+    "hoardr": {
+      "Package": "hoardr",
+      "Version": "0.5.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R6",
+        "digest",
+        "rappdirs"
+      ],
+      "Hash": "2f50e36abbb197b70c7dd55e7592b4f5"
+    },
     "htmlTable": {
       "Package": "htmlTable",
       "Version": "2.4.3",
@@ -1806,6 +1837,16 @@
         "vctrs"
       ],
       "Hash": "c3b7d801d722e26e4cd888e042bf9af5"
+    },
+    "indicspecies": {
+      "Package": "indicspecies",
+      "Version": "1.7.15",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "permute"
+      ],
+      "Hash": "3c4866b402b7906b662e63f6d9c94746"
     },
     "interp": {
       "Package": "interp",
@@ -2708,6 +2749,13 @@
         "utils"
       ],
       "Hash": "01f28d4278f15c76cddbea05899c5d6f"
+    },
+    "plogr": {
+      "Package": "plogr",
+      "Version": "0.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "09eb987710984fc2905c7129c7d85e65"
     },
     "plyr": {
       "Package": "plyr",
@@ -3658,6 +3706,30 @@
         "permute"
       ],
       "Hash": "46a520e3fd3286168c3e4dc5e6fbb5b1"
+    },
+    "vegdata": {
+      "Package": "vegdata",
+      "Version": "0.9.12",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "DBI",
+        "R",
+        "RSQLite",
+        "curl",
+        "dbplyr",
+        "dplyr",
+        "foreign",
+        "hoardr",
+        "httr",
+        "indicspecies",
+        "magrittr",
+        "plyr",
+        "stringr",
+        "utils",
+        "xml2"
+      ],
+      "Hash": "d6a5ba199a88c339af5d7878ec49f2ac"
     },
     "viridis": {
       "Package": "viridis",

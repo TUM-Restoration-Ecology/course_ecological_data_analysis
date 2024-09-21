@@ -286,3 +286,7 @@ Ecological terminology
 Go through this [tutorial](https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e124) of Vanessa Trujillo to be prepared for track-and-change mode in R. This is not required for the course but recommended and we will use and show GitHub in the course.
 
 <a href="#top">Back to top</a>
+
+```{r}
+sessionInfo()
+```

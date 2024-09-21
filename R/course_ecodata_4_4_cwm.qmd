@@ -515,3 +515,7 @@ bind_rows(data_spain, data_ammer) %>%
 The Spain vegetation seems to have species with lower SLA values. However, the Spain data is not cleaned from shrubs and trees.
 
  <a href="#top">Back to top</a>
+ 
+```{r}
+sessionInfo()
+```

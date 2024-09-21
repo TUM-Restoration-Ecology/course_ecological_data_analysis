@@ -215,3 +215,7 @@ The **History** view shows the previous commits on the current branch of your re
 * Insert a README file
 
 :::
+
+```{r}
+sessionInfo()
+```

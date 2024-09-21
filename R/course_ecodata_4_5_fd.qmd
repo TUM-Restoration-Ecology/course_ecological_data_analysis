@@ -529,3 +529,7 @@ Let’s now work with the NE Spain data:
 We can see in this figure that, despite the great turnover in species composition (beta TD, grey colour, left stack) we have a real low functional turnover. In other words **most of the trait dissimilarity between species is found within a plot and not across plots**, even if there are such a marked environmental changes and even if species composition changes are very strong (high beta TD).
 
 :::
+
+```{r}
+sessionInfo()
+```

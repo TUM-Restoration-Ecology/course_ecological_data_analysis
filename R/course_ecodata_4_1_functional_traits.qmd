@@ -292,14 +292,11 @@ write_csv(
 * Note the version of the database from `metadata$version` and the sources of the names with `metadata$citations` for the material-and-methods section
 * Note the range of 'Overall_score' for your submitted species names.
 
-::: {.content-hidden when-format="html"}
-
 # Ellenberg indicator values
 
-Tichý et al. ([2023](https://doi.org/10.1111/jvs.13168)) with available Ellenberg values on [Zenodo](https://doi.org/10.5281/zenodo.7427088)
+You can work with classical Ellenberg indicator values (EIV) like with functional plant traits. Tichý et al. ([2023](https://doi.org/10.1111/jvs.13168)) provide European Ellenberg values on [Zenodo](https://doi.org/10.5281/zenodo.7427088). The `vegdata` package stores the German Ellenberg values, but it does not always work.
 
-
-```{r save-files}
+```{r save-files, results = FALSE}
 library(vegdata)
 tv_home <- options(
   tv_home = here("data", "raw", "GermanSL 1.5")
@@ -307,4 +304,7 @@ tv_home <- options(
 tv_home
 ellenberg <- vegdata::tv.traits()
 ```
-:::
+
+```{r}
+sessionInfo()
+```
