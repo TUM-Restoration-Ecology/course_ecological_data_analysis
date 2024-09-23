@@ -36,7 +36,7 @@ knitr::opts_chunk$set(
 
 # Tasks
 
-* Write learning objectives
+* Introduce better how to save and open the scripts "monday.R", "own_data.R"
 * Introduce data sets
 * Exploring the dataset: https://r.qcbs.ca/workshop10/book-en/exploration.html
 
@@ -79,6 +79,14 @@ Room F9.354
 Guest access for PC:  The use name is the PC name. The PC name is written at the screen (e.g., PC0401), and the key word is 'fedv4'.
 
 Internet for own Laptop: eduroam (see tutorial below)
+
+<a href="#top">Back to top</a>
+
+# Learning objectives
+
+* Understanding why R, RStudio with scripts and projects, relative paths, and the packages of the tidyverse are a useful environment for doing analysis
+* The project which is used throughout the course is established
+* The first two scripts within the project are created
 
 <a href="#top">Back to top</a>
 
@@ -211,6 +219,9 @@ So far, you have used the console to run code. That’s a great place to start, 
 
 The script editor is a great place to experiment with your code. When you want to change something, you don’t have to re-type the whole thing, you can just edit the script and re-run it. And once you have written code that works and does what you want, you can save it as a script file to easily return to later.
 
+* Create a script named "monday.R"
+* Create a script named "own_data.R"
+
 <a href="#top">Back to top</a>
 
 ## Projects
@@ -244,6 +255,8 @@ Quit RStudio. Inspect the folder associated with your project — notice the `.R
 
 In your favorite OS-specific way, search your computer for `diamonds.png` and you will find the PNG (no surprise) but also the script that created it (`diamonds.R`). This is a huge win! One day, you will want to remake a figure or just understand where it came from. If you rigorously save figures to files with R code and never with the mouse or the clipboard, you will be able to reproduce old work with ease!
 
+* Put your scripts "monday.R" and "own_data.R" in the project folder
+
 <a href="#top">Back to top</a>
 
 ## Relative and absolute path
@@ -262,7 +275,9 @@ library(here)
 here() #you get the location of your project
 # data <- read_csv(here("diamonds.csv"))
 ```
-If you have created a `data` folder you access the file by `data <- read_csv(here("data", "diamonds"))`
+If you have created a `data` folder you access the file by `data <- read_csv(here("data", "diamonds.csv"))`
+
+* Open both scripts ("monday.R", "own_data.R") from RStudio
 
 <a href="#top">Back to top</a>
 

@@ -36,15 +36,17 @@ knitr::opts_chunk$set(
 
 # Tasks
 
-* Write Ammer and Spain dataset
-* Write learning objectives
-* Which model type, p-adjustment and nrepet is used?
+* Write Spain dataset
 
 :::
 
 This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426)) and Zelený ([2021](https://www.davidzeleny.net/anadat-r/doku.php/en:cwm_fc_examples#example_3ecological_interpretation_of_the_unconstrained_axes_in_constrained_ordination_using_mean_ellenberg-like_indicator_values))
 
 A helpful textbook is 'Numerical Ecology' (Borcard et al. [2018](https://doi.org/10.1007/978-3-319-71404-2)) and 'Multivariate Analysis of Ecological Data with ade4' (Thioulouse et al. [2018](https://doi.org/10.1007/978-1-4939-8850-1))
+
+# Learning objectives
+
+* Use the fourth-corner approach as an alternative to linear modelling.
 
 # Preparation
 
@@ -139,10 +141,11 @@ sites <- sites_vltava %>%
 
 
 ### Calculation of the fourth-corner approach
-
+* Which model type, p-adjustment and nrepet is used?
 ```{r}
 fc_ade4 <- ade4::fourthcorner(
-  tabR = sites, tabL = species, tabQ = traits, modeltype = 6 # max test
+  tabR = sites, tabL = species, tabQ = traits, modeltype = 6, # max test
+  nrepet = 999
   )
 fc_ade4
 ```
@@ -171,8 +174,15 @@ species <- species_vltava %>%
 
 sites <- sites_vltava %>%
   select(HEAT.LOAD, SOILDPT, COVERE32)
+```
 
-traits_fc_ade4 <- fourthcorner(tabR = sites, tabL = species, tabQ = traits)
+Calculate the fourth-corner analysis:
+
+```{r}
+traits_fc_ade4 <- fourthcorner(
+  tabR = sites, tabL = species, tabQ = traits, modeltype = 6, #max test
+  nrepet = 999
+  )
 traits_fc_ade4
 ```
 
@@ -189,34 +199,72 @@ Two of the relationships are significant: plant height and soil depth (red = pos
 
 <a href="#top">Back to top</a>
 
+::: {.content-hidden when-format="html"}
+
 ## Spain dataset
 
 <a href="#top">Back to top</a>
 
+:::
+
 ## Ammer dataset
 
 ```{r}
-rm(list = setdiff(
+rm(
+  list = setdiff(
   ls(),
   c("species_ammer", "species_spain", "traits_ammer", "traits_spain",
     "sites_spain", "sites_ammer")
   )
   )
 
-traits <- traits_ammer
+traits <- traits_ammer %>%
+  mutate(
+    seed_mass_log = log(seed_mass_mean),
+    sla_log = log(sla_mean)
+  ) %>%
+  select(accepted_name, sla_log, plant_height_mean, seed_mass_log, m, r, n) %>%
+  drop_na()
 
-species <- species_ammer
+species <- species_ammer %>%
+  semi_join(traits, by = "accepted_name") %>%
+  pivot_longer(-accepted_name, names_to = "plot", values_to = "value") %>%
+  pivot_wider(names_from = "accepted_name", values_from = "value") %>%
+  column_to_rownames(var = "plot")
 
-sites <- sites_ammer
+traits <- traits %>%
+  column_to_rownames(var = "accepted_name")
+
+sites <- sites_ammer %>%
+  select(id.plot, treatment, treeCover, barrierDistance, herbHeight) %>%
+  mutate(treatment = factor(treatment)) %>%
+  column_to_rownames(var = "id.plot")
 ```
+
+Calculate the fourth-corner analysis
 
 ```{r}
 m1 <- ade4::fourthcorner(
-  tabR = sites, tabL = species, tabQ = traits, modeltype = 6 # max test
+  tabR = sites, tabL = species, tabQ = traits, modeltype = 6,
+  nrepet = 999
   )
 m1
+plot(m1)
 ```
+### Plotting
 
+```{r}
+sites_ammer %>%
+  ggplot(aes(x = treatment, y = cwm.abu.sla, fill = treatment)) +
+  geom_boxplot() +
+  scale_fill_viridis_d() +
+  annotate(geom = "text", x = 3, y = 270, label = "4th corner p > 0.56") +
+  labs(x = "Location", y = expression(CWM~SLA~"["*cm^2~g^-1*"]")) +
+  theme(
+    axis.line = element_line(color = "black"),
+    panel.background = element_rect(fill = "transparent")
+  )
+```
 
 <a href="#top">Back to top</a>
 

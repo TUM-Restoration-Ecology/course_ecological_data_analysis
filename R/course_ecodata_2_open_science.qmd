@@ -54,17 +54,17 @@ First, set up a project like it is explained in the tutorial '0_preparation' whi
 
 ```
 ├── data
-│   ├── processed       #.csv
-│   └── raw             #.csv
+│   ├── processed       #.csv, etc.
+│   └── raw             #.csv, etc.
 ├── outputs
 │   ├── figures         #.tiff, your graphs
 │   ├── models          #.Rdata, your models
 │   ├── statistics      #.csv, your summaries of the models
 │   └── tables          #.csv/.html, your tables for results section
 ├── R
-│   ├── prepare_data.R
-│   ├── model_1.R
-│   └── show_figure_1.R
+│   ├── prepare_data.R  #you can your preparation script like this
+│   ├── model_1.R       #modelling should be done in an extra script using processed data
+│   └── show_figure_1.R #ideally plotting should be done in an extra script
 ├── renv                #automatically_generated
 ├── README.md           #generated with GitHub
 ├── LICENSE             #generated with GitHub
@@ -114,7 +114,7 @@ The names of the columns of the metadata file are adapted from the `EML` package
 units <- EML::get_unitList()
 ```
 
-* Start writing metadata files for your raw data
+* Start writing metadata files, like the examples, for your raw data. It is not possible to fill in everything, but as much as you can.
 
 ### renv package
 
@@ -181,7 +181,7 @@ sessionInfo()
 
 ### GitHub
 
-# Use GitHub as version control
+# Use GitHub as version control (optional)
 
 ## Introduction
 
