@@ -1,6 +1,6 @@
 ---
 title: "Analysis of Ecological Data <br> Calculate communities based on traits"
-author: "<b>Markus Bauer</b> <br>"
+author: "<b>Markus Bauer ^1^ & Christina Hartung ^2^</b> <br>"
 date: today
 date-format: iso
 format: html
@@ -13,20 +13,24 @@ fig-width: 7
 fig-height: 5
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   echo = TRUE
   )
 ```
 
-Technichal University of Munich, TUM School of Life Sciences, Chair of Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
+^1^ Technichal University of Munich, TUM School of Life Sciences, Chair of Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 [markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
 
 <img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/><https://orcid.org/0000-0001-5372-4174>
 
-[![GoogleScholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
+[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
 [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
+
+^2^ University of Applied Sciences Weihenstephan-Triesdorf, Institute of Ecology and Landscape, Am Hofgarten 1, Building A10, 85354 Freising, Germany
+
+[christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
 
 ::: {.content-hidden when-format="html"}
@@ -379,6 +383,8 @@ mix_intermediate$prob %>%
 <a href="#top">Back to top</a>
 
 :::
+
+# Session info
 
 ```{r}
 sessionInfo()

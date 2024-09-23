@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
   )
 ```
 
+
 ^1^ Technichal University of Munich, TUM School of Life Sciences, Chair of Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 [markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
@@ -53,6 +54,7 @@ In this exercise we will learn how to compute different indices of Functional di
 
 The FD package is of Laliberté & Legendre ([2010](https://doi.org/10.1890/08-2244.1))
 
+
 ```{r libraries, message = FALSE}
 library(here)
 library(tidyverse)
@@ -61,13 +63,17 @@ library(funspace)
 rm(list = ls())
 ```
 
+
 We will also need one ad-hoc function ‘Rao’
+
 
 ```{r}
 source(here::here("data", "raw", "bello_etal-2021",  "chapter5", "Rao.r"))
 ```
 
+
 ## Load data
+
 
 ```{r load-data}
 species_spain <- read_delim(
@@ -107,6 +113,7 @@ sites_ammer <- read_csv(
   )
 ```
 
+
 <a href="#top">Back to top</a>
 
 # Calculation of FD
@@ -119,6 +126,7 @@ As well summarized in the help function of `?dbFD`, dbFD implements a flexible d
 
 As we just saw, the function `dbFD` is very practical because it computes a lot of indices of FD at once. Most of these indices are introduced and discussed in the reference textbook, in Chapter 5. We will thus learn how to apply the function `dbFD`, using first some of the examples available in the help of the function, i.e. from `?dbFD`. As in the exercises with CWM, the examples for the function consider invented data, the ‘dummy’ data, containing both a ‘species x community’ matrix and a ‘species x trait’ matrix.
 
+
 ```{r}
 dummy <- dummy
 dummy$abun # Species x community matrix
@@ -128,9 +136,11 @@ dummy$abun # Species x community matrix
 dummy$trait # Species x trait matrix
 ```
 
+
 *Notice* that the function `dbFD`, while extremely useful, has also many strict requirements. The species x community matrix should be a data frame and the order and name of species should be *exactly* the same in the ‘species x community matrix’ and in the Species x trait matrix.
 
 It is very important to check that the species that you have in these ‘species x community’ matrix and ‘species x trait’ matrices should be the same. In this case we know that they are the same, so we can already run the code:
+
 
 ```{r}
 ex1 <- dbFD(
@@ -140,9 +150,11 @@ ex1 <- dbFD(
   )
 ```
 
+
 First we see that the function is very “talkative”, i.e. it explains a lot of things while running. We can eventually switch-off the messages by using `messages = F`, as we will do in the next examples. In the meantime we can see that FEve (functional evenness) cannot be computed in communities with less than 3 species. Similarly as FRic (functional richness) and FDiv (functional divergence) cannot be computed if there is less that 3 unique species, meaning that they should at least have one different trait value. Other important messages include the number of PCoA axes considered. Out of the 7 considered (i.e. with 8 species, the number of PCoA is 7) a total of 2 axes are retained to reflect trait differences between species (see Chapter 3 in the reference book and R material Ch 3. In other words the PCoA has synthesized all traits into two multivariate axes.
 
 Let’s now see the results. The results are stored in the object ex1, which is a ‘list’. As such if you need a particular object you can extract it, for example as `ex1$FRic`:
+
 
 ```{r}
 class(ex1)
@@ -156,7 +168,9 @@ ex1
 ex1$FRic
 ```
 
+
 For categorical and binary traits you might want to include the argument `CWM.type = "all"` when running it.
+
 
 ```{r}
 ex1 <- dbFD(
@@ -166,11 +180,13 @@ ex1 <- dbFD(
 ex1$CWM
 ```
 
+
 ### w argument
 
 In the second example of the help page for `dbFD`, it is possible to see a the argument `w`, which was discussed for the `gowdis` in the R material Ch3 and in Chapter 3 of the reference textbook. As a matter of fact the function gowdis is also included in the `dbFD` function and, although you do not see it, it is applied exactly as already introduced in the R material 3. This is the first step for the calculation of functional diversity.
 
 The argument `w` allows us to give different weights to the traits, for example when you want some traits to be more important in the calculation of the dissimilarity between species and thus functional diversity (we discuss the importance of this weight in the exercises related to Chapter 3). The example 2 in the help function looks like this:
+
 
 ```{r}
 # add variable weights
@@ -181,11 +197,13 @@ ex2 <- dbFD(
 # `cailliez` correction is used because `sqrt` does not work
 ```
 
+
 In practice the second trait got 5 times more weight than the first one (the vector w, includes one value for each trait, reflecting the intended weight in the calculation; again see R material Ch 2.
 
 It might happen that when running the dbFD function you get some sort of errors. For example if you run a line such as `ex2 <- dbFD(dummy$trait, dummy$abun, w, message = F)`, you will get one saying that the distance between species did not have Euclidean properties after the square root correction, which is automatically applied in the function. The PCoA analyses work better when the dissimilarity matrix (differences between species in terms of traits; R material Ch 2) has Euclidean properties and the dbFD function will not work unless this condition is met. In the case that the function does not work directly with your data, you can try other corrections with the argument corr. The help function provides enough information on this issue. In practice the effect of such correction is not very strong, at least in our experience, especially when there are enough species.
 
 It is very important to notice that the function `dbFD` works not only by providing a ‘species x trait’ matrix like the `dummy$trait` in the example above. You can also provide directly a distance matrix calculated before hand, for example using the Gower distance (see Chapter 3; R material Ch 3). If you run the following example (ex3) you will thus get the same results as in the object ex1.
+
 
 ```{r}
 trait.d <- gowdis(dummy$trait) # Gower distance
@@ -193,7 +211,9 @@ ex3 <- dbFD(trait.d, dummy$abun, message = FALSE)
 ex1$FRic == ex3$FRic
 ```
 
+
 Similarly if you apply `w` in the calculation of the Gower distance:
+
 
 ```{r}
 trait.dw <- gowdis(dummy$trait, w) # Gower distance with a different weight for the traits
@@ -203,11 +223,14 @@ ex3w <- dbFD(
 ex2$FRic == ex3w$FRic
 ```
 
+
 Although we already discussed what is a dissimilarity matrix in Chapter 3, and its corresponding R material Ch 3, in the next lines, we show once again how it does look:
+
 
 ```{r}
 trait.d # Gower distance
 ```
+
 
 In practice, this object shows the functional distance, i.e. dissimilarity between each pair of species, in this case expressed as an average dissimilarity over all (standardized) traits.
 
@@ -221,6 +244,7 @@ The function `dbFD` applies the Gower distance automatically if you use a specie
 
 Let’s now apply the `dbFD` function to the NE Spain data already described in section 5.1 above. The data was already loaded already above. As in the exercise on CWM, we need to improve the normality of the trait SLA in the matrix.
 
+
 ```{r}
 rm(list = setdiff(ls(), c("species_ammer", "species_spain", "traits_ammer", "traits_spain", "sites_spain", "sites_ammer")))
 traits_spain <- traits_spain %>%
@@ -228,7 +252,9 @@ traits_spain <- traits_spain %>%
 head(traits_spain)
 ```
 
+
 Let’s directly use the `dbFD` function. We need first to recall that we have a fuzzy coding data in the trait matrix (`spxt$LF_xx`) and for now, for simplicity, let’s forget about this type of trait data. We can use thus only the first 3 columns of the trait matrix for the time being (but see below for using all traits). Now that we know how the `dbFD` function works, i.e. it is used very similarly to the function `functcomp`, it is easy to have a lot of indices of FD computed in only one line! But for the time being we avoid computing again the CWM values, with the argument `calc.CWM = FALSE` and we also ask that the FRic will be standardized between 0 and 1, i.e. `stand.FRic = TRUE`.
+
 
 ```{r}
 resFD <- dbFD(
@@ -237,7 +263,9 @@ resFD <- dbFD(
   ) 
 ```
 
+
 We can now explore a bit the results. First let’s see how much the different FD indices are correlated between them:
+
 
 ```{r}
 important.indices <- data.frame(
@@ -256,11 +284,13 @@ library(GGally)
 GGally::ggpairs(important.indices)
 ```
 
+
 We generally see that FRic is positively correlated to the number of species, as expected. Of course FDis and Rao give very similar results (they are actually the same index, with only a squaring difference, see Pavoine & Bonsall ([2011](https://doi.org/https://doi.org/10.1111/j.1469-185X.2010.00171.x))). Slight deviations from the perfect linear relationship depends ONLY on the fact that Rao is computed directly from a Gower trait distance, while in FDis the Gower trait distance is first transformed into a PCoA and then the PCoA axes are used to compute the dissimilarities in the multivariate space. In some cases FEve is correlated negatively to FRic, as we discussed in Chapter 5 of the reference text book (see below for more details). We also see that Rao and FDis are increasing when the ‘range’ of traits, i.e. FRic (which is, as we discuss in Chapter 5 of the reference text book, is the size of the Convex Hull when multiple traits are considered, and the range, when only one trait is considered). We also see that both FDis and Rao are not correlated to the number of species. Finally, we also see that FDiv is quite correlated with FDis and Rao.
 
 ### FD with fuzzy coding
 
 We remind users (see Chapter 3 of the reference textbook, and R material Ch 3) that for computing FD with all traits considered in the ‘spxt’ matrix, which include fuzzy coding (‘LF_xx’ labeled column), we need to complicate a bit more the script. Otherwise the Gower distance used in the dbFD function will ‘understand’ that each of the LF_xx column in the matrix is a different trait. We certainly do not want that, even if it would provide nicer results, as we now want the 4 traits to have the same weight and scale! We can use the approach already introduced for the R material Ch 3, i.e. compute the dissimilarity for each trait separately and then average the dissimilarity across traits:
+
 
 ```{r}
 head(traits_spain)
@@ -274,9 +304,11 @@ resFD.alltraits <- dbFD(
   )
 ```
 
+
 ### Saving
 
 Merge the FD indices in the sites data
+
 
 ```{r}
 data <- important.indices %>%
@@ -287,7 +319,9 @@ sites_spain <- sites_spain %>%
   left_join(data, by = "id.plot")
 ```
 
+
 Save the new sites data
+
 
 ```{r}
 write_csv(
@@ -295,7 +329,9 @@ write_csv(
   )
 ```
 
+
 ### Plotting
+
 
 ```{r}
 sites_spain %>%
@@ -319,6 +355,7 @@ sites_spain %>%
   )
 ```
 
+
 <a href="#top">Back to top</a>
 
 ## Ammer data
@@ -326,6 +363,7 @@ sites_spain %>%
 Now, we calculate functional diversity only for a single trait.
 
 ### Preparation
+
 
 ```{r}
 rm(list = setdiff(ls(), c("species_ammer", "species_spain", "traits_ammer", "traits_spain", "sites_spain", "sites_ammer")))
@@ -347,7 +385,9 @@ data_traits <- data_traits %>%
   column_to_rownames("accepted_name")
 ```
 
+
 ### Calculation
+
 
 ```{r message = FALSE}
 data_abundance <- FD::dbFD(
@@ -362,9 +402,11 @@ data_presence <- FD::dbFD(
 )
 ```
 
+
 ### Saving
 
 Merge the FD indices in the sites data
+
 
 ```{r}
 data <- data.frame(data_abundance$FDis, data_abundance$FRic, data_abundance$FEve) %>%
@@ -385,7 +427,9 @@ sites_ammer <- sites_ammer %>%
 ```
 
 
+
 Save the new sites data
+
 
 ```{r}
 write_csv(
@@ -393,9 +437,11 @@ write_csv(
   )
 ```
 
+
 ### Plotting
 
 Plot the CWMs of SLA
+
 
 ```{r}
 sites_ammer %>%
@@ -407,6 +453,7 @@ sites_ammer %>%
     panel.background = element_rect(fill = "transparent")
   )
 ```
+
 
  <a href="#top">Back to top</a>
 
@@ -421,6 +468,7 @@ There has been a debate, in Journal of Ecology, between Villeger & Mouillot (Vil
 ## The dataset
 
 We can first play with the simple example provided in Chapter 5 of the reference textbook, which we recreate below:
+
 
 ```{r}
 source(here::here("data", "raw", "bello_etal-2021",  "chapter5", "Rao.r"))
@@ -445,9 +493,11 @@ coms
 #   )
 ```
 
+
 ## Partition functional diversity
 
 The `Rao` function needs a species x communities matrix with species as rows and does not need that the dissimilarity matrix will include species names (it assumes, maybe wrongly, users are careful enough to have species in the same order in the trait matrix and in the species composition matrix). We just run the calculations, using the Jost correction (`Jost = TRUE`) to avoid having an underestimation of beta diversity (see Chapter 5 in the reference textbook for more details). We can now find the results used which we need to build a figure similar to Fig.5.6 in the reference textbook. The alpha taxonomic diversity (which is the mean Simpson per plot), the beta and gamma, can be obtained as:
+
 
 ```{r}
 # partRao.Reg1$TD$Mean_Alpha #alpha
@@ -461,7 +511,9 @@ The `Rao` function needs a species x communities matrix with species as rows and
 # partRao.Reg1$TD$Mean_Alpha + partRao.Reg1$TD$Beta_add == partRao.Reg1$TD$Gamma #alpha+beta=gamma
 ```
 
+
 Indeed alpha + beta = gamma. We are aware some authors do not like to express beta diversity in additivity terms, so it has to be expressed in proportional terms, for example.
+
 
 ```{r}
 # partRao.Reg1$TD$Beta_add * 100 / partRao.Reg1$TD$Gamma #beta / gamma
@@ -471,7 +523,9 @@ Indeed alpha + beta = gamma. We are aware some authors do not like to express be
 # partRao.Reg1$TD$Beta_prop #which is the same as above
 ```
 
+
 You can apply the same procedure between each pair of plot. The taxonomical beta diversity between each pair of plots is shown in the following object. Notice that between a pair of plots the value 50% implies a complete functional replacement/turnover (see textbook for more details). In fact, the value obtained, i.e. ‘Beta_prop’, depend on the number of plots considered (the maximum turnover is 50% for two plots and increases with increased number of plots). As such ‘Beta_prop’ can be standardized, to be independent on the number of plots, with the formula 14 in de Bello et al. (2010).
+
 
 ```{r}
 # round(partRao.Reg1$TD$Pairwise_samples$Beta_prop) #value obtained without standardization
@@ -481,9 +535,11 @@ You can apply the same procedure between each pair of plot. The taxonomical beta
 # round(partRao.Reg1$TD$Pairwise_samples$Beta_prop / (1 - 1 / 2)) #standardized value, where 2 is the number of plos considered in the test, i.e. `turnover` between plots. 
 ```
 
+
 ## Plot
 
 We can now try to make a figure similar to Fig.5.6.
+
 
 ```{r}
 # TD <- c(partRao.Reg1$TD$Mean_Alpha, partRao.Reg1$TD$Beta_add)
@@ -497,7 +553,9 @@ We can now try to make a figure similar to Fig.5.6.
 # text(2, 3.5, "beta", pos = 4)
 ```
 
+
 In practice we can see that in the second region (or in general when considering the trait ‘trait.reg2’) we have higher alpha but also higher beta diversity (i.e. functional replacement). As a proportion, however, the functional replacement is the same in both regions (i.e., ~42% of the trait diversity is between plots, as compared to within plots):
+
 
 ```{r}
 # partRao.Reg1$FD$Beta_prop
@@ -507,7 +565,9 @@ In practice we can see that in the second region (or in general when considering
 # partRao.Reg2$FD$Beta_prop
 ```
 
+
 Let’s now work with the NE Spain data:
+
 
 ```{r}
 # partRao.NESpain <- Rao(
@@ -531,12 +591,15 @@ Let’s now work with the NE Spain data:
 # text(0.7, 15, "alpha")
 ```
 
+
 We can see in this figure that, despite the great turnover in species composition (beta TD, grey colour, left stack) we have a real low functional turnover. In other words **most of the trait dissimilarity between species is found within a plot and not across plots**, even if there are such a marked environmental changes and even if species composition changes are very strong (high beta TD).
 
 :::
 
 # Session info
 
+
 ```{r}
 sessionInfo()
 ```
+

@@ -197,6 +197,8 @@ write_csv(
 
 <a href="#top">Back to top</a>
 
+# Session info
+
 ```{r}
 sessionInfo()
 ```

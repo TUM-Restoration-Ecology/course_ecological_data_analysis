@@ -209,6 +209,7 @@ Use the Taxonomic Names Resolution Service ([TNRS](https://tnrs.biendata.org/)) 
 
 ```{r resolve-names-species}
 rm(list = setdiff(ls(), c("species_ammer", "traits_ammer", "data_gift")))
+
 metadata <- TNRS::TNRS_metadata()
 
 data <- species_ammer %>%
@@ -428,6 +429,8 @@ write_csv(
 * Resolve names with TNRS
 * Note the version of the database from `metadata$version` and the sources of the names with `metadata$citations` for the material-and-methods section
 * Note the range of 'Overall_score' for your submitted species names.
+
+# Session info
 
 ```{r}
 sessionInfo()

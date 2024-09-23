@@ -50,7 +50,7 @@ Findable data need a DOI and should be indexed in a database.
 
 ## Folder structure
 
-Set up a starting structure of your folders for your R project. You have folder for data, outputs, and code ('R' folder). The data is separated in untouched raw data and processed data. Outpus are separated in figures, tables, models, and statistics. Data preparation, modelling and plotting should be done with separated R scripts.
+First, set up a project like it is explained in the tutorial '0_preparation' which you received before the course started. Second, set up the starting structure of your folders for this R project. You have folder for 'data', 'outputs', and code ('R' folder). The data is separated in untouched raw data and processed data. Outpus are separated in figures, tables, models, and statistics. Data preparation, modelling and plotting should be done with separated R scripts.
 
 ```
 ├── data
@@ -216,6 +216,8 @@ The **History** view shows the previous commits on the current branch of your re
 * Make changes in your script, control the 'Changes' section of GitHub Desktop. Commit the change and push it to the server.
 * Insert a license
 * Insert a README file
+
+# Session info
 
 :::
 

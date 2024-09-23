@@ -307,3 +307,9 @@ ggplot() +
 * Try the same with the Ammer data and your data
 
 <a href="#top">Back to top</a>
+
+# Session info
+
+```{r}
+sessionInfo()
+```

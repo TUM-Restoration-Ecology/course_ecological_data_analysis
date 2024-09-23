@@ -195,4 +195,34 @@ Two of the relationships are significant: plant height and soil depth (red = pos
 
 ## Ammer dataset
 
+```{r}
+rm(list = setdiff(
+  ls(),
+  c("species_ammer", "species_spain", "traits_ammer", "traits_spain",
+    "sites_spain", "sites_ammer")
+  )
+  )
+
+traits <- traits_ammer
+
+species <- species_ammer
+
+sites <- sites_ammer
+```
+
+```{r}
+m1 <- ade4::fourthcorner(
+  tabR = sites, tabL = species, tabQ = traits, modeltype = 6 # max test
+  )
+m1
+```
+
+
 <a href="#top">Back to top</a>
+
+# Session info
+
+```{r}
+sessionInfo()
+```
+
