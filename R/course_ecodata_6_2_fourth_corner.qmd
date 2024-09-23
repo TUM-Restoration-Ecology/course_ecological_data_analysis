@@ -32,6 +32,8 @@ knitr::opts_chunk$set(
 
 [christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://www.researchgate.net/profile/Christina-Hartung)
+
 ::: {.content-hidden when-format="html"}
 
 # Tasks
@@ -42,7 +44,7 @@ knitr::opts_chunk$set(
 
 This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426)) and Zelený ([2021](https://www.davidzeleny.net/anadat-r/doku.php/en:cwm_fc_examples#example_3ecological_interpretation_of_the_unconstrained_axes_in_constrained_ordination_using_mean_ellenberg-like_indicator_values))
 
-A helpful textbook is 'Numerical Ecology' (Borcard et al. [2018](https://doi.org/10.1007/978-3-319-71404-2)) and 'Multivariate Analysis of Ecological Data with ade4' (Thioulouse et al. [2018](https://doi.org/10.1007/978-1-4939-8850-1))
+A helpful textbook is 'Numerical Ecology' (Borcard et al. [2018](https://doi.org/10.1007/978-3-319-71404-2), Ch 6.11) and 'Multivariate Analysis of Ecological Data with ade4' (Thioulouse et al. [2018](https://doi.org/10.1007/978-1-4939-8850-1))
 
 # Learning objectives
 

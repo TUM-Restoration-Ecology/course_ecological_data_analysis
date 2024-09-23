@@ -32,6 +32,7 @@ knitr::opts_chunk$set(
 
 [christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://www.researchgate.net/profile/Christina-Hartung)
 
 ::: {.content-hidden when-format="html"}
 
@@ -346,7 +347,7 @@ mix_intermediate$prob %>%
   head(n = 5)
 ```
 
-### Task
+## Task
 
 * Create own species compositions from the species pool of your data.
 

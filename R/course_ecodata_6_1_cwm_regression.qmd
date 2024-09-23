@@ -5,7 +5,7 @@ date: today
 date-format: iso
 format: html
 toc: true
-toc-depth: 3
+toc-depth: 4
 toc-expand: 2
 number-sections: true
 dev: png
@@ -32,18 +32,27 @@ knitr::opts_chunk$set(
 
 [christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://researchgate.net/profile/Christina-Hartung)
+
 ::: {.content-hidden when-format="html"}
 
 # Tasks
 
 * Include Ammer data
-* Include DHarma package
-* Include data exploration
-* Write learning objectives
+* Include more data exploration
+* Make grazing index to a factor instead of a numeric variable
+* Make debate work
 
 :::
 
-This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426)) and Zelený ([2021](https://www.davidzeleny.net/anadat-r/doku.php/en:cwm_fc_examples#example_3ecological_interpretation_of_the_unconstrained_axes_in_constrained_ordination_using_mean_ellenberg-like_indicator_values))
+This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426), Ch 5.1.4) and Zelený ([2021](https://www.davidzeleny.net/anadat-r/doku.php/en:cwm_fc_examples#example_3ecological_interpretation_of_the_unconstrained_axes_in_constrained_ordination_using_mean_ellenberg-like_indicator_values)).
+
+# Learning outcomes
+
+* Knowledge of doing data exploration before modelling
+* Ability to calculate linear models with indices of functional diversity and environmental variables.
+* Ability to do a model critique with `DHARMa`
+* Knowledge that a debate about the reliability of community weighted means exist
 
 # Preparation
 
@@ -52,7 +61,8 @@ This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426)) 
 ```{r libraries, message = FALSE}
 library(here)
 library(tidyverse)
-library(patchwork)
+library(patchwork) # combine several ggplots into the same graphic
+library(DHARMa)
 rm(list = ls())
 ```
 
@@ -82,85 +92,169 @@ traits_vltava <- vltava$herbs$traits %>%
 
 # CWM regression (community level)
 
+Doing linear models needs 10 steps from stating the appropriate question to simulations from the model (Zuur & Ieno [2016](https://doi.org/10.1111/2041-210X.12577), Fig. 1). We do not go into detail of modelling and touch only the points 3 (conduct data exploration), 6 (fit the model), 7 (validate the model), and 9 (create a visual representation). For your theses, it is recommended to go carefully throught the 10 steps.
+
 ## Spain data
 
 ### Community-weighted Mean
+
+#### Data exploration (Zuur & Ieno Step 3)
+
+Before starting modelling, you should do a data exploration and keep to a protocol like the popular one of Zuur et al. ([2010](https://doi.org/10.1111/j.2041-210X.2009.00001.x), Fig. 1) and work through the protocol step by step. We do only a very reduced version due to time constraints (here only Zuuer et al. step 6).
+
+> Note: Zuur et al. ([2010](https://doi.org/10.1111/j.2041-210X.2009.00001.x), Fig. 1) steps 2 and 3 are meanwhile part of the model critique after modelling.
 
 Let’s see if CWM changes along the climatic gradient. For example, let’s explore visually a bit the results before running any analysis, just choosing some of the potential graphs (4 in this case):
 
 ```{r}
 p1 <- sites_spain %>%
-  ggplot(x = moisture.index, y = cwm.abu.sla) +
+  ggplot(aes(x = moisture.index, y = cwm.abu.sla)) +
+  geom_point() +
   labs(x = "Moisture Index", y = "CWM SLA [log mm2/mg]")
 p2 <- sites_spain %>%
-  ggplot(x = moisture.index, y = GrowhtForm_shrub) +
+  ggplot(aes(x = moisture.index, y = cwm.abu.gf.shrub)) +
+  geom_point() +
   labs(x = "Moisture Index", y = "Shrubs [%]")
 p3 <- sites_spain %>%
-  ggplot(x = moisture.index, y = LEG_1) +
+  ggplot(aes(x = moisture.index, y = cwm.abu.leg.1)) +
+  geom_point() +
   labs(x = "Moisture Index", y = "Legumes [%]")
 p4 <- sites_spain %>%
-  ggplot(x = moisture.index, y = LF_Th) +
+  ggplot(aes(x = moisture.index, y = cwm.abu.lf.th)) +
+  geom_point() +
   labs(x = "Moisture Index", y = "Therophytes [%]")
-p1 + p2 / p3 + p4
+(p1 + p2) / (p3 + p4)
 ```
 
 We can already reach some conclusions while looking at these figures. The CWM SLA is increasing with moisture index, likely because of a decrease in shrub species with moisture. If fact, the different growth forms tend to have different SLA.
 
 We can possibly also expect that there is slightly more leguminous species at the intermediate moisture conditions and that the presence of annuals (i.e. therophytes) is slightly higher in the two driest belts [Note that in the second driest site, with moisture index=0.5, there was overall a slightly greater grazing history that in the other sites, hence the generally strange behaviour of the points in these plots, with respect to the general trends].
 
+#### Modelling (Zuur & Ieno Step 6)
+
 We can now have a specific look at the statistics and we can also include grazing in the analysis. For example we can use a simple linear model (although maybe a REML, restricted maximum likelihood model, would have been more accurate) where we test the effect of moisture and grazing intensity on the CWM for SLA:
 
 ```{r}
 m1 <- lm(cwm.abu.sla ~ moisture.index * grazing, data = sites_spain)
+anova(m1)
 summary(m1)
 ```
 
 This shows that in general the strongest effect (i.e. ‘filter’) on CWM for SLA is by the moisture index but grazing also modifies CWM for SLA, specifically increasing it (likely because of an increase in therophytes and decrease in woody species). However the effect of grazing on CWM for SLA depends on moisture (see the interaction moisture.index:grazing), with a weaker effect in more moist conditions.
 
+* You have to write down for your results the following: *F*<sub>(3,56)</sub> = 26.3, *p* = 9.3e-11, *R*<sup>2</sup><sub>adj</sub> = 0.56. Do the same for your dataset later.
+
+#### Model critique (Zuur & Ieno Step 7)
+
+We can not go into details about linear models in this course, but should always present your model critique in the appendix of your thesis. The `DHARMa` package of Hartig ([2022](https://CRAN.R-project.org/package=DHARMa)) helps you with that and is explained by a well prepared [vignette](https://cran.r-project.org/web/packages/DHARMa/vignettes/DHARMa.html) (Hartig 2022)
+
+```{r}
+simulationOutput <- simulateResiduals(fittedModel = m1, plot = FALSE)
+plot(simulationOutput)
+```
+
+You have assumptions for linear models: 1) Normal distribution of residuals and 2) homogeneity of the variances ('homoscedasticity'). We can see on the left graph that the residuals are normally distributed, because all dots are along the diagonal line. On the right graph, we see that the variances are homogeneous because the dots are equally distributed ("stars-in-the-sky plot"). The DHARMa package helps you with the interpretation, because it highlights problems in red.
+
+Check for collinearity with the variance inflation factor, which should be below 3 or at least 10 (Zuur et al. [2010](https://doi.org/10.1111/j.2041-210X.2009.00001.x))
+
+```{r}
+car::vif(m1)
+```
+
+All variables have a VIF < 10.
+
+#### Plot (Zuur & Ieno Step 9 and 10)
+
+```{r}
+p1 <- ggeffects::ggpredict(m1, "moisture.index")
+p1
+plot(p1, show_data = TRUE) +
+  labs(x = "Moisture index", y = expression(CWM~SLA~"["*mm^2~mg^-1*"]")) +
+  theme(
+    title = element_blank(),
+    axis.text = element_text(color = "black"),
+    axis.line.x = element_line(color = "black"),
+    axis.line.y = element_line(color = "black"),
+    axis.title = element_text(color = "black"),
+    axis.ticks = element_line(color = "black"),
+    panel.grid = element_blank()
+  )
+```
+
+* Plot the grazing index like the moisture index
+
 <a href="#top">Back to top</a>
 
 ### Functional diversity
+
+#### Data exploration (Zuur & Ieno Step 3)
 
 Having looked which indices are correlated between them allows us to select fewer indices for assessing the relationship between FD and, for example, the moisture index in the different vegetation belts in the NE Spain data
 
 ```{r results = FALSE, fig.show = 'hide'}
 p1 <- sites_spain %>%
-  ggplot(x = moisture.index, y = richness) +
+  ggplot(aes(x = moisture.index, y = species_richness)) +
+  geom_point() +
   labs(x = "Moisture Index", y = "Species richness [#]")
 p2 <- sites_spain %>%
-  ggplot(x = moisture.index, y = fric) +
+  ggplot(aes(x = moisture.index, y = fric)) +
+  geom_point() +
   labs(x = "Moisture Index", y = "Functional Richness")
 p3 <- sites_spain %>%
-  ggplot(x = moisture.index, y = feve.abu) +
+  ggplot(aes(x = moisture.index, y = feve.abu)) +
+  geom_point() +
   labs(x = "Moisture Index", y = "Functional Eveness")
 p4 <- sites_spain %>%
-  ggplot(x = moisture.index, y = fdis.abu) +
+  ggplot(aes(x = moisture.index, y = fdis.abu)) +
+  geom_point() +
   labs(x = "Moisture Index", y = "Functional Dispersion")
-p1 + p2 / p3 + p4
+(p1 + p2) / (p3 + p4)
 ```
 
 What we see is that while the number of species is increasing with the moisture index, Functional Richness and Functional Dispersion tend to be maximized at lower or intermediate moisture sites. Hence the mechanisms that maintain species diversity seems not to be the same supporting the functional differentiation between species.
 
+#### Modelling (Zuur & Ieno Step 6)
+
 We can eventually apply different statistical tools to test the relationship with both the moisture index and grazing, as we did in the CWM exercise:
 
-```{r results = FALSE, fig.show = 'hide'}
+```{r}
 m2 <- lm(fdis.abu ~ moisture.index * grazing, data = sites_spain)
 summary(m2)
 ```
 
 The results show a general weak positive effect of grazing on some of the FD components.
 
-Include FDis_all ###
+#### Model critique (Zuur & Ieno Step 7)
 
 ```{r}
-
+simulationOutput <- simulateResiduals(fittedModel = m2, plot = FALSE)
+plot(simulationOutput)
+car::vif(m2)
 ```
 
-The new results are quite different, and including Life Form improves the predictions of the model.
+The model critique is not perfect but ok.
+
+#### Plot (Zuur & Ieno Step 9 and 10)
+
+```{r}
+p2 <- ggeffects::ggpredict(m2, "moisture.index")
+p2
+plot(p2, show_data = TRUE) +
+  labs(x = "Moisture index", y = expression(FDis~"("*abundance~data*")")) +
+  theme(
+    title = element_blank(),
+    axis.text = element_text(color = "black"),
+    axis.line.x = element_line(color = "black"),
+    axis.line.y = element_line(color = "black"),
+    axis.title = element_text(color = "black"),
+    axis.ticks = element_line(color = "black"),
+    panel.grid = element_blank()
+  )
+```
 
 <a href="#top">Back to top</a>
 
-## Forest understory vegetation
+## Forest understory vegetation (Zelený)
 
 We will use the Vltava dataset to analyse the relationship between the community-weighted mean of one of the leaf traits (specific leaf area, SLA) and one of the environmental variables (light intensity in the understory). The theory predicts that shade-tolerant species will produce leaves with higher SLA (i.e. per gram of dry mass they will produce leaves with the larger area) to optimize the gain from photosynthesis in the dim light of shaded conditions. Let's use the real data to see whether this works.
 
@@ -197,45 +291,74 @@ data <- FD::dbFD(
   )
 ```
 
+#### Modelling (Zuur & Ieno Step 6)
+
 Calculate a linear model regression of CWM SLA on the canopy cover:
 
-```{r results = FALSE, fig.show = 'hide'}
+```{r}
 m3 <- lm(data$CWM$SLA ~ sites_vltava$COVERE32)
-anova (m3)
+anova(m3)
+```
+#### Model critique (Zuur & Ieno Step 7)
 
+```{r}
+simulationOutput <- simulateResiduals(fittedModel = m2, plot = FALSE)
+plot(simulationOutput)
+car::vif(m2)
+```
+
+#### Plot (Zuur & Ieno Step 9)
+
+```{r}
 ggplot(data = sites_vltava, aes(y = data$CWM$SLA, x = sites_vltava$COVERE32)) +
   geom_point() +
   geom_smooth(method = "lm") +
   labs(x = "Canopy cover [%]", y = "CWM SLA")
 ```
 
-So far it goes well - as we see, the relationship is positive and statistically clear (P < 0.001).
+So far it goes well - as we see, the relationship is positive and statistically clear (*P* < 0.001). The kind of plot is a type which you can use for data exploration and not for a real final plot.
+
+> Plot only a line in your graph it is statistically clear. If not plot none or a dashed line
 
 <a href="#top">Back to top</a>
+
+::: {.content-hidden when-format="html"}
 
 ## Ammer data
 
 <a href="#top">Back to top</a>
 
-# Can we trust the p-value of CWM-based analyses?
+:::
+
+# Task
+
+* Calculate linear models for some of your CWMs and FD indices.
+
+# Debate
+
+(further reading, optional)
+
+## Can we trust the p-value of CWM-based analyses?
 
 In the reference text book, in Chapter 5, we provide an extensive discussion on some potential problems using analyses with CWM. Some authors have suggested that CWM should not be used because the analyses using CWM provide too optimistic p-values. As summarized by David Zelený and in the reference text book (Zelený [2018](https://doi.org/10.1111/jvs.12688)), we think that the question is not if we can trust the the p-value of CWM-based analyses but rather which type of questions are asked. If we are interested in observing changes in CWM along gradient, whatever are the causes, then analyses on CWM are robust and interesting. If the question is, for example, if the MAJORITY of species in drier habitats have given traits, then a different type of analyses should be done, basically the analyses at the species level presented in Chapter 3 and in the R material Ch 2. 
 
 Let’s now focus on the suggestion by David Zelený ([2018](https://doi.org/10.1111/jvs.12688)) on how to run a conservative tests to evaluate the significance of environmental factors on CWM values. The suggestion by Zelený can be summarized as to run randomizations tests and, basically, verify if the R^2 of a given model (for example those obtained in the previous section) is higher than expected by chance. Randomizations can be done in different ways, but we suggest that a simple and effective one is by simply shuffling species names in the trait matrix.
+
+<a href="#top">Back to top</a>
 
 ## Ltava data
 
 The problem is that even with random traits, we have actually a rather good chance to obtain a significant relationship between CWM and environmental variables. Let's see it on the same data, by permuting the SLA values among species, calculating CWM from these randomized trait values, and testing the regression of this randomized CWM on the original environmental variable: 
 
 ```{r}
-P_rand <- replicate(1000, expr = {
-  SLA_rand <- sample(SLA_1)
-  CWM_SLA_rand <-  apply(com_1, 1, FUN = function(x) sum(x*SLA_rand)/sum(x))
-  LM_rand_col <- lm(CWM_SLA_rand ~ cover)
-  P_value <- anova(LM_rand_col)$`Pr(>F)`[1]
-  return(P_value)
-})
-sum(P_rand < 0.05) 
+# P_rand <- replicate(1000, expr = {
+#   SLA_rand <- sample(SLA_1)
+#   CWM_SLA_rand <-  apply(com_1, 1, FUN = function(x) sum(x*SLA_rand)/sum(x))
+#   LM_rand_col <- lm(CWM_SLA_rand ~ cover)
+#   P_value <- anova(LM_rand_col)$`Pr(>F)`[1]
+#   return(P_value)
+# })
+# sum(P_rand < 0.05) 
 ```
 
 Surprisingly, around 280 out of 1000 regressions are significant - but if the test has a correct Type I error rate, it should be around 5% = 50 (out of 1000) significant results. Clearly, the standard parametric test has an inflated Type I error rate.
@@ -245,15 +368,15 @@ The solution to this problem is to apply the “max” permutation test, which c
 Note that `weimea` contains also the function `cwm`, which offers quick calculation of CWM values from species composition and trait matrix, and can treat the missing values - no need to remove them first. Still, the number of species in the species composition matrix (columns) and species trait matrix (rows) must be identical, and the order of species must be also the same - `cwm` function does not check for this.
 
 ```{r}
-library (weimea)
-CWM_SLA_w <- weimea::cwm(com = com, traits = SLA)
+# library (weimea)
+# CWM_SLA_w <- weimea::cwm(com = com, traits = SLA)
 ```
 
 The variable `CWM_SLA_w` is like a data frame with calculated CWM, but is much more than that; the object is of the class `cwm`, and contains also the original data used for calculation of CWM (that is why I used a different name of the object from `SLA_CWM` calculated above, even though the calculated values are identical - you may check if you want). It can thus be used directly for testing the regression of CWM and environmental variable, using the function `test_cwm`; you need to also select the method of relating CWM to environmental variables (currently only `lm` for linear model regression, and `cor` for Pearson's correlation, are available):
 
 ```{r}
-CWM_cover <- weimea::test_cwm(cwm = CWM_SLA_w, env = cover, method = 'lm', test = 'all')
-CWM_cover
+# CWM_cover <- weimea::test_cwm(cwm = CWM_SLA_w, env = cover, method = 'lm', test = 'all')
+# CWM_cover
 ```
 
 The test output is longish. Important is the P_max value in the end, which is significant (P = 0.02). You can also see how it was calculated, because the function returns P-values of both row- (`P_row`) and column-based (`P_col`) permutation test. `P_par` is the result of the parametric F-test, identical to the result of `anova` function above.
@@ -261,7 +384,7 @@ The test output is longish. Important is the P_max value in the end, which is si
 The package `weimea` also offers dedicated function to plot the results of the regression: 
 
 ```{r}
-plot(CWM_cover)
+# plot(CWM_cover)
 ```
 
 The conclusion is that the relationship between CWM of SLA for herb species in the forest understory and the light availability is significant even if tested by the “max” test. This offers a strong suggestion that stronger light may filter the species into the community with lower SLA leaves. 

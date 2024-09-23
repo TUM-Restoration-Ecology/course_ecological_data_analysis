@@ -443,7 +443,7 @@ write_csv(
 Plot the CWMs of SLA
 
 
-```{r}
+```{r results = FALSE}
 sites_ammer %>%
   ggplot(aes(x = fdis.abu.sla)) +
   geom_density(color = "black", fill = "black", alpha = .1) +

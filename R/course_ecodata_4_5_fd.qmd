@@ -32,6 +32,8 @@ knitr::opts_chunk$set(
 
 [christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://www.researchgate.net/profile/Christina-Hartung)
+
 ::: {.content-hidden when-format="html"}
 
 # Tasks
@@ -274,7 +276,7 @@ resFD.alltraits <- dbFD(
   )
 ```
 
-### Saving
+### Merge
 
 Merge the FD indices in the sites data
 
@@ -287,15 +289,7 @@ sites_spain <- sites_spain %>%
   left_join(data, by = "id.plot")
 ```
 
-Save the new sites data
-
-```{r}
-write_csv(
-  sites_spain, here::here("data", "processed", "data_processed_sites_spain_4.5.csv")
-  )
-```
-
-### Plotting
+### Plot
 
 ```{r}
 sites_spain %>%
@@ -316,6 +310,14 @@ sites_spain %>%
   theme(
     axis.line = element_line(color = "black"),
     panel.background = element_rect(fill = "transparent")
+  )
+```
+
+### Save
+
+```{r}
+write_csv(
+  sites_spain, here::here("data", "processed", "data_processed_sites_spain_4.5.csv")
   )
 ```
 
@@ -362,7 +364,7 @@ data_presence <- FD::dbFD(
 )
 ```
 
-### Saving
+### Merge
 
 Merge the FD indices in the sites data
 
@@ -385,19 +387,11 @@ sites_ammer <- sites_ammer %>%
 ```
 
 
-Save the new sites data
-
-```{r}
-write_csv(
-  sites_ammer, here::here("data", "processed", "data_processed_sites_ammer_4.5.csv")
-  )
-```
-
-### Plotting
+### Plot
 
 Plot the CWMs of SLA
 
-```{r}
+```{r results = FALSE}
 sites_ammer %>%
   ggplot(aes(x = fdis.abu.sla)) +
   geom_density(color = "black", fill = "black", alpha = .1) +
@@ -405,6 +399,14 @@ sites_ammer %>%
   theme(
     axis.line = element_line(color = "black"),
     panel.background = element_rect(fill = "transparent")
+  )
+```
+
+### Save
+
+```{r}
+write_csv(
+  sites_ammer, here::here("data", "processed", "data_processed_sites_ammer_4.5.csv")
   )
 ```
 

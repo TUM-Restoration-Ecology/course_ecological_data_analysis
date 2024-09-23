@@ -32,13 +32,13 @@ knitr::opts_chunk$set(
 
 [christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://www.researchgate.net/profile/Christina-Hartung)
+
 ::: {.content-hidden when-format="html"}
 
 # Tasks
 
 * Make Ammer working also with categorical traits
-* Include DHarma
-* Include data exploration
 * Write learning objectives
 
 :::
@@ -100,7 +100,9 @@ traits_spain <- read_delim(
   )
 
 sites_spain <- read_delim(
-  here::here("data", "raw", "bello_etal-2021", "chapter5", "environXplotsNE.txt"),
+  here::here(
+    "data", "raw", "bello_etal-2021", "chapter5", "environXplotsNE.txt"
+    ),
   col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
   )
 
@@ -361,39 +363,36 @@ resCWM %>%
 
 WELL DONE! we now have the CWM data. 
 
-### Saving
+### Merge
 
 Merge the CWMs in the sites data
 
 ```{r}
-data <- data.frame(resCWM$FDis, resCWM$CWM$SLA_log) %>%
-  rownames_to_column("id.plot") %>%
+data <- data.frame(resCWM$FDis) %>%
+  rownames_to_column(var = "id.plot") %>%
+  tibble() %>%
+  bind_cols(
+    resCWM$CWM$SLA_log, resCWM$CWM$GrowhtForm_shrub, resCWM$CWM$LEG_1,
+    resCWM$CWM$LF_Th
+    ) %>%
   rename(
-    "cwm.abu.sla" = "resCWM.CWM.SLA_log"
+    "cwm.abu.sla.log" = 3,
+    "cwm.abu.gf.shrub" = 4,
+    "cwm.abu.leg.1" = 5,
+    "cwm.abu.lf.th" = 6
   ) %>%
   mutate(
-    across(where(is.numeric), ~ exp(.x)), # backtransform traits
+    cwm.abu.sla = exp(cwm.abu.sla.log), # backtransform traits
     across(where(is.numeric), ~ round(.x, digits = 2)) # round outcomes
     ) %>%
-  select(id.plot, cwm.abu.sla)
-sla <- data
+  select(-resCWM.FDis)
 
 sites_spain <- sites_spain %>%
   rename(id.plot = Plots) %>%
-  left_join(sla, by = "id.plot")
+  left_join(data, by = "id.plot")
 ```
 
-Save the new sites data
-
-```{r}
-write_csv(
-  sites_spain, here::here(
-    "data", "processed", "data_processed_sites_spain_4.4.csv"
-    )
-  )
-```
-
-### Plotting
+### Plot
 
 Plot the CWMs of SLA
 
@@ -405,6 +404,16 @@ sites_spain %>%
   theme(
     axis.line = element_line(color = "black"),
     panel.background = element_rect(fill = "transparent")
+  )
+```
+
+### Save
+
+```{r}
+write_csv(
+  sites_spain, here::here(
+    "data", "processed", "data_processed_sites_spain_4.4.csv"
+    )
   )
 ```
 
@@ -449,7 +458,7 @@ data_presence <- FD::dbFD(
 )
 ```
 
-### Saving
+### Merge
 
 Merge the CWMs in the sites data
 
@@ -471,19 +480,11 @@ sites_ammer <- sites_ammer %>%
   left_join(sla, by = "id.plot")
 ```
 
-Save the new sites data
-
-```{r}
-write_csv(
-  sites_ammer, here::here("data", "processed", "data_processed_sites_ammer_4.4.csv")
-  )
-```
-
-### Plotting
+### Plot
 
 Plot the CWMs of SLA
 
-```{r}
+```{r results = FALSE}
 sites_ammer %>%
   ggplot(aes(x = cwm.abu.sla)) +
   geom_density(color = "black", fill = "black", alpha = .1) +
@@ -496,7 +497,7 @@ sites_ammer %>%
 
 Let's compare the values of the Spain dataset and the Ammer data:
 
-```{r}
+```{r results = FALSE}
 data_spain <- sites_spain %>%
   select(id.plot, cwm.abu.sla) %>%
   mutate(
@@ -519,6 +520,14 @@ bind_rows(data_spain, data_ammer) %>%
 ```
 
 The Spain vegetation seems to have species with lower SLA values. However, the Spain data is not cleaned from shrubs and trees.
+
+### Save
+
+```{r}
+write_csv(
+  sites_ammer, here::here("data", "processed", "data_processed_sites_ammer_4.4.csv")
+  )
+```
 
 <a href="#top">Back to top</a>
 
