@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
   )
 ```
 
+
 ^1^ Technichal University of Munich, TUM School of Life Sciences, Chair of Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 [markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
@@ -46,6 +47,7 @@ knitr::opts_chunk$set(
 
 You can always install missing libraries by `install.packages()` like `install.packages("here")`. We use the `tidyverse` package (Wickham et al. [2019](https://doi.org/10.21105/joss.01686)), the `GIFT` package (Denelle et al. [2023](https://doi.org/10.1111/2041-210X.14213)) and the package `TNRS` (Boyle et al.[2013](https://doi.org/10.1186/1471-2105-14-16))
 
+
 ```{r libraries, message = FALSE, results = FALSE}
 library(here)
 library(tidyverse)
@@ -53,6 +55,7 @@ library(GIFT)
 library(TNRS)
 rm(list = ls())
 ```
+
 
 ## The example data set
 
@@ -66,6 +69,7 @@ The dataset is also available on [Zenodo](https://doi.org/10.5281/zenodo.6054867
 
 ## Load data
 
+
 ```{r load-data}
 species_ammer <- read_csv(
   here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_species.csv"),
@@ -75,6 +79,7 @@ species_ammer <- read_csv(
   select(-layer)
 ```
 
+
 <a href="#top">Back to top</a>
 
 # Calculate traits from measured values
@@ -82,6 +87,7 @@ species_ammer <- read_csv(
 A short example how to calculate functional traits by your own. For example the specific leaf area (SLA) of trees ([*Acer platanoides*](https://floraveg.eu/taxon/overview/Acer%20platanoides) and [*Tilia cordata*](https://floraveg.eu/taxon/overview/Tilia%20cordata)) in a greenhouse experiment in Dürnast (Bauer et al. [2023](https://doi.org/10.1007/s00468-023-02391-8)).
 
 Per tree, three leaves were chosen and the leaf area was measured and latter the dry weight (Perez-Harguindeguy et al. [2013](https://www.uv.es/jgpausas/papers/PerezHarguindeguy-2013-AJB_traits-handbook2.pdf), section 3.1).
+
 
 ```{r}
 traits_bricks <- read_csv(
@@ -94,7 +100,9 @@ traits_bricks %>%
   head()
 ```
 
+
 Divide the leaf area by the leaf mass:
+
 
 ```{r}
 data <- traits_bricks %>%
@@ -110,6 +118,7 @@ data %>%
 ```
 
 
+
 <a href="#top">Back to top</a>
 
 # Traits from databases
@@ -122,6 +131,7 @@ Get the functional trait values from the Global Inventory of Floras and Traits (
 
 There are many functional traits available in the GIFT database. Each of these traits has an identification number called `trait_ID`. Since the two functions for retrieving trait values, `GIFT_traits()` and `GIFT_traits_raw()`, rely on these IDs, the first step is to call the function `GIFT_traits_meta()` to know what the ID of the desired trait is. For example, let’s say we want to retrieve the maximum vegetative heights of plant species.
 
+
 ```{r select-plant-traits, message = FALSE}
 trait_meta <- GIFT::GIFT_traits_meta()
 
@@ -130,6 +140,7 @@ trait_meta %>%
   select(-comment) %>%
   head(n = 10)
 ```
+
 
 We can see that the ID of this trait is 1.6.2. Now that we have the ID, we can use `GIFT_traits()` to retrieve the growth form values for different plant species.
 
@@ -140,6 +151,7 @@ We can see that the ID of this trait is 1.6.2. Now that we have the ID, we can u
 ### Raw data and aggregated data
 
 There are two functions to access trait values. First, `GIFT_traits_raw()` returns all trait values for a given species and a given trait. These trait values can then vary. Second, `GIFT_traits()` returns an aggregated trait value at the species level. The aggregation simply takes the mean for continuous traits or the most frequent entry for categorical traits. However, for some specific cases, the aggregation takes either the minimum or the maximum, as for the trait we chose. Let’s retrieve the raw and aggregated values for the maximum vegetative height of plants (trait_ID 1.6.2).
+
 
 ```{r download-traits-example, results = FALSE, message = FALSE}
 height <- GIFT::GIFT_traits(
@@ -156,6 +168,7 @@ height %>% # Aggregated value
   filter(work_species == "Fagus sylvatica")
 ```
 
+
 There were three maximum heights for Fagus sylvatica, 30, 35, and 50 meters, which led to an aggregated value of 50 meters.
 
 <a href="#top">Back to top</a>
@@ -163,6 +176,7 @@ There were three maximum heights for Fagus sylvatica, 30, 35, and 50 meters, whi
 ### Get the references of the measurements
 
 If you want to look up the references that led to the aggregated trait value, you can run this chunk:
+
 
 ```{r trait-references, results = FALSE, message = FALSE}
 references <- GIFT::GIFT_references(GIFT_version = "latest")
@@ -178,11 +192,13 @@ references <- references[
 references[1:2, ]
 ```
 
+
 <a href="#top">Back to top</a>
 
 ### Download traits
 
 Here is an example how to download several traits:
+
 
 ```{r get-traits, results = FALSE, message = FALSE}
 trait_ids <- c(
@@ -199,6 +215,7 @@ data_gift <- GIFT::GIFT_traits(
   )
 ```
 
+
 <a href="#top">Back to top</a>
 
 # Name resolving
@@ -206,6 +223,7 @@ data_gift <- GIFT::GIFT_traits(
 [Original vignette](https://cran.r-project.org/web/packages/TNRS/vignettes/TNRS_vignette.html) by Maitner (2024)
 
 Use the Taxonomic Names Resolution Service ([TNRS](https://tnrs.biendata.org/)) with the package `TNRS` (Boyle et al.[2013](https://doi.org/10.1186/1471-2105-14-16)) for name resolving and the taxonoic resouces World Checklist of Vascular Plants of Kew Gardens (WCVP; Govaerts [2023](http://sftp.kew.org/pub/data-repositories/WCVP/)) and World Flora Online (WFO Consortium [2023](https://doi.org/10.5281/zenodo.8079052))
+
 
 ```{r resolve-names-species}
 rm(list = setdiff(ls(), c("species_ammer", "traits_ammer", "data_gift")))
@@ -228,11 +246,13 @@ data_names <- data %>%
   rename_with(tolower)
 ```
 
+
 <a href="#top">Back to top</a>
 
 # Merge TNRS names with species and traits table
 
 Merge the resolved species names and the functional plant traits into the existing tables 'species' and create a new one 'traits'. First, you have to check for duplicates in the column 'accepted_name' created by name resolving. Second, summarize duplicates by summing the abundances.
+
 
 ```{r merge-resolved-names}
 rm(list = setdiff(ls(), c("species_ammer", "data_names", "data_gift")))
@@ -277,6 +297,7 @@ traits_ammer <- data3 %>%
   )
 ```
 
+
 <a href="#top">Back to top</a>
 
  
@@ -285,6 +306,7 @@ traits_ammer <- data3 %>%
 You can work with the classical Ellenberg indicator values (EIV) like with functional plant traits. Tichý et al. ([2023](https://doi.org/10.1111/jvs.13168)) provide European Ellenberg values on  on [FloraVeg.EU](https://floraveg.eu/download/) (file "Ellenberg-type indicator values"; also documented on [Zenodo](https://doi.org/10.5281/zenodo.7427088)). Use the sheet "Tab-OriginalNamesValues" and filter "Source = Ellenberg" to get the German EIV. If you analyse data across several European countries, you should load the sheet "Tab-IVs-Tichy-et-al2022".
 
 This time we do not harmonize the 'traits_ellenberg' table with `TNRS`, but make to attempts to join and then we rename the species by hand.
+
 
 ```{r results = FALSE}
 library(readxl)
@@ -361,7 +383,9 @@ missing_species <- traits_ammer %>%
   )
 ```
 
+
 From 'missing_species' you know the species which have no match in 'traits_ellenberg'. Therefore, you have to search this dataset by hand and rename the species names:
+
 
 ```{r results = FALSE}
 data4 <- traits_ellenberg %>%
@@ -381,7 +405,9 @@ data4 <- traits_ellenberg %>%
   )
 ```
 
+
 Now, we merge the datasets.
+
 
 ```{r}
 data5 <- traits_ammer %>%
@@ -403,9 +429,11 @@ data6 <- data5 %>%
 traits_ammer <- data6
 ```
 
+
 <a href="#top">Back to top</a>
 
 # Save
+
 
 ```{r save-files}
 rm(list = setdiff(ls(), c("species_ammer", "traits_ammer")))
@@ -416,6 +444,7 @@ write_csv(
   traits_ammer, here("data", "processed", "data_processed_traits_ammer_4.1.csv")
   )
 ```
+
 
 <a href="#top">Back to top</a>
 
@@ -429,6 +458,8 @@ write_csv(
 * Note the version of the database from `metadata$version` and the sources of the names with `metadata$citations` for the material-and-methods section
 * Note the range of 'Overall_score' for your submitted species names.
 
+
 ```{r}
 sessionInfo()
 ```
+

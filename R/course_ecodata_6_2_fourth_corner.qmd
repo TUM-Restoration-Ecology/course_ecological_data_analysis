@@ -1,6 +1,6 @@
 ---
 title: "Analysis of Ecological Data <br> Fourth-corner approach"
-author: "<b>Markus Bauer</b> <br>"
+author: "<b>Markus Bauer ^1^ & Christina Hartung ^2^</b> <br>"
 date: today
 date-format: iso
 format: html
@@ -13,14 +13,13 @@ fig-width: 7
 fig-height: 5
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   echo = TRUE
   )
 ```
 
-Technichal University of Munich, TUM School of Life Sciences, Chair of
-Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
+^1^ Technichal University of Munich, TUM School of Life Sciences, Chair of Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 [markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
 
@@ -28,6 +27,10 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 [![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
 [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
+
+^2^ University of Applied Sciences Weihenstephan-Triesdorf, Institute of Ecology and Landscape, Am Hofgarten 1, Building A10, 85354 Freising, Germany
+
+[christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
 ::: {.content-hidden when-format="html"}
 
@@ -59,11 +62,15 @@ rm(list = ls())
 ## Load data
 
 ```{r load-data}
-species_vltava
-sites_vltava
-traits_vltava
-seed.weight_log = log(traits$seed.weight)
-SLA_log = log(traits$SLA)
+load(url('https://raw.githubusercontent.com/zdealveindy/anadat-r/master/data/vltava.RData'))
+
+species_vltava <- vltava$herbs$spe
+sites_vltava <- vltava$env
+traits_vltava <- vltava$herbs$traits %>%
+  mutate(
+    seed.weight_log = log(seed.weight),
+    SLA_log = log(SLA)
+    )
 
 species_spain <- read_delim(
   here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXplotsNE.txt"),
@@ -111,13 +118,23 @@ In this exercise, we will calculate the same relationship, but using the fourth 
 Remember to remove the missing species from both species composition and trait matrices, since the function `fourthcorner` cannot handle them. Also, `fourthcorner` function expects that all objects representing data will be data frames, so better to convert data into them right at the beginning.
 
 ```{r}
-species <- vlatava_species %>%
-  as.matrix()
-sites <- vlatava_sites %>%
+traits <- traits_vltava %>%
   select(SLA_log) %>%
-  as.matrix()
-traits <- vlatava_traits %>%
-  as.matrix()
+  drop_na()
+
+species <- species_vltava %>%
+  rownames_to_column(var = "plot.id") %>%
+  pivot_longer(-plot.id, names_to = "name", values_to = "value") %>%
+  semi_join(
+    traits %>%
+      rownames_to_column(var = "name"),
+    by = "name"
+    ) %>%
+  pivot_wider(names_from = "name", values_from = "value") %>%
+  column_to_rownames(var = "plot.id")
+
+sites <- sites_vltava %>%
+  select(COVERE32)
 ```
 
 
@@ -130,29 +147,41 @@ fc_ade4 <- ade4::fourthcorner(
 fc_ade4
 ```
 
-The fourth corner statistic r = 0.188, and the p value of it (calculated by max test, since the argument `modeltype = 6`) is significant.
+The fourth corner statistic r = 0.212, and the p value of it (calculated by max test, since the argument `modeltype = 6`) is significant.
 
 ### Calculation with several traits
 
 We can calculate the fourth corner for more than a single combination of trait and environmental variable. Let's use all three traits available in vltava$herbs$traits, namely SLA, plant height and seed weight, and also choose three environmental variables which may have some relationship to them, namely heat load (combination of slope and aspect, indicating radiation income of the site), soil depth, and cover of canopy layer. 
 
 ```{r}
-traits <- vltava_traits
-traits$seed.weight <- log(traits$seed.weight)
-traits_2 <- traits[complete.cases(traits),]
-com_2 <- com[, complete.cases(traits)]
-env <- vltava$env[,c('HEAT.LOAD', 'SOILDPT', 'COVERE32')]
- 
-traits_fc_ade4 <- fourthcorner(tabR = env, tabL = com_2, tabQ = traits_2)
+traits <- traits_vltava %>%
+  select(SLA_log, seed.weight_log, plant.height) %>%
+  drop_na()
+
+species <- species_vltava %>%
+  rownames_to_column(var = "plot.id") %>%
+  pivot_longer(-plot.id, names_to = "name", values_to = "value") %>%
+  semi_join(
+    traits %>%
+      rownames_to_column(var = "name"),
+    by = "name"
+    ) %>%
+  pivot_wider(names_from = "name", values_from = "value") %>%
+  column_to_rownames(var = "plot.id")
+
+sites <- sites_vltava %>%
+  select(HEAT.LOAD, SOILDPT, COVERE32)
+
+traits_fc_ade4 <- fourthcorner(tabR = sites, tabL = species, tabQ = traits)
 traits_fc_ade4
 ```
 
-Note that the function automatically applies correction of P-values for multiple testing by Holm's method (the last column, Pvalue.adj).
+Note that the function automatically applies correction of P-values for multiple testing by Holm's method (the last column, 'Pvalue.adj').
 
 To plot the results, use: 
 
 ```{r}
-plot (traits_fc_ade4)
+plot(traits_fc_ade4)
 # Plot also a scatterplot with line
 ```
 
