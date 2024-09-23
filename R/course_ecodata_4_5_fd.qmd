@@ -19,8 +19,7 @@ knitr::opts_chunk$set(
   )
 ```
 
-Technichal University of Munich, TUM School of Life Sciences, Chair of
-Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
+Technichal University of Munich, TUM School of Life Sciences, Chair of Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 [markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
 
@@ -83,9 +82,9 @@ traits_spain <- read_delim(
   ) %>%
   column_to_rownames("species")
 
-sites_spain <- read_delim(
-  here::here("data", "processed", "data_processed_species_spain_4.4.csv"),
-  col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
+sites_spain <- read_csv(
+  here::here("data", "processed", "data_processed_sites_spain_4.4.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
   )
 
 species_ammer <- read_csv(
@@ -99,7 +98,7 @@ traits_ammer <- read_csv(
   )
 
 sites_ammer <- read_csv(
-  herehere("data", "processed", "data_processed_sites_4.4.csv"),
+  here::here("data", "processed", "data_processed_sites_ammer_4.4.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
 ```
@@ -279,11 +278,9 @@ Merge the FD indices in the sites data
 data <- important.indices %>%
   rownames_to_column("id.plot") %>%
   select(id.plot, species_richness, fric, fdis.abu, feve.abu)
-fd <- data
 
 sites_spain <- sites_spain %>%
-  rename(id.plot = Plots) %>%
-  left_join(fd, by = "id.plot")
+  left_join(data, by = "id.plot")
 ```
 
 Save the new sites data
@@ -380,7 +377,6 @@ data <- data.frame(data_abundance$FDis, data_abundance$FRic, data_abundance$FEve
 sla <- data
 
 sites_ammer <- sites_ammer %>%
-  rename(id.plot = id) %>%
   left_join(sla, by = "id.plot")
 ```
 
@@ -410,7 +406,7 @@ sites_ammer %>%
 
  <a href="#top">Back to top</a>
 
-::: {.content-hidden when-format = "html"}
+::: {.content-hidden when-format="html"}
 
 # Calculation of Alpha, beta and gamma FD
 

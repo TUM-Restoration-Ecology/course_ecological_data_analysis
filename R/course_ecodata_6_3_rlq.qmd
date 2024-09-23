@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Ecological Data <br> Trait dissimilarity"
+title: "Analysis of Ecological Data <br> RLQ Analysis"
 author: "<b>Markus Bauer</b> <br>"
 date: today
 date-format: iso
@@ -33,56 +33,20 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 # Tasks
 
+* Use theme for Plot
+* Show Ammer data
+* Show Spain data
+* Create biplot of Borcard et al
+* Make arrows longer
 * Write learning objectives
 
 :::
 
----
-title: "Analysis of Ecological Data <br> RLQ Analysis"
-author: "<b>Markus Bauer</b> <br>"
-date: "<b>`r format(Sys.time(), '%Y-%m-%d')`</b>"
-output:
-  github_document:
-    toc: true
-    toc_depth: 3
-    dev: png
-    fig_width: 7
-    fig_height: 5
-editor_options: 
-  markdown: 
-    wrap: 72
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  echo = TRUE
-  )
-```
-
-**Markus Bauer**
-
-Technichal University of Munich, TUM School of Life Sciences, Chair of
-Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
-
-[markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
-
-<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/><https://orcid.org/0000-0001-5372-4174>
-
-[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
-[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
-
-# Tasks
-
-* Use theme for Plot
-* Show Ammer data
-* Create biplot of Borcard et al
-* Make arrows longer
-
 The tutorial is based on Borcard et al. ([2018](https://doi.org/10.1007/978-3-319-71404-2), 6.11.2)
 
-# 1 Preparation
+# Preparation
 
-## 1.1 Load libraries and functions
+## Load libraries and functions
 
 We need the `ade4` package of Dray & Dufour ([2007](https://doi.org/10.18637/jss.v022.i04)) to apply the RLQ analysis of Dolédec et al ([1996](https://doi.org/10.1007/BF02427859))
 
@@ -93,7 +57,7 @@ library(ade4)
 rm(list = ls())
 ```
 
-## 1.2 Load data
+## Load data
 
 The example proposed here is extracted from a tutorial written by Stéphane Dray and provided as a Supplement to the Dray et al. ([2014](https://doi.org/10.1890/13-0196.1)) paper ([ESA Ecological Archives](https://esapubs.org/archive/default.htm) [E095–002-S1](https://esapubs.org/archive/ecol/E095/002/)). The example concerns the ecological data analysed in the Dray et al. ([2014](https://doi.org/10.1890/13-0196.1)) paper, which describes the response of plant traits to a snow-melting gradient in the French Alps. The main question is: how does the snow cover duration, with all its consequences, impact the alpine grasslands, as assessed by functional traits of the plant species?
 
@@ -107,45 +71,41 @@ species_spain <- read_delim(
   col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
   ) %>%
   pivot_longer(-species) %>%
-  pivot_wider(names_from = "species", values_from = "value") %>%
-  column_to_rownames("name")
+  pivot_wider(names_from = "species", values_from = "value")
+
 traits_spain <- read_delim(
   here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXtraitsNE.txt"),
   col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
-  ) %>%
-  column_to_rownames("species")
+  )
+
 sites_spain <- read_delim(
   here::here("data", "raw", "bello_etal-2021", "chapter5", "environXplotsNE.txt"),
   col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
-  ) %>%
-  column_to_rownames("Plots")
+  )
 
 species_ammer <- read_csv(
-  here("data", "processed", "data_processed_species.csv"),
+  here("data", "processed", "data_processed_species_ammer_4.1.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
-  ) %>%
-  column_to_rownames("accepted_name")
+  )
+
 traits_ammer <- read_csv(
-  here("data", "processed", "data_processed_traits.csv"),
+  here("data", "processed", "data_processed_traits_ammer_4.1.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
-  ) %>%
-  column_to_rownames("accepted_name") %>%
-  select(
-    -name, -taxonomic_status, -starts_with("accepted_"), -starts_with("cv_"), -starts_with("n_")
-    )
-# sites_ammer <- read_csv(
-#   here("data", "processed", "data_processed_sites.csv"),
-#   col_names = TRUE, col_types = cols(.default = "?")
-#   )
+  )
+
+sites_ammer <- read_csv(
+  here("data", "processed", "data_processed_sites_ammer_4.5.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+  )
 ```
 
 <a href="#top">Back to top</a>
 
-# 2 RLQ Analysis
+# RLQ Analysis
 
-## 2.1 Aravo data
+## Aravo data
 
-### 2.1.1 Apply the RLQ analysis
+### Apply the RLQ analysis
 
 The method works upon three separate ordinations, one for each data matrix and adapted to its mathematical type, and combines the three to identify the main relationships between the environment and the traits, as mediated by the species. It computes a generalized singular value decomposition of the fourth-corner matrix D (Dray et al. [2014](https://doi.org/10.1890/13-0196.1)). For the ﬁrst ordination axis, RLQ ﬁnds coefﬁcients for the environmental variables and species traits. These coefﬁcients measure the contributions of individual variables and are used to compute site and species scores; they are chosen to maximize the ﬁrst eigenvalue. The analysis proceeds in the same way for the next, orthogonal ordination axes. For mathematical details see Dray et al. ([2014](https://doi.org/10.1890/13-0196.1)).
 
@@ -217,7 +177,7 @@ The results are interpreted as follows by Dray et al. ([2014](https://doi.org/10
 
 <a href="#top">Back to top</a>
 
-### 2.2.2 Repetition: Fourth-corner analysis
+### Repetition: Fourth-corner analysis
 
 The same data will now be submitted to a fourth-corner analysis, which provides tests at the bivariate level, i.e. one trait and one environmental variable at a time. This is where the correction for multiple tests is necessary. Given the large number of permutations needed to reach an adequately precise estimation of the p-value, the most astute way of computing this analysis consists in a ﬁrst computation without any correction for multiple testing. The resulting object can be corrected afterwards. So, if several types of corrections must be examined, there is no need to recompute the whole analysis and its large and time-consuming number of permutations.
 
@@ -256,9 +216,9 @@ This representation allows a detailed interpretation. For instance, SLA (speci�
 
 <a href="#top">Back to top</a>
 
-## 2.2 Spain data
+## Spain data
 
-### 2.2.1 RLQ analysis
+### RLQ analysis
 
 ```{r ordination-spain}
 l_spain <- dudi.coa(species_spain, scannf = FALSE)
@@ -283,7 +243,7 @@ randtest(m2, nrepet = 999, modeltype = 6)
 
 <a href="#top">Back to top</a>
 
-### 2.2.2 Use ggplot2
+### Use ggplot2
 
 First, the standard plot:
 
@@ -336,9 +296,10 @@ ggplot() +
     arrow = arrow(length = unit(0.3, "cm"), type = "closed")
     )
 ```
+
 <a href="#top">Back to top</a>
 
-## 2.3 Ammer data
+## Ammer data
 
 * Try the same with the Ammer data and your data
 

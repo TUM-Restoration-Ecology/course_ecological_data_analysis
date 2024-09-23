@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Ecological Data <br> Trait dissimilarity"
+title: "Analysis of Ecological Data <br> CWM regression approach"
 author: "<b>Markus Bauer</b> <br>"
 date: today
 date-format: iso
@@ -33,54 +33,18 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 # Tasks
 
-* Write learning objectives
-
-:::
----
-title: "Analysis of Ecological Data <br> CWM regression approach"
-author: "<b>Markus Bauer</b> <br>"
-date: "<b>`r format(Sys.time(), '%Y-%m-%d')`</b>"
-output:
-  github_document:
-    toc: true
-    toc_depth: 3
-    dev: png
-    fig_width: 7
-    fig_height: 5
-editor_options: 
-  markdown: 
-    wrap: 72
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  echo = TRUE
-  )
-```
-
-**Markus Bauer**
-
-Technichal University of Munich, TUM School of Life Sciences, Chair of
-Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
-
-[markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
-
-<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/><https://orcid.org/0000-0001-5372-4174>
-
-[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
-[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
-
-# Tasks
-* Make script tidy
 * Include Ammer data
 * Include DHarma package
 * Include data exploration
+* Write learning objectives
+
+:::
 
 This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426)) and Zelený ([2021](https://www.davidzeleny.net/anadat-r/doku.php/en:cwm_fc_examples#example_3ecological_interpretation_of_the_unconstrained_axes_in_constrained_ordination_using_mean_ellenberg-like_indicator_values))
 
-# 1 Preparation
+# Preparation
 
-## 1.1 Load libraries and functions
+## Load libraries and functions
 
 ```{r libraries, message = FALSE}
 library(here)
@@ -89,58 +53,40 @@ library(patchwork)
 rm(list = ls())
 ```
 
-## 1.2 Load data
+## Load data
 
 ```{r load-data}
-species_spain <- read_delim(
-  here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXplotsNE.txt"),
-  col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
-  )
-traits_spain <- read_delim(
-  here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXtraitsNE.txt"),
-  col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
-  )
-sites_spain <- read_delim(
-  here::here("data", "raw", "bello_etal-2021", "chapter5", "environXplotsNE.txt"),
-  col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
+sites_spain <- read_csv(
+  here::here("data", "processed", "data_processed_sites_spain_4.5.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
   )
 
 load(url('https://raw.githubusercontent.com/zdealveindy/anadat-r/master/data/vltava.RData'))
+
 species_vltava <- vltava$herbs$spe
 sites_vltava <- vltava$env
 traits_vltava <- vltava$herbs$traits %>%
   mutate(SLA_sqrt = sqrt(SLA))
 
-species_ammer <- read_csv(
-  here("data", "processed", "data_processed_species.csv"),
+sites_ammer <- read_csv(
+  here::here("data", "processed", "data_processed_sites_ammer_4.5.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
   )
-traits_ammer <- read_csv(
-  here("data", "processed", "data_processed_traits.csv"),
-  col_names = TRUE, col_types = cols(.default = "?")
-  ) %>%
-  select(
-    -name, -taxonomic_status, -starts_with("accepted_"), -starts_with("cv_"), -starts_with("n_")
-    )
-# sites_ammer <- read_csv(
-#   here("data", "processed", "data_processed_sites.csv"),
-#   col_names = TRUE, col_types = cols(.default = "?")
-#   )
 ```
 
 <a href="#top">Back to top</a>
 
-# 2 CWM regression (community level)
+# CWM regression (community level)
 
-## 2.1 Spain data
+## Spain data
 
-### 2.1.1 Community-weighted Mean
+### Community-weighted Mean
 
 Let’s see if CWM changes along the climatic gradient. For example, let’s explore visually a bit the results before running any analysis, just choosing some of the potential graphs (4 in this case):
 
 ```{r}
 p1 <- sites_spain %>%
-  ggplot(x = moisture.index, y = SLA) +
+  ggplot(x = moisture.index, y = cwm.abu.sla) +
   labs(x = "Moisture Index", y = "CWM SLA [log mm2/mg]")
 p2 <- sites_spain %>%
   ggplot(x = moisture.index, y = GrowhtForm_shrub) +
@@ -161,7 +107,7 @@ We can possibly also expect that there is slightly more leguminous species at th
 We can now have a specific look at the statistics and we can also include grazing in the analysis. For example we can use a simple linear model (although maybe a REML, restricted maximum likelihood model, would have been more accurate) where we test the effect of moisture and grazing intensity on the CWM for SLA:
 
 ```{r}
-m1 <- lm(SLA ~ moisture.index * grazing, data = sites_spain)
+m1 <- lm(cwm.abu.sla ~ moisture.index * grazing, data = sites_spain)
 summary(m1)
 ```
 
@@ -169,7 +115,7 @@ This shows that in general the strongest effect (i.e. ‘filter’) on CWM for S
 
 <a href="#top">Back to top</a>
 
-### 2.1.2 Functional diversity
+### Functional diversity
 
 Having looked which indices are correlated between them allows us to select fewer indices for assessing the relationship between FD and, for example, the moisture index in the different vegetation belts in the NE Spain data
 
@@ -178,13 +124,13 @@ p1 <- sites_spain %>%
   ggplot(x = moisture.index, y = richness) +
   labs(x = "Moisture Index", y = "Species richness [#]")
 p2 <- sites_spain %>%
-  ggplot(x = moisture.index, y = FRic) +
+  ggplot(x = moisture.index, y = fric) +
   labs(x = "Moisture Index", y = "Functional Richness")
 p3 <- sites_spain %>%
-  ggplot(x = moisture.index, y = FEve) +
+  ggplot(x = moisture.index, y = feve.abu) +
   labs(x = "Moisture Index", y = "Functional Eveness")
 p4 <- sites_spain %>%
-  ggplot(x = moisture.index, y = FDis) +
+  ggplot(x = moisture.index, y = fdis.abu) +
   labs(x = "Moisture Index", y = "Functional Dispersion")
 p1 + p2 / p3 + p4
 ```
@@ -194,7 +140,7 @@ What we see is that while the number of species is increasing with the moisture 
 We can eventually apply different statistical tools to test the relationship with both the moisture index and grazing, as we did in the CWM exercise:
 
 ```{r results = FALSE, fig.show = 'hide'}
-m2 <- lm(FDis ~ moisture.index * grazing, data = sites_spain)
+m2 <- lm(fdis.abu ~ moisture.index * grazing, data = sites_spain)
 summary(m2)
 ```
 
@@ -210,11 +156,11 @@ The new results are quite different, and including Life Form improves the predic
 
 <a href="#top">Back to top</a>
 
-## 2.2 Forest understory vegetation
+## Forest understory vegetation
 
 We will use the Vltava dataset to analyse the relationship between the community-weighted mean of one of the leaf traits (specific leaf area, SLA) and one of the environmental variables (light intensity in the understory). The theory predicts that shade-tolerant species will produce leaves with higher SLA (i.e. per gram of dry mass they will produce leaves with the larger area) to optimize the gain from photosynthesis in the dim light of shaded conditions. Let's use the real data to see whether this works.
 
-### 2.2.1 Preparation
+### Preparation
 
 First, let's calculate the community-weighted mean of SLA for individual vegetation plots; since not all species have assigned trait values, we need to first make sure we delete species with missing trait values from both `vltava_spe` and `vltava_traits`:
 
@@ -237,7 +183,7 @@ traits <- traits %>%
   column_to_rownames(var = "name")
 ```
 
-### 2.2.2 Calculate an analyse CWM for individual sites
+### Calculate an analyse CWM for individual sites
 
 ```{r}
 data <- FD::dbFD(
@@ -263,29 +209,29 @@ So far it goes well - as we see, the relationship is positive and statistically 
 
 <a href="#top">Back to top</a>
 
-## 2.3 Ammer data
+## Ammer data
 
 <a href="#top">Back to top</a>
 
-# 3 Can we trust the p-value of CWM-based analyses?
+# Can we trust the p-value of CWM-based analyses?
 
 In the reference text book, in Chapter 5, we provide an extensive discussion on some potential problems using analyses with CWM. Some authors have suggested that CWM should not be used because the analyses using CWM provide too optimistic p-values. As summarized by David Zelený and in the reference text book (Zelený [2018](https://doi.org/10.1111/jvs.12688)), we think that the question is not if we can trust the the p-value of CWM-based analyses but rather which type of questions are asked. If we are interested in observing changes in CWM along gradient, whatever are the causes, then analyses on CWM are robust and interesting. If the question is, for example, if the MAJORITY of species in drier habitats have given traits, then a different type of analyses should be done, basically the analyses at the species level presented in Chapter 3 and in the R material Ch 2. 
 
 Let’s now focus on the suggestion by David Zelený ([2018](https://doi.org/10.1111/jvs.12688)) on how to run a conservative tests to evaluate the significance of environmental factors on CWM values. The suggestion by Zelený can be summarized as to run randomizations tests and, basically, verify if the R^2 of a given model (for example those obtained in the previous section) is higher than expected by chance. Randomizations can be done in different ways, but we suggest that a simple and effective one is by simply shuffling species names in the trait matrix.
 
-## 3.2 Ltava data
+## Ltava data
 
 The problem is that even with random traits, we have actually a rather good chance to obtain a significant relationship between CWM and environmental variables. Let's see it on the same data, by permuting the SLA values among species, calculating CWM from these randomized trait values, and testing the regression of this randomized CWM on the original environmental variable: 
 
 ```{r}
-P_rand <- replicate (1000, expr = {
-  SLA_rand <- sample (SLA_1)
-  CWM_SLA_rand <-  apply (com_1, 1, FUN = function (x) sum (x*SLA_rand)/sum (x))
-  LM_rand_col <- lm (CWM_SLA_rand ~ cover)
-  P_value <- anova (LM_rand_col)$`Pr(>F)`[1]
-  return (P_value)
+P_rand <- replicate(1000, expr = {
+  SLA_rand <- sample(SLA_1)
+  CWM_SLA_rand <-  apply(com_1, 1, FUN = function(x) sum(x*SLA_rand)/sum(x))
+  LM_rand_col <- lm(CWM_SLA_rand ~ cover)
+  P_value <- anova(LM_rand_col)$`Pr(>F)`[1]
+  return(P_value)
 })
-sum (P_rand < 0.05) 
+sum(P_rand < 0.05) 
 ```
 
 Surprisingly, around 280 out of 1000 regressions are significant - but if the test has a correct Type I error rate, it should be around 5% = 50 (out of 1000) significant results. Clearly, the standard parametric test has an inflated Type I error rate.
@@ -318,7 +264,7 @@ The conclusion is that the relationship between CWM of SLA for herb species in t
 
 <a href="#top">Back to top</a>
 
-## 3.3 Zelený (2018)
+## Zelený (2018)
 
 The recent paper by Peres-Neto, Dray, and ter Braak ([2017](https://doi.org/10.1111/ecog.02302)), focused on the CWM approach, revealed several surprising facts. First, and perhaps the most important finding, is that standard plot-level tests analysing CWM–sample attributes relationship have inflated Type I error rate, returning more optimistic results than is warranted by the data. “Standard tests”, in the meaning used here, include plot-level parametric tests such as the t-test for correlation and F-test for regression or ANOVA, or permutation tests randomizing sample attributes (equivalent to randomizing rows in the species composition matrix). Second, CWM correlation has relatively poor statistical properties, because the correlation coefficient is highly variable and can become rather high even in the case of random species attributes. Third, the CWM approach is numerically related to the seemingly different fourth-corner problem (Legendre et al. 1997), which relates species attributes and sample attributes via the species composition matrix without explicitly calculating the weighted means of species attributes. Fourth, the ‘max test’ (Cormont et al. 2011), which solves the problem of inflated Type I error rate in the fourth-corner approach (ter Braak et al. 2012), does the same in the CWM approach. The max test undertakes two independent permutation tests, one testing the species attributes–species composition link and the other testing the sample attributes–species composition link, and chooses the higher p-value as a result. In conclusion, Peres-Neto et al. ([2017](https://doi.org/10.1111/ecog.02302)) suggested replacing the CWM approach with the more efficient fourth-corner approach.
 

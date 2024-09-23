@@ -19,8 +19,7 @@ knitr::opts_chunk$set(
   )
 ```
 
-Technichal University of Munich, TUM School of Life Sciences, Chair of
-Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
+Technichal University of Munich, TUM School of Life Sciences, Chair of Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 [markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
 
@@ -31,7 +30,7 @@ Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 ::: {.content-hidden when-format="html"}
 
-Tasks
+# Tasks
 
 * Make Ammer working also with categorical traits
 * Include DHarma
@@ -472,7 +471,7 @@ Save the new sites data
 
 ```{r}
 write_csv(
-  sites_ammer, here::here("data", "processed", "data_processed_ammer_4.4.csv")
+  sites_ammer, here::here("data", "processed", "data_processed_sites_ammer_4.4.csv")
   )
 ```
 

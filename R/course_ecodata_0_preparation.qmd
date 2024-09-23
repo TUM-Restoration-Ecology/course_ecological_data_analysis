@@ -19,8 +19,7 @@ knitr::opts_chunk$set(
   )
 ```
 
-^1^ Technichal University of Munich, TUM School of Life Sciences, Chair of
-Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
+^1^ Technichal University of Munich, TUM School of Life Sciences, Chair of Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 [markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
 
@@ -106,7 +105,7 @@ R is an open-source (GPL) statistical environment modeled after S and S-Plus (ht
 
 # Use of eduroam
 
-First, you should get access to the internet with eduroam. Here are further information about eduroam ([TUM FAQ](https://www.it.tum.de/it/eduroam/)) and how to get access ([BayernCollab](https://collab.dvb.bayern/display/TUMdocs/eduroam+Anleitungen)).
+If you do not use the PC of the computer room, you should get access to the internet with eduroam. Here are further information about eduroam ([TUM FAQ](https://www.it.tum.de/it/eduroam/)) and how to get access ([BayernCollab](https://collab.dvb.bayern/display/TUMdocs/eduroam+Anleitungen)).
 
 <a href="#top">Back to top</a>
 
@@ -291,7 +290,9 @@ Ecological terminology
 
 <a href="#top">Back to top</a>
 
-# GitHub and GitHub Desktop (No reuired, but recommended)
+# GitHub and GitHub Desktop
+
+(Not reuired, but recommended)
 
 Go through this [tutorial](https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e124) of Vanessa Trujillo to be prepared for track-and-change mode in R. This is not required for the course but recommended and we will use and show GitHub in the course.
 

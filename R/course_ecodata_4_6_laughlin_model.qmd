@@ -19,8 +19,7 @@ knitr::opts_chunk$set(
   )
 ```
 
-Technichal University of Munich, TUM School of Life Sciences, Chair of
-Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
+Technichal University of Munich, TUM School of Life Sciences, Chair of Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
 
 [markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
 
@@ -234,6 +233,7 @@ traits_ammer <- traits_ammer %>%
       )
       )
 
+set.seed(1)
 traits_ammer_subsample <- traits_ammer %>%
   filter(
     !(growth_form_2 %in% c("shrub", "tree")) &
@@ -273,7 +273,7 @@ traits_y <-  traits %>%
 
 mix_low <- Select::selectSpecies(
   t2c = traits_x,
-  constraints = c(sla_mean = 2.9),
+  constraints = c(sla_mean = 2.5),
   t2d = traits_y,
   obj = "QH",
   capd = TRUE
@@ -282,12 +282,27 @@ mix_low <- Select::selectSpecies(
 Select::plotProbs(mix_low, traits)
 ```
 
-Second, calculate a species composition with a high CWM of SLA.
+
+Second, calculate a species composition with an intermediate CWM of SLA.
+
+```{r}
+mix_intermediate <- Select::selectSpecies(
+  t2c = traits_x,
+  constraints = c(sla_mean = 2.9),
+  t2d = traits_y,
+  obj = "QH",
+  capd = TRUE
+  )
+
+Select::plotProbs(mix_intermediate, traits)
+```
+
+Third, calculate a species composition with a high CWM of SLA.
 
 ```{r}
 mix_high <- Select::selectSpecies(
   t2c = traits_x,
-  constraints = c(sla_mean = 3.5),
+  constraints = c(sla_mean = 3.3),
   t2d = traits_y,
   obj = "QH",
   capd = TRUE
@@ -296,19 +311,6 @@ mix_high <- Select::selectSpecies(
 Select::plotProbs(mix_high, traits)
 ```
 
-Third, calculate a species composition with an intermediate CWM of SLA.
-
-```{r}
-mix_intermediate <- Select::selectSpecies(
-  t2c = traits_x,
-  constraints = c(sla_mean = 3.2),
-  t2d = traits_y,
-  obj = "QH",
-  capd = TRUE
-  )
-
-Select::plotProbs(mix_intermediate, traits)
-```
 
  <a href="#top">Back to top</a>
 
