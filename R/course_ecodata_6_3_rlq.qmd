@@ -38,12 +38,11 @@ knitr::opts_chunk$set(
 
 # Tasks
 
-* Use theme for Plot
-* Show Ammer data
-* Show Spain data
+* ggplot Theme verschÃ¶nern
 * Create biplot of Borcard et al
 * Make arrows longer
 * Write learning objectives
+* Use Ammer data
 
 :::
 
@@ -91,20 +90,20 @@ sites_spain <- read_delim(
   ) %>%
   column_to_rownames(var = "Plots")
 
-species_ammer <- read_csv(
-  here("data", "processed", "data_processed_species_ammer_4.1.csv"),
-  col_names = TRUE, col_types = cols(.default = "?")
-  )
-
-traits_ammer <- read_csv(
-  here("data", "processed", "data_processed_traits_ammer_4.1.csv"),
-  col_names = TRUE, col_types = cols(.default = "?")
-  )
-
-sites_ammer <- read_csv(
-  here("data", "processed", "data_processed_sites_ammer_4.5.csv"),
-  col_names = TRUE, col_types = cols(.default = "?")
-  )
+# species_ammer <- read_csv(
+#   here("data", "processed", "data_processed_species_ammer_4.1.csv"),
+#   col_names = TRUE, col_types = cols(.default = "?")
+#   )
+# 
+# traits_ammer <- read_csv(
+#   here("data", "processed", "data_processed_traits_ammer_4.1.csv"),
+#   col_names = TRUE, col_types = cols(.default = "?")
+#   )
+# 
+# sites_ammer <- read_csv(
+#   here("data", "processed", "data_processed_sites_ammer_4.5.csv"),
+#   col_names = TRUE, col_types = cols(.default = "?")
+#   )
 ```
 
 <a href="#top">Back to top</a>
@@ -224,8 +223,6 @@ This representation allows a detailed interpretation. For instance, SLA (speciï¬
 
 <a href="#top">Back to top</a>
 
-::: {.content-hidden when-format="html"}
-
 ## Spain data
 
 ### RLQ analysis
@@ -318,8 +315,6 @@ ggplot() +
 ```
 
 <a href="#top">Back to top</a>
-
-:::
 
 ::: {.content-hidden when-format="html"}
 
