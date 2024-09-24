@@ -76,17 +76,20 @@ species_spain <- read_delim(
   col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
   ) %>%
   pivot_longer(-species) %>%
-  pivot_wider(names_from = "species", values_from = "value")
+  pivot_wider(names_from = "species", values_from = "value") %>%
+  column_to_rownames(var = "name")
 
 traits_spain <- read_delim(
   here::here("data", "raw", "bello_etal-2021", "chapter5", "speciesXtraitsNE.txt"),
   col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
-  )
+  ) %>%
+  column_to_rownames(var = "species")
 
 sites_spain <- read_delim(
   here::here("data", "raw", "bello_etal-2021", "chapter5", "environXplotsNE.txt"),
   col_names = TRUE, delim = "\t", col_types = cols(.default = "?")
-  )
+  ) %>%
+  column_to_rownames(var = "Plots")
 
 species_ammer <- read_csv(
   here("data", "processed", "data_processed_species_ammer_4.1.csv"),
@@ -221,11 +224,22 @@ This representation allows a detailed interpretation. For instance, SLA (speciï¬
 
 <a href="#top">Back to top</a>
 
+::: {.content-hidden when-format="html"}
+
 ## Spain data
 
 ### RLQ analysis
 
 ```{r ordination-spain}
+rm(
+  list = setdiff(
+    ls(), c(
+      "species_ammer", "species_spain", "traits_ammer", "traits_spain",
+      "sites_spain", "sites_ammer"
+      )
+    )
+  )
+
 l_spain <- dudi.coa(species_spain, scannf = FALSE)
 r_spain <- dudi.hillsmith(sites_spain,  row.w = l_spain$lw, scannf = FALSE)
 q_spain <- dudi.pca(
@@ -260,16 +274,16 @@ Now, we have to prepare the data for ggplot2. Get the scores of the sites, speci
 
 ```{r}
 # Site (R) scores:
-scores_sites <- m1$lR %>%
+scores_sites <- m2$lR %>%
   rownames_to_column("plot_id")
 # Species (Q) scores
-scores_species <- m1$lQ %>%
+scores_species <- m2$lQ %>%
   rownames_to_column("name")
 # Environmental variables:
-scores_env <- m1$l1 %>%
+scores_env <- m2$l1 %>%
   rownames_to_column("env_factor")
 # Species traits:
-scores_traits <- m1$c1 %>%
+scores_traits <- m2$c1 %>%
   rownames_to_column("trait")
 ```
 
@@ -288,6 +302,7 @@ ggplot() +
     arrow = arrow(length = unit(0.3, "cm"), type = "closed")
     )
 ```
+
 ```{r}
 library(ggrepel)
 ggplot() +
@@ -304,11 +319,17 @@ ggplot() +
 
 <a href="#top">Back to top</a>
 
+:::
+
+::: {.content-hidden when-format="html"}
+
 ## Ammer data
 
 * Try the same with the Ammer data and your data
 
 <a href="#top">Back to top</a>
+
+:::
 
 # Session info
 
