@@ -101,7 +101,7 @@ We have qualitative (binary, nominal), semi-quantitative (ordinal), and quantiat
 
 ```{r different-trait-types}
 data_traits <- read_csv(
-  here("data", "processed", "data_processed_traits_ammer.csv"),
+  here("data", "processed", "data_processed_traits_ammer_4.1.csv"),
   col_names = TRUE, col_types = cols(
     .default = "?",
     name_submitted = col_character()#,
@@ -110,7 +110,7 @@ data_traits <- read_csv(
   )
 ```
 
-Fuzzy coding: Different individaulas of the same species belong to different levels of a factor
+Fuzzy coding: Different individaulas of the same species belong to different levels of a factor (some individuals are "brown" and some are "black").
 
 <a href="#top">Back to top</a>
 
@@ -140,8 +140,8 @@ Identify missing traits
 
 ```{r identify-missing-traits}
 traits_ammer %>%
-  select(accepted_name, trait_value_1.6.3) %>%
-  filter(is.na(trait_value_1.6.3))
+  select(accepted_name, plant_height_mean) %>%
+  filter(is.na(plant_height_mean))
 ```
 
 What to do with missing values?

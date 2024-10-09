@@ -32,8 +32,6 @@ knitr::opts_chunk$set(
 
 [christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
-[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://www.researchgate.net/profile/Christina-Hartung)
-
 ::: {.content-hidden when-format="html"}
 
 # Tasks
@@ -45,11 +43,17 @@ knitr::opts_chunk$set(
 
 This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426))
 
+# Learning outcomes
+
+* Understanding how community weighted means (CWM) are calculated
+* Ability to calculate CWMs with the example of the functional trait specific leaf area (SLA)
+* Knowledge that one can do the same with Ellenberg values
+
 # Preparation
 
 We studied trait dissimilarity among species and now we have a look at trait dissimilarity among communities. In this exercise we will learn how to compute one important index of community trait structure, i.e. Community Weighted Mean (CWM). This exercise follows the first part of Chapter 5 of the reference textbook, so all theoretical and mathematical issues beyond the indices described in this exercise can be found there.
 
-Load the libraries. The FD package is of (Laliberté & Legendre [2010](https://doi.org/10.1890/08-2244.1))
+Load the libraries. The FD package is of Laliberté & Legendre ([2010](https://doi.org/10.1890/08-2244.1))
 
 ```{r libraries, message = FALSE}
 library(here)
@@ -528,6 +532,15 @@ write_csv(
   sites_ammer, here::here("data", "processed", "data_processed_sites_ammer_4.4.csv")
   )
 ```
+
+# Tasks
+
+* Calculate CWMs of SLA
+  * Check that species names of the traits table are rownames
+  * Check that only the SLA column remains in the traits table
+  * Check that no NAs are in your SLA column
+    * If you have NAs, you have to reduce your species table as well
+  * Check that the plot ID of the species table are rownmames and species names are column names
 
 <a href="#top">Back to top</a>
 
