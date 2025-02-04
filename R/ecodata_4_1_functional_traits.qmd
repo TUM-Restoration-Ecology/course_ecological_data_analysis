@@ -188,7 +188,7 @@ references[1:2, ]
 
 Here is an example how to download several traits (You can use this as an example for your own data later):
 
-```{r get-traits, results = FALSE, message = FALSE}
+```{r get-traits, results = TRUE, message = FALSE}
 trait_ids <- c(
   "1.2.2", "1.5.1", "1.6.3", "3.2.3", "3.3.1", "3.6.1", "3.7.1", "3.21.1",
   "4.1.3", "4.5.1"
@@ -197,10 +197,38 @@ trait_ids <- c(
 GIFT::GIFT_traits_meta() %>%
   filter(Lvl3 %in% trait_ids) # Get an overview of selected traits
 
-data_gift <- GIFT::GIFT_traits(
-  trait_IDs = trait_ids,
-  agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
-  )
+# data_gift <- GIFT::GIFT_traits(
+#   trait_IDs = trait_ids,
+#   agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
+#   )
+
+# write_csv(
+#   data_gift, here("data", "processed", "data_processed_gift_total.csv")
+#   )
+
+# harmonized_names <- data_gift %>%
+#   rowid_to_column("id") %>%
+#   select(id, work_species) %>%
+#   TNRS::TNRS(
+#     sources = c("wcvp", "wfo"), # first use WCVP and alternatively WFO
+#     classification = "wfo", # family classification
+#     mode = "resolve"
+#   )
+
+# write_csv(
+#   harmonized_names, here("data", "processed", "data_processed_tnrs_gift.csv")
+#   )
+
+data_gift <- data.table::fread(
+  here("data", "processed", "data_processed_gift_total.csv")
+)
+
+gift <- data.table::fread(
+  here("data", "processed", "data_processed_tnrs_gift.csv")
+  ) %>%
+  rename_with(tolower) %>%
+  full_join(data_gift, by = c("name_submitted" = "work_species")) %>%
+  select(name_submitted, accepted_name, starts_with("trait_value_"))
 ```
 
 <a href="#top">Back to top</a>
