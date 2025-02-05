@@ -32,15 +32,29 @@ knitr::opts_chunk$set(
 
 [christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
-[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://www.researchgate.net/profile/Christina-Hartung)
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://www.researchgate.net/profile/Christina-Hartung).
+
 
 ::: {.content-hidden when-format="html"}
 
 # Tasks
 
-* Write learning objectives
 
 :::
+
+# Learning outcomes
+
+The students are able to...
+
+* Explain (2) the calculation of the specific leaf area (SLA)
+
+* Prepare (3) trait values from the GIFT database: selection, download, metadata, references
+
+* Alternative: Prepare (3) Ellenberg indicator values (EIV) from the FloraVeg.EU database: download
+
+* Compare (4) submitted names with resolved names with the TNRS package
+
+* Produce (3) a traits and a species table with resolved species names
 
 # Preparation
 
@@ -77,6 +91,11 @@ species_ammer <- read_csv(
   ) %>%
   filter(layer == "h") %>% # select only the herbal layer, but not tree or shrub layer
   select(-layer)
+traits_ammer <- read_csv(
+  here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_traits.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+  ) %>%
+  mutate(accepted_name = str_replace_all(name, "_", " "))
 ```
 
 <a href="#top">Back to top</a>
@@ -146,18 +165,18 @@ We can see that the ID of this trait is 1.6.2. Now that we have the ID, we can u
 There are two functions to access trait values. First, `GIFT_traits_raw()` returns all trait values for a given species and a given trait. These trait values can then vary. Second, `GIFT_traits()` returns an aggregated trait value at the species level. The aggregation simply takes the mean for continuous traits or the most frequent entry for categorical traits. However, for some specific cases, the aggregation takes either the minimum or the maximum, as for the trait we chose. Let’s retrieve the raw and aggregated values for the maximum vegetative height of plants (trait_ID 1.6.2).
 
 ```{r download-traits-example, results = FALSE, message = FALSE}
-height <- GIFT::GIFT_traits(
-  trait_IDs = c("1.6.2"), agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
-  )
+# height <- GIFT::GIFT_traits(
+#   trait_IDs = c("1.6.2"), agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
+#   ) # download aggreagted values
 
-height_raw <- GIFT::GIFT_traits_raw(trait_IDs = c("1.6.2"))
+# height_raw <- GIFT::GIFT_traits_raw(trait_IDs = c("1.6.2")) # download raw values
 
-height_raw %>% # Raw values
-  select(work_species, trait_ID, trait_value) %>%
-  filter(work_species == "Fagus sylvatica")
-
-height %>% # Aggregated value
-  filter(work_species == "Fagus sylvatica")
+# height_raw %>% # Raw values
+#   select(work_species, trait_ID, trait_value) %>%
+#   filter(work_species == "Fagus sylvatica")
+# 
+# height %>% # Aggregated value
+#   filter(work_species == "Fagus sylvatica")
 ```
 
 There were three maximum heights for Fagus sylvatica, 30, 35, and 50 meters, which led to an aggregated value of 50 meters.
@@ -169,17 +188,17 @@ There were three maximum heights for Fagus sylvatica, 30, 35, and 50 meters, whi
 If you want to look up the references that led to the aggregated trait value, you can run this chunk:
 
 ```{r trait-references, results = FALSE, message = FALSE}
-references <- GIFT::GIFT_references(GIFT_version = "latest")
-
-unique(unlist(strsplit(height$references_1.6.2, ",")))
-
-references <- references[
-  which(
-    references$ref_ID %in% unique(
-      unlist(strsplit(height$references_1.6.2, ","))
-      )
-    ), ]
-references[1:2, ]
+# references <- GIFT::GIFT_references(GIFT_version = "latest")
+# 
+# unique(unlist(strsplit(height$references_1.6.2, ",")))
+# 
+# references <- references[
+#   which(
+#     references$ref_ID %in% unique(
+#       unlist(strsplit(height$references_1.6.2, ","))
+#       )
+#     ), ]
+# references[1:2, ]
 ```
 
 <a href="#top">Back to top</a>
@@ -269,8 +288,8 @@ data_names <- data %>%
 
 Merge the resolved species names and the functional plant traits into the existing tables 'species' . First, you have to check for duplicates in the column 'accepted_name' created by name resolving. Second, summarize duplicates by summing the abundances.
 
-```{r merge-resolved-names}
-rm(list = setdiff(ls(), c("species_ammer", "data_names", "data_gift")))
+```{r merge-resolved-names-species}
+rm(list = setdiff(ls(), c("species_ammer", "traits_ammer", "data_names", "data_gift")))
 
 data <- species_ammer %>%
   rename(name_submitted = name) %>%
@@ -293,7 +312,7 @@ species_ammer <- data2
 
 Create a new table 'traits' with the species of your dataset and their trait values.
 
-```{r merge-resolved-names}
+```{r merge-resolved-names-traits}
 data3 <- data_names %>%
   select(accepted_name, accepted_name_url, accepted_family) %>%
   group_by(accepted_name) %>%
@@ -325,14 +344,16 @@ traits_ammer <- data3 %>%
 
 Optional if you have time. The focus are the functional traits.
 
-You can work with the classical Ellenberg indicator values (EIV) like with functional plant traits. Tichý et al. ([2023](https://doi.org/10.1111/jvs.13168)) provide European Ellenberg values on  on [FloraVeg.EU](https://floraveg.eu/download/) (file "Ellenberg-type indicator values"; also documented on [Zenodo](https://doi.org/10.5281/zenodo.7427088)). Use the sheet "Tab-OriginalNamesValues" and filter "Source = Ellenberg" to get the German EIV. If you analyse data across several European countries, you should load the sheet "Tab-IVs-Tichy-et-al2022".
+You can work with the classical Ellenberg indicator values (EIV) like with functional plant traits. You have two possibilities to get the Ellenberg values (Ellenberg et al. [2001](https://search.worldcat.org/de/title/57545938)). One possibility is the [GermanSL database](https://germansl.infinitenature.org/) (Version 1.5.5, 2025; Jansen et al. [2008](https://www.tuexenia.de/publications/tuexenia/Tuexenia_2008_NS_028_0239-0253.pdf)) and the other opportunity is the European dataset of the [FloraVEG.EU database](https://floraveg.eu/download/) (Chytrý et al. [2024](https://doi.org/10.1111/avsc.12798)) which integrates the German indicator values (Tichý et al. [2023](https://doi.org/10.1111/jvs.13168)). You have to download the file "Ellenberg-type indicator values" (also on [Zenodo](https://doi.org/10.5281/zenodo.7427088)). Use the sheet "Tab-OriginalNamesValues" and filter "Source = Ellenberg" to get the German EIV. If you analyse data across several European countries, you should load the sheet "Tab-IVs-Tichy-et-al2022".
 
-This time we do not harmonize the 'traits_ellenberg' table with `TNRS`, but make to attempts to join and then we rename the species by hand.
+## Get Ellenberg values
+
+This time we do not harmonize the 'traits_ellenberg' table with `TNRS`, but join directly and then we rename the species by hand.
 
 ```{r results = FALSE}
 library(readxl)
 traits_ellenberg <- readxl::read_excel(
-  here("data", "raw", "Indicator_values_Tichy_et_al 2022-11-29.xlsx"),
+  here("data", "raw", "tichy_etal-2023", "Indicator_values_Tichy_et_al 2022-11-29.xlsx"),
   sheet = "Tab-OriginalNamesValues",
   col_names = TRUE
   ) %>%
@@ -341,8 +362,7 @@ traits_ellenberg <- readxl::read_excel(
 
 # Join with 'taxon.original'
 data <- traits_ammer %>%
-  select(accepted_name) %>%
-  inner_join(
+  left_join(
     traits_ellenberg %>%
       rename(accepted_name = taxon.original) %>%
       filter(source == "Ellenberg") %>%
@@ -365,7 +385,11 @@ data2 <- traits_ammer %>%
       select(-taxon.original),
     by = "accepted_name"
   )
+```
 
+## Check for duplicates and missing values
+
+```{r results = FALSE}
 data2 %>%
   filter(duplicated(accepted_name))
 
@@ -403,6 +427,8 @@ missing_species <- traits_ammer %>%
     by = "accepted_name"
   )
 ```
+
+## Handle missing values
 
 From 'missing_species' you know the species which have no match in 'traits_ellenberg'. Therefore, you have to search this dataset by hand and rename the species names:
 
