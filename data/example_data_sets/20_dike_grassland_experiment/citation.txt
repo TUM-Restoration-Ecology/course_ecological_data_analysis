@@ -1,0 +1,12 @@
+Publication
+
+Bauer M, Huber JK & Kollmann J (2023) Fit by design: Developing seed–substrate combinations to adapt dike grasslands to microclimatic variation. – Journal of Applied Ecology 60, 2413–2424.. https://doi.org/10.1111/1365-2664.14497
+
+Dataset
+
+Bauer M, Huber JK & Kollmann J (2023) Data and code for Bauer et al. (2023) J Appl Ecol (v1.1.0) [Data set]. – Zenodo. https://doi.org/10.5281/zenodo.8212966
+
+This dataset is also linked to PANGAEA
+
+Bauer M, Huber JK & Kollmann J (2023) Vegetation ecological dike experiment at River Danube. – PANGAEA. https://doi.org/10.1594/PANGAEA.962775
+

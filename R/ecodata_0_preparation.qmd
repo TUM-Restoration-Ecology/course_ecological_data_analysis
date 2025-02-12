@@ -32,15 +32,12 @@ knitr::opts_chunk$set(
 
 [christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
-[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://www.researchgate.net/profile/Christina-Hartung)
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://www.researchgate.net/profile/Christina-Hartung).
 
 ::: {.content-hidden when-format="html"}
 
 # Tasks
 
-* Introduce better how to save and open the scripts "monday.R", "own_data.R"
-* Introduce data sets
-* Exploring the dataset: https://r.qcbs.ca/workshop10/book-en/exploration.html
 
 :::
 
@@ -49,7 +46,7 @@ knitr::opts_chunk$set(
 Dear students, 
 
 the course “Analysis of ecological data” will take place next week. 
-We will meet on Monday (**23.09.2024**) at 9 am in the forestry building of the Weihenstephan-Triesdorf University of Applied Sciences (**Room F9.354**, Hans-Carl-von-Carlowitz-Platz 3, Freising).
+We will meet on Monday (**03.03.2025**) at **9 am** in the forestry building of the Weihenstephan-Triesdorf University of Applied Sciences (**Room F9.354**, Hans-Carl-von-Carlowitz-Platz 3, Freising).
 
 [Location](https://geoportal.bayern.de/bayernatlas/index.html?zoom=15&lang=de&topic=umwe&bgLayer=tk&E=701239.38&N=5364338.42&layers=e528a2a8-44e7-46e9-9069-1a8295b113b5,86e82390-1739-4d21-bf78-e8b189c1a35d,2dce0ec9-927f-450c-9d2c-5a92da91ab62&layers_visibility=false,false,false&catalogNodes=110)
 
@@ -57,7 +54,7 @@ It is possible to evaluate your own data sets directly during the course. If you
 
 Computers are available for the exercises. You can also bring your own laptop. Please install R and RStudio before the course (see tutorial in the appendix). In the building you have internet access via eduroam. Those who want to use the PCs in the building should also read the tutorial. 
 
-The exam will take place on the last day of the course (Friday, **27.09.2024**) and consists of a 12-minute presentation in which you will present your own evaluations. 
+The exam will take place on the last day of the course (Friday, **07.03.2025**) and consists of a short presentation in which you will present your own evaluations. 
 
 We are looking forward to the course with you next week. 
 
@@ -70,10 +67,10 @@ Markus Bauer and Christina Hartung
 # The course
 
 * MO 9:00-17:00 (1h break): Introduction to R, tidyverse, statistics, and open science
-* DI 9:00-17:00 (1h break): Species composition - Ordinations
-* MI 9:00-17:00 (1h break): Functional trait diversity - Community-weighted mean, functional dispersion
+* DI 9:00-17:00 (1h break): Species composition: Ordinations
+* MI 9:00-17:00 (1h break): Functional trait diversity: Community-weighted mean
 * DO 9:00-17:00 (1h break): Species/trait diversity ~ environment
-* FR 9:00-12:30 (0h break): Exam
+* FR 9:00-13:00 (0h break): Exam
 
 Hans-Carl-von-Carlowitz-Platz 3, 85354 Freising
 Room F9.354
@@ -82,13 +79,23 @@ Guest access for PC:  The use name is the PC name. The PC name is written at the
 
 Internet for own Laptop: eduroam (see tutorial below)
 
+With the first mail you receive a project template called 'course_ecodata_my_project' with the R project called 'my_project.Rproj'. Scripts are in the folder 'R' and example data in the folder 'data/raw'.
+
+You will receive further data and scripts as zipped files. Do unzip them otherwise the HTML files are not properly presented.
+
 <a href="#top">Back to top</a>
 
-# Learning objectives
+# Learning outcomes of this introduction
 
-* Understanding why R, RStudio with scripts and projects, relative paths, and the packages of the tidyverse are a useful environment for doing analysis
-* The project which is used throughout the course is established
-* The first two scripts within the project are created
+The students are able to...
+
+* Understand (2) why R, RStudio with scripts and projects, relative paths, and the packages of the `tidyverse` are a useful environment for doing analysis
+* Install (3) R with RStudio
+* Prepare (3) a project which is used throughout the course
+* Create (3) the first two scripts within that project
+* Install (3) the `tidyverse` package for data wrangling and the `here` package for relative paths
+* State (1) important terms like matrix, data frame, distance matrix, community matrix, distance matrix, trait table
+* Memorize (1) the example data set
 
 <a href="#top">Back to top</a>
 
@@ -109,7 +116,7 @@ What is R lacking compared to other software solutions?
 * It has a limited graphical interface (S-Plus has a good one). This means, it can be harder to learn at the outset.
 * The command language is a programming language so students must learn to appreciate syntax issues etc.
 
-R is an open-source (GPL) statistical environment modeled after S and S-Plus (http://www.insightful.com). The S language was developed in the late 1980s at AT&T labs. The R project was started by Robert Gentleman and Ross Ihaka of the Statistics Department of the University of Auckland in 1995. It has quickly gained a widespread audience. It is currently maintained by the R core-development team, a hard-working, international team of *volunteer* developers. The R project web page (http://www.r-project.org) is the main site for information on R. At this site are directions for obtaining the software, accompanying packages and other sources of documentation.
+R is an open-source (GPL) statistical environment modeled after S and S-Plus ([http://www.insightful.com](http://www.insightful.com)). The S language was developed in the late 1980s at AT&T labs. The R project was started by Robert Gentleman and Ross Ihaka of the Statistics Department of the University of Auckland in 1995. It has quickly gained a widespread audience. It is currently maintained by the R core-development team, a hard-working, international team of *volunteer* developers. The R project web page ([http://www.r-project.org](http://www.r-project.org)) is the main site for information on R. At this site are directions for obtaining the software, accompanying packages and other sources of documentation.
 
 <a href="#top">Back to top</a>
 
@@ -149,7 +156,7 @@ https://posit.co/download/rstudio-desktop/
 
 Now that you have both R and RStudio on your computer, you can begin using R by opening the RStudio program. You see the console on the left side (Figure [2](https://r4ds.hadley.nz/intro#fig-rstudio-console), Wickham et al. [2023](https://r4ds.hadley.nz/)))
 
-When you start RStudio you see the following in the console:
+When you start RStudio you see the following text in the console:
 
 
 ```{r}
@@ -176,8 +183,9 @@ In the first line is the installed version of R. For the whole citation:
 citation()
 ```
 
+**Task**
 
-* Note for your material-and-methods section the R version you use (not the RStudio version) and the whole citation.
+> Note for your material-and-methods section of the presentation the R version you use (not the RStudio version) and the whole citation for the reference slide of your presentation.
 
 <a href="#top">Back to top</a>
 
@@ -221,9 +229,6 @@ So far, you have used the console to run code. That’s a great place to start, 
 
 The script editor is a great place to experiment with your code. When you want to change something, you don’t have to re-type the whole thing, you can just edit the script and re-run it. And once you have written code that works and does what you want, you can save it as a script file to easily return to later.
 
-* Create a script named "monday.R"
-* Create a script named "own_data.R"
-
 <a href="#top">Back to top</a>
 
 ## Projects
@@ -257,7 +262,9 @@ Quit RStudio. Inspect the folder associated with your project — notice the `.R
 
 In your favorite OS-specific way, search your computer for `diamonds.png` and you will find the PNG (no surprise) but also the script that created it (`diamonds.R`). This is a huge win! One day, you will want to remake a figure or just understand where it came from. If you rigorously save figures to files with R code and never with the mouse or the clipboard, you will be able to reproduce old work with ease!
 
-* Put your scripts "monday.R" and "own_data.R" in the project folder
+**Task**
+
+> Open your R project 'course_ecodata_my_project/my_project.Rproj'. Afterwards open within RStudio 'R/_data_preparation.R'. Within the script, install `tidyverse` on your computer. And load the package with `library(tidyverse)`. Do not forget to save, if your script name is written in blue (top left tab)
 
 <a href="#top">Back to top</a>
 
@@ -279,7 +286,9 @@ here() #you get the location of your project
 ```
 If you have created a `data` folder you access the file by `data <- read_csv(here("data", "diamonds.csv"))`
 
-* Open both scripts ("monday.R", "own_data.R") from RStudio
+**Task**
+
+> Open your project 'my_project.Rproj' and install and load the libraries `here` and `readxl`.
 
 <a href="#top">Back to top</a>
 
@@ -307,11 +316,37 @@ Ecological terminology
 
 <a href="#top">Back to top</a>
 
+# Introduction to the example data set
+
+We will use the following data set for the illustration of analyses.
+A study in the Ammer valley before and after the weir in the [floodplain Schnalz](https://www.openstreetmap.org/#map=16/47.7737/10.9615). Normally there are alluvial grey alder forests (Alnetum incanae, alliance [Alnion incanae](https://floraveg.eu/vegetation/overview/Alnion%20incanae), EUNIS habitat [T12](https://floraveg.eu/habitat/overview/T12))
+
+Due to the dam along the Ammer and the weir in the Ammer the flood regime changed and the vegetation could have developed to a maple-ash forest ('Edellaubholzwald') (Adoxo-Aceretum, alliance [Tilio-Acerion](https://floraveg.eu/vegetation/overview/Tilio-Acerion), EUNIS habitat type [T1F](https://floraveg.eu/habitat/overview/T1F%3E))
+
+The dataset is also available on [Zenodo](https://doi.org/10.5281/zenodo.6054867) (Bauer et al. [2018](https://doi.org/10.14471/2018.38.006))
+
+**Task**
+
+> Open within your project folder 'course_ecodata_my_project' and have a look in the folder 'data/raw/example_course_alluvial_forest_mb'. There you find the data of the example data set.
+
+You can load the data in RStudio:
+
+```{r}
+species_ammer <- read_csv(
+  here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_species.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+  )
+```
+
+**Task**
+
+> Within RStudio and your project 'my_project.Rproj', load the species data from the example data set with the script 'R/script_for_exercises'.
+
 # GitHub and GitHub Desktop
 
-(Not reuired, but recommended)
+(Not required, but recommended for those who are interested in versioning)
 
-Go through this [tutorial](https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e124) of Vanessa Trujillo to be prepared for track-and-change mode in R. This is not required for the course but recommended and we will use and show GitHub in the course.
+Go through this [tutorial](https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e124) of Vanessa Trujillo to be prepared for track-and-change mode in R.
 
 <a href="#top">Back to top</a>
 

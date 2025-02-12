@@ -32,9 +32,31 @@ knitr::opts_chunk$set(
 
 [christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
-[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://www.researchgate.net/profile/Christina-Hartung)
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://www.researchgate.net/profile/Christina-Hartung).
+
+::: {.content-hidden when-format="html"}
+
+# Tasks
+
+* The screenshots in the sections 'new project, use renv' are not displayed when rendered
+
+:::
 
 ::: panel-tabset
+
+### Learning outcomes
+
+# Learning outcomes
+
+The students are able to...
+
+* Remember (1) PANGAEA, Zenodo, and GitHub as sources for data
+* Outline (1) the standard folder structure
+* Create (3) machine- and human-readable file names
+* Use (3) standard unit names
+* Produce (3) a metadata file
+* Use (3) the renv package
+* Produce (3) a session info
 
 ### Open science
 
@@ -47,8 +69,6 @@ Findable data need a DOI and should be indexed in a database.
 * Search in [PANGAEA](https://www.pangaea.de) a dataset which is similar to yours and note its citation information, the license and what are the main similarities you get from the metadata.
 
 * Find the data and code of an example dataset we use in the course on Zenodo and GitHub: Bauer et al. ([2018](https://doi.org/10.14471/2018.38.006)). Note the reference and the license of code and data.
-
-* Download the raw data of this publication.
 
 ## Folder structure
 
@@ -76,8 +96,6 @@ First, set up a project like it is explained in the tutorial '0_preparation' whi
 > Never ever touch raw data. Store them permanently, and use scripts to produce derived, clean datasets for analyses.<br>
 – Francisco Rodríguez-Sánchez, Estación Biológica de Doñana (CSIC)
 
-* Apply the folder structure for your R project
-
 ## File naming
 
 From Picardi ([2015](https://ecorepsci.github.io/reproducible-science/index.html)) Reproducible Data Science
@@ -100,23 +118,26 @@ What makes a file name computer-readable? First, computer readable files contain
 
 The example file name above is not only computer-readable, it’s also human-readable. This means that a human can read the file name and have a pretty good idea of what’s in that file. Good file names are informative! You shouldn’t be afraid to use long names if that’s what it takes to make them descriptive.
 
-* Update your file names
-
 ## Metadata files
 
 You have different types of metadata. First, the metadata of the whole project (see [PANGAEA](https://doi.pangaea.de/10.1594/PANGAEA.962775)). Second, you have metadata for each data file, where you explain the column names (see [PANGAEA](https://doi.pangaea.de/10.1594/PANGAEA.962762) and [GitHub](https://github.com/markus1bauer/2023_danube_dike_experiment/blob/main/data/raw/data_raw_sites_metadata.csv)).
 
 Now have a look on the example of [GitHub](https://github.com/markus1bauer/2023_danube_dike_experiment/blob/main/data/raw/data_raw_sites_metadata.csv). It is not only important to explain the column names ('attributeDefinition'), but also to explain date formats ('formatString'), write down the units ('unit'), the number type ('numberType') like 'integer' or 'real', the general type ('type') of the data like 'character' (text), 'factor', 'numeric', or 'date'. For the factors your have to note the levels and their meaning ('factor'). There should be always space for a comment ('comment').
 
-The names of the columns of the metadata file are adapted from the `EML` package (Boettinger et al. [2022](https://doi.org/10.32614/CRAN.package.EML)) which creates EML files ([Vignette](https://cran.r-project.org/web/packages/EML/vignettes/creating-EML.html)). EML (Ecological Metadata Language) is a widely used metadata standard in the ecological and environmental sciences, described in Jones et al. ([2006](https://doi.org/10.1146%2Fannurev.ecolsys.37.091305.110031)) (See also the online book: Jones et al. [2019](https://doi.org/10.5063/F11834T2)).
+The names of the columns of the metadata file are adapted from the `EML` package (Boettinger et al. [2022](https://doi.org/10.32614/CRAN.package.EML)) which creates EML files ([Vignette](https://cran.r-project.org/web/packages/EML/vignettes/creating-EML.html#attribute-metadata)). EML (Ecological Metadata Language) is a widely used metadata standard in the ecological and environmental sciences, described in Jones et al. ([2006](https://doi.org/10.1146%2Fannurev.ecolsys.37.091305.110031)) (See also the online book: Jones et al. [2019](https://doi.org/10.5063/F11834T2)).
 
-* Get standard unit names
+**Task**
+
+> Get standard unit names
 
 ```{r}
+# install.packages("EML")
 units <- EML::get_unitList()
 ```
 
-* Start writing metadata files, like the examples, for your raw data. It is not possible to fill in everything, but as much as you can.
+**Task**
+
+> Fill up your metadata file for sites raw data. It is not possible to fill in everything, but as much as you can.
 
 ### renv package
 
@@ -160,25 +181,32 @@ For full details, see the `renv` [package documentation](https://rstudio.github.
 
 The general details on creating a new Project in RStudio are covered in RStudio Projects. Users can opt in to using `renv` when creating a new Project in RStudio.
 
-![](C:/Users/marku/Documents/GitHub/course_ecological_data_analysis/data\screenshots\Screenshot 2024-08-07 143121.png)
+```{r echo = FALSE}
+library(here)
+library(knitr)
+knitr::include_graphics(here("data", "screenshots", "screenshot_1.png"))
+```
 
 Select the **Use renv with this project** checkbox, and the new project will automatically create and activate the necessary scaffolding for `renv` within that project. Since those files now exist in the newly created project, you can skip step 1 from the above workflow.
 
-![](C:/Users/marku/Documents/GitHub/course_ecological_data_analysis/data\screenshots\Screenshot 2024-08-07 143147.png)
+```{r echo = FALSE}
+knitr::include_graphics(here("data", "screenshots", "screenshot_2.png"))
+```
 
-* Use `renv` for your project and make your first snapshot and check `renv::status()`
+**Task**
+
+> Use `renv` for your project and make your first snapshot and check `renv::status()`
 
 ```{r results = FALSE}
+# install.packages("renv")
 renv::init()
 renv::status()
 renv::snapshot()
 ```
 
-* At the end of this course make a last `renv::snapshot` and put in the Appendix the output of `sessionInfo()`
+**Task**
 
-```{r}
-sessionInfo()
-```
+> At the end of this course make a last `renv::snapshot` and put in the appendix the output of `sessionInfo()`
 
 
 ### GitHub
@@ -215,11 +243,12 @@ The **Changes** view shows changes you've made to files in your current branch b
 
 The **History** view shows the previous commits on the current branch of your repository. You should see an "Initial commit" that was created by GitHub Desktop when you created your repository. To the right of the commit, depending on the options you selected while creating your repository, you may see .gitattributes, .gitignore, LICENSE, or README files. You can click each file to see a diff for that file, which is the changes made to the file in that commit. The diff only shows the parts of the file that have changed, not the entire contents of the file
 
-* Make changes in your script, control the 'Changes' section of GitHub Desktop. Commit the change and push it to the server.
-* Insert a license
-* Insert a README file
+> Make changes in your script, control the 'Changes' section of GitHub Desktop. Commit the change and push it to the server.
 
-# Session info
+> Insert a license
+
+> Insert a README file
+
 
 :::
 

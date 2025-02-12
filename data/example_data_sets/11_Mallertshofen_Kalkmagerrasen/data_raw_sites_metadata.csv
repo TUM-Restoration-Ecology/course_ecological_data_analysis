@@ -1,0 +1,11 @@
+attributeName,attributeDefinition,formatString,definition,unit,numberType,type,factor,comment
+Fläche,NA,NA,NA,NA,NA,character,NA,NA
+Gebiet,NA,NA,NA,NA,NA,factor,NA,NA
+Pflege,NA,NA,NA,NA,NA,factor,NA,NA
+Beweidung,NA,NA,NA,NA,NA,factor,1 = yes / 0 = no,NA
+Artenzahl,NA,NA,NA,dimensionless,integer,numeric,NA,NA
+deckung_vegetation,NA,NA,NA,percent,integer,numeric,NA,NA
+hoehe_vegetation,NA,NA,NA,centiMeter,integer,numeric,NA,NA
+P_Gehalt,NA,NA,NA,NA,real,numeric,NA,NA
+N_Gehalt,NA,NA,NA,NA,real,numeric,NA,NA
+anz-mager,NA,NA,NA,dimensionless,integer,numeric,NA,NA

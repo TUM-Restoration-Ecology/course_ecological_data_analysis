@@ -1,0 +1,7 @@
+attributeName,attributeDefinition,formatString,definition,unit,numberType,type,factor,comment
+age,Bestandesalter,NA,Bestandesalter,NA,integer,numeric,NA,NA
+bon_pinus,Bon. Kiefer Schwappach,NA,NA,NA,real,numeric,NA,NA
+wood,Schluﬂgrad Altholz in 1/10,NA,NA,NA,real,numeric,NA,NA
+unused,somit ungenutzt in Jahren,NA,NA,years,integer,numeric,NA,NA
+gritting_year,Jahr der Streunutzung,YYYY,NA,NA,NA,Date,NA,NA
+comment,Bemerkung zur Streunutzung,NA,Bemerkung Streunutzung,NA,NA,character,NA,NA

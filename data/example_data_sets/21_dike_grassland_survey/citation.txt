@@ -1,0 +1,8 @@
+Publication
+
+Bauer M, Huber JK, & Kollmann J (2023) Beta diversity of restored dike grasslands is strongly influenced by uncontrolled spatio-temporal variability. – EcoEvoRxiv. https://doi.org/10.32942/X2959J
+
+Dataset
+
+Bauer M, Huber JK, & Kollmann J (2023) Data and code for Bauer et al. (2023) EcoEvoRxiv [Data set]. – Zenodo. https://doi.org/10.5281/zenodo.6107806
+

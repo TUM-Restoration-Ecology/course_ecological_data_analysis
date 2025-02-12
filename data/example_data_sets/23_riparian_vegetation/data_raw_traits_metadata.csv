@@ -1,0 +1,16 @@
+﻿Variable,Definition,Unit,Type,Values,"Comment	"
+name,botanical name,NA,character,NA,NA
+nomenclature,Nomenclature for species names (WFO 2022),NA,character,NA,WFO (2022) World Flora Online. URL http://www.worldfloraonline.org 
+family,plant family,NA,character,NA,Jäger E (2011) Rothmaler - Exkursionsflora von Deutschland. Gefaesspflanzen: Grundband. Springer Spektrum: Berlin Heidelberg. ISBN 978-3-8274-1606-3 
+lifeform,lifeform following Raunkjaer,NA,factor,H = Hemicryptohyte / T = Therophyte / P = Phanerophyte / N = Rest,Nanonphanerophytes were defined as P and Thp as T / Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18: 9-166. ISBN 3884525182
+growthform,growth form,NA,factor,NA,Jäger E (2011) Rothmaler - Exkursionsflora von Deutschland. Gefaesspflanzen: Grundband. Springer Spektrum: Berlin Heidelberg. ISBN 978-3-8274-1606-3 
+l,Ellenberg L value,dimensionless,numeric,NA,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18: 9-166. ISBN 3884525182
+t,Ellenberg T value,dimensionless,numeric,NA,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18: 9-166. ISBN 3884525182
+k,Ellenberg K value,dimensionless,numeric,NA,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18: 9-166. ISBN 3884525182
+f,Ellenberg F value,dimensionless,numeric,NA,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18: 9-166. ISBN 3884525182
+r,Ellenberg R value,dimensionless,numeric,NA,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18: 9-166. ISBN 3884525182
+n,Ellenberg N value,dimensionless,numeric,NA,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18: 9-166. ISBN 3884525182
+sociology,plant sociology abbreviation,dimensionless,numeric,NA,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18: 9-166. ISBN 3884525182
+rlg,red list of Germany,NA,factor,* = unthreated / V = early warning list,"BfN (Bundesamt fuer Naturschutz) (2018) Rote Liste gefährdeter Tiere, Pflanzen und Pilze Deutschlands. Band 7: Pflanzen. ISBN 978-3-7843-5612-9"
+rlb,red list of Bavaria,NA,factor,NA,"StMUGV (Bayerisches Staatsministerium für Umwelt, Gesundheit und Verbraucherschutz) (2005) Rote Liste der gefährdeten Tiere und Gefäßpflanzen Bayerns. Kurzfassung."
+neo,neophytes,NA,factor,1 = yes / 0 = no,Nehring S / Kowarik I / Rabitsch W / Essl F (Eds.) (2013) Naturschutzfachliche Invasivitätsbewertungen für in Deutschland wild lebende gebietsfremde Gefäßpflanzen. BfN-Skripten 352. ISBN 978-3-89624-087-3

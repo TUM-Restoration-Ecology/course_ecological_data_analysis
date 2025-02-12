@@ -1,0 +1,24 @@
+﻿Variable,Definition,Unit,Type,Values,"Comment	"
+no,serial number,na,numeric,na,na
+plot,plot ID,na,character,na,block ID + plot Number
+block,block ID,na,character,na,na
+year,year of observation,na,factor,Control = negative reference observed in 2014 / 2014 / 2016,na
+site,site name of the observations,na,character,na,na
+easting,X coordinate / GK4 / EPSG 31468,na,numeric,na,na
+northing,Y coordinate / GK4 / EPSG 31468,na,numeric,na,na
+date,date of observation,YYYY-mm-dd,date,na,na
+barrier,next barrier downstream,na,character,na,https://geoportal.bayern.de/bayernatlas/
+barrierriverKm,River kilometer of the barrier downstream,km,numeric,na,https://geoportal.bayern.de/bayernatlas/
+plotriverKm,River kilometer of the plot,km,numeric,na,https://geoportal.bayern.de/bayernatlas/
+treatment,restoration measurement,na,factor,removal_embankment / sand supply / gravel supply,treatment for control sites is hypothetical
+plotSize,size of plot for vegetation surveys,meterSquared,numeric,na,na
+habitatType,category of habitat type,na,character,na,na
+shrubHeight,measured shrub height,centimeter,numeric,na,na
+shrubCover,estimated shrub cover with Londo scale,percent,numeric,na,na
+herbHeight,measured herb height,centimeter,numeric,na,na
+herbCover,estimated herb cover with Londo scale,percent,numeric,na,na
+mossCover,estimated moss cover with Londo scale,percent,numeric,na,na
+soilCover,estimated bare soil cover with Londo scale,percent,numeric,na,na
+substrate,type of the substrate,na,character,na,na
+slope,slope of the embankment,na,factor,Sand /Gravel / Water,na
+ph,pH measured in 2014,na,numeric,na,na

@@ -1,0 +1,22 @@
+attributeName,attributeDefinition,formatString,definition,unit,numberType,type,factor,comment
+plot_id,ID of the plot,NA,ID of the plot,NA,NA,character,NA,NA
+Gruppe,NA,NA,NA,NA,NA,factor,1 = ? / 2 = ? / 3 = ?,NA
+maechtigkeit,NA,NA,NA,NA,real,numeric,NA,NA
+PH_H2O,NA,NA,NA,NA,real,numeric,NA,NA
+PH_KCl,NA,NA,NA,NA,real,numeric,NA,NA
+C,NA,NA,NA,NA,real,numeric,NA,NA
+N,NA,NA,NA,NA,real,numeric,NA,NA
+CN,NA,NA,NA,NA,real,numeric,NA,NA
+NH4,NA,NA,NA,NA,real,numeric,NA,NA
+NO3,NA,NA,NA,NA,real,numeric,NA,NA
+NO3_plus_NH4,NA,NA,NA,NA,real,numeric,NA,NA
+Cl,NA,NA,NA,NA,real,numeric,NA,NA
+PO4,NA,NA,NA,NA,real,numeric,NA,NA
+SO4,NA,NA,NA,NA,real,numeric,NA,NA
+Al,NA,NA,NA,NA,real,numeric,NA,NA
+Ca,NA,NA,NA,NA,real,numeric,NA,NA
+Fe,NA,NA,NA,NA,real,numeric,NA,NA
+K,NA,NA,NA,NA,real,numeric,NA,NA
+Mg,NA,NA,NA,NA,real,numeric,NA,NA
+Mn,NA,NA,NA,NA,real,numeric,NA,NA
+Na,NA,NA,NA,NA,real,numeric,NA,NA

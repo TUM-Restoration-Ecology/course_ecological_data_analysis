@@ -1,0 +1,7 @@
+attributeName,attributeDefinition,formatString,definition,unit,numberType,type,factor,comment
+plot,plot ID,NA,plot ID,NA,NA,character,NA,NA
+m_nadel_verl,NA,NA,NA,NA,real,numeric,NA,NA
+bonitaet,NA,NA,NA,NA,real,numeric,NA,NA
+ph,NA,NA,NA,NA,real,numeric,NA,NA
+be_alter,NA,NA,NA,year,integer,numeric,NA,NA
+hoehe,NA,NA,NA,NA,integer,numeric,NA,NA

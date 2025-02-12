@@ -1,0 +1,11 @@
+attributeName,attributeDefinition,formatString,definition,unit,numberType,type,factor,comment
+name,Botanical species name,NA,botanical species name,NA,NA,character,NA,NA
+nomenclature,Nomenclature for species names (WFO 2022),NA,nomenclature of species names from worldfloraonline.org,NA,NA,character,NA,WFO (2022) World Flora Online. URL http://www.worldfloraonline.org 
+synonym,Synonym for species name from Wisskirchen & Haeupler (1998),NA,synonym for species name in Wisskirchen & Haeupler 1998,NA,NA,character,NA,Wisskirchen & Haeupler (1998) Standardliste der Farn- und Bluetenpflanzen Deutschlands. Ulmer: Stuttgart. ISBN: 3800133601
+family,Family of plant species (WFO 2022),NA,family of plant species from worldfloraonline.org,NA,NA,character,NA,WFO (2022) World Flora Online. URL http://www.worldfloraonline.org 
+group,Grass / herb / legume groups,NA,NA,NA,NA,factor,top_grass / sub_grass / legume / herb,NA
+legal,Legally protected in Germany (BArtSchV 2005),NA,NA,NA,NA,factor,BG = besonders geschuetzt / SG = streng geschuetzt,BArtSchV (2005) Bundesartenschutzverordnung vom 16. Februar 2005 (BGBl. I S. 258: 896) die zuletzt durch Artikel 10 des Gesetzes vom 21. Januar 2013 (BGBl. I S. 95) geaendert worden ist
+rlg,Red list Germany (BfN 2018),NA,NA,NA,NA,factor,NA = not threatened / V = warning list/3/2/1,BfN (Bundesamt fuer Naturschutz) (2018) Rote Liste gefaehrdeter Tiere Pflanzen und Pilze Deutschlands. Band 7: Pflanzen. ISBN 978-3-7843-5612-9
+rlb,Red list Bavaria (StMUGV 2005),NA,NA,NA,NA,factor,NA = not threatened / V = warning list/3/2/1,StMUGV (Bayerisches Staatsministerium fuer Umwelt Gesundheit und Verbraucherschutz) (2005) Rote Liste der gefaehrdeten Tiere und Gefaeﬂpflanzen Bayerns. Kurzfassung.
+neophyte,Is species a neophyte? (BfN 2021),NA,NA,NA,NA,factor,yes / no,BfN (Bundesamt fuer Naturschutz) (2021) FloraWeb. Category Floristischer Status of each species description. URL: https://www.floraweb.de
+sociology,Sociology according to (Ellenberg et al. 2001),NA,NA,dimensionless,integer,numeric,NA,Ellenbeg H (2001) Zeigerwerte von Pflanzen in Mitteleuropa. 3rd ed. Scripta geobotanica 18: 9-166. ISBN 3884525182

@@ -1,0 +1,26 @@
+﻿attributeName,attributeDefinition,formatString,definition,unit,numberType,type,factor,comment
+plot_id,ID of the plot,NA,NA,NA,NA,character,NA,NA
+Hoehe,Meereshöhe m,NA,NA,NA,integer,numeric,NA,NA
+Wasserha,"Wasserhaushaltsindex (Speicherkapazität, Relief, Hydromorphie)",NA,NA,NA,real,numeric,NA,NA
+Baumdeck,Baumschichtdeckung %,NA,NA,NA,real,numeric,NA,NA
+pH,pH-Wert im Oberboden (obere 10 cm),NA,NA,dimensionless,real,numeric,NA,NA
+Basensae,Basensättigung im Oberboden (obere 10 cm) %,NA,NA,NA,real,numeric,NA,NA
+Auflage,Mächtigkeit der organischen Auflage cm,NA,NA,NA,real,numeric,NA,NA
+Bestalte,Bestandesalter,NA,NA,year,integer,numeric,NA,NA
+CN,C/N-Verhältnis im Oberboden (obere 10 cm),NA,NA,NA,real,numeric,NA,NA
+Bonität,Oberhöhenbonität von Fichte bzw. Buche nach Forstinventur (Skala angeglichen),NA,NA,NA,real,numeric,NA,NA
+Waldges,Waldgesellschaft,NA,NA,NA,NA,factor,see below,NA
+Koniante,Koniferenanteil der Baumschicht %,NA,NA,NA,real,numeric,NA,NA
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+1 LuzFag,Hainsimsen-Buchenwald,NA,NA,NA,NA,NA,NA,NA
+2 HomPic,Brandlattich-Fichtenwald,NA,NA,NA,NA,NA,NA,NA
+3 GalFag,Waldmeister-Buchenwald,NA,NA,NA,NA,NA,NA,NA
+4 GalAbi,Rundblattlabkraut-Tannenwald,NA,NA,NA,NA,NA,NA,NA
+5 AdoAce,Giersch-Ahorn-Eschenwald,NA,NA,NA,NA,NA,NA,NA
+6 ApoFag,Hainlattich-Buchenwald,NA,NA,NA,NA,NA,NA,NA
+7 SesFag,Blaugras-Buchenwald,NA,NA,NA,NA,NA,NA,NA
+8 AdeAbi,Alpendost-Tannenwald,NA,NA,NA,NA,NA,NA,NA
+9 AdePic,Alpendost-Fichtenwald,NA,NA,NA,NA,NA,NA,NA

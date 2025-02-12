@@ -1,0 +1,11 @@
+attributeName,attributeDefinition,formatString,definition,unit,numberType,type,factor,comment
+plot_id,NA,NA,NA,NA,NA,character,NA,NA
+plot_number,NA,NA,NA,NA,NA,character,NA,NA
+Altitude,NA,NA,NA,NA,integer,numeric,NA,NA
+Slope,NA,NA,NA,NA,integer,numeric,NA,NA
+Cover.tree.layer,NA,NA,NA,percent,integer,numeric,NA,NA
+Hoehe_bs,NA,NA,NA,NA,integer,numeric,NA,NA
+R_koord,NA,NA,NA,NA,integer,numeric,NA,NA
+H_koord,NA,NA,NA,NA,integer,numeric,NA,NA
+Zeit,NA,NA,NA,NA,NA,factor,historisch = 1984 / aktuell = 2016,NA
+Vegtyp,NA,NA,NA,NA,NA,factor,NA,NA

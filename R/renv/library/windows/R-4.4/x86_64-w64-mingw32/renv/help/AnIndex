@@ -24,6 +24,7 @@ lockfiles	lockfiles
 lockfile_create	lockfiles
 lockfile_modify	lockfiles
 lockfile_read	lockfiles
+lockfile_validate	lockfile_validate
 lockfile_write	lockfiles
 migrate	migrate
 modify	modify
@@ -40,6 +41,7 @@ renv	renv-package
 renv_lockfile_from_manifest	renv_lockfile_from_manifest
 repair	repair
 restore	restore
+retrieve	retrieve
 revert	history
 run	run
 sandbox	sandbox

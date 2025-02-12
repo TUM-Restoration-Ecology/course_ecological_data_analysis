@@ -1,0 +1,21 @@
+attributeName,attributeDefinition,formatString,definition,unit,numberType,type,factor,comment
+plot_id,ID of plot,NA,NA,NA,NA,character,NA,NA
+Waldges,NA,NA,NA,NA,NA,factor,NA,NA
+WG_Nr,NA,NA,NA,NA,NA,factor,NA,NA
+Stadium,NA,NA,NA,NA,NA,factor,NA,NA
+Boxplot,NA,NA,NA,NA,integer,numeric,NA,NA
+Hoehe,NA,NA,NA,NA,integer,numeric,NA,NA
+Hydro,NA,NA,NA,NA,NA,factor,NA,NA
+B123,NA,NA,NA,NA,real,numeric,NA,NA
+Vegtyp1,NA,NA,NA,NA,NA,factor,NA,NA
+Vegtyp2,NA,NA,NA,NA,NA,factor,NA,NA
+Stoerung,NA,NA,NA,NA,NA,binomial,NA,NA
+Konifer_prozent,NA,NA,NA,percent,real,numeric,NA,NA
+Laubb_prozent,NA,NA,NA,percent,real,numeric,NA,NA
+Exposit,NA,NA,NA,NA,real,numeric,NA,NA
+Neig,NA,NA,NA,NA,integer,numeric,NA,NA
+Wachstum,NA,NA,NA,NA,NA,binomial,NA,NA
+Reife,NA,NA,NA,NA,NA,binomial,NA,NA
+Verjuengung,NA,NA,NA,NA,NA,binomial,NA,NA
+Plenter,NA,NA,NA,NA,NA,binomial,NA,NA
+Mortal,NA,NA,NA,NA,NA,binomial,NA,NA

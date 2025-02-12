@@ -340,11 +340,11 @@ traits_ammer <- data3 %>%
 <a href="#top">Back to top</a>
 
  
-# Ellenberg indicator values
+# ALTERNATIVE: Ellenberg indicator values
 
-Optional if you have time. The focus are the functional traits.
+An alternative in this course to functional plant traits is the analysis of Ellenberg indicator values (EIV).
 
-You can work with the classical Ellenberg indicator values (EIV) like with functional plant traits. You have two possibilities to get the Ellenberg values (Ellenberg et al. [2001](https://search.worldcat.org/de/title/57545938)). One possibility is the [GermanSL database](https://germansl.infinitenature.org/) (Version 1.5.5, 2025; Jansen et al. [2008](https://www.tuexenia.de/publications/tuexenia/Tuexenia_2008_NS_028_0239-0253.pdf)) and the other opportunity is the European dataset of the [FloraVEG.EU database](https://floraveg.eu/download/) (Chytrý et al. [2024](https://doi.org/10.1111/avsc.12798)) which integrates the German indicator values (Tichý et al. [2023](https://doi.org/10.1111/jvs.13168)). You have to download the file "Ellenberg-type indicator values" (also on [Zenodo](https://doi.org/10.5281/zenodo.7427088)). Use the sheet "Tab-OriginalNamesValues" and filter "Source = Ellenberg" to get the German EIV. If you analyse data across several European countries, you should load the sheet "Tab-IVs-Tichy-et-al2022".
+You can work with the classical Ellenberg indicator values like with functional plant traits. You have two possibilities to get the Ellenberg values (Ellenberg et al. [2001](https://search.worldcat.org/de/title/57545938)). One possibility is the [GermanSL database](https://germansl.infinitenature.org/) (Version 1.5.5, 2025; Jansen et al. [2008](https://www.tuexenia.de/publications/tuexenia/Tuexenia_2008_NS_028_0239-0253.pdf)) and the other opportunity is the European dataset of the [FloraVEG.EU database](https://floraveg.eu/download/) (Chytrý et al. [2024](https://doi.org/10.1111/avsc.12798)) which integrates the German indicator values (Tichý et al. [2023](https://doi.org/10.1111/jvs.13168)). You have to download the file "Ellenberg-type indicator values" (also on [Zenodo](https://doi.org/10.5281/zenodo.7427088)). Use the sheet "Tab-OriginalNamesValues" and filter "Source = Ellenberg" to get the German EIV. If you analyse data across several European countries, you should load the sheet "Tab-IVs-Tichy-et-al2022".
 
 ## Get Ellenberg values
 

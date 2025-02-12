@@ -1,0 +1,20 @@
+attributeName,attributeDefinition,formatString,definition,unit,numberType,type,factor,comment
+plot_id,ID of the plot,NA,NA,NA,NA,character,NA,NA
+StauAbs,NA,NA,NA,NA,real,numeric,NA,NA
+Flutung,NA,NA,NA,NA,NA,factor,1 = ? / 2 = ?,NA
+AbsGer,NA,NA,NA,NA,real,numeric,NA,NA
+HoehGer,NA,NA,NA,NA,real,numeric,NA,NA
+Bfmittel,NA,NA,NA,NA,real,numeric,NA,NA
+WHH,NA,NA,NA,NA,integer,numeric,NA,NA
+BOMmitt,NA,NA,NA,NA,integer,numeric,NA,NA
+GWMin,NA,NA,NA,NA,real,numeric,NA,NA
+GWMax,NA,NA,NA,NA,real,numeric,NA,NA
+GWSpann,NA,NA,NA,NA,real,numeric,NA,NA
+UeFzArtan,NA,NA,NA,NA,real,numeric,NA,NA
+WWzArtan,NA,NA,NA,NA,real,numeric,NA,NA
+UeFzDeck,NA,NA,NA,NA,real,numeric,NA,NA
+WWzDeck,NA,NA,NA,NA,real,numeric,NA,NA
+Bkum,NA,NA,NA,NA,real,numeric,NA,NA
+Vegtyp,NA,NA,NA,NA,NA,factor,NA,NA
+BAUM,NA,NA,NA,NA,NA,factor,1 = ? / 2 = ? / 3 = ?,NA
+VAR,NA,NA,NA,NA,NA,factor,NA,NA
