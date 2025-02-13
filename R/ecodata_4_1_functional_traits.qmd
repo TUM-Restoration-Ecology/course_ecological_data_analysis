@@ -47,20 +47,16 @@ knitr::opts_chunk$set(
 The students are able to...
 
 * Explain (2) the calculation of the specific leaf area (SLA)
-
 * Prepare (3) trait values from the GIFT database: selection, download, metadata, references
-
-* Alternative: Prepare (3) Ellenberg indicator values (EIV) from the FloraVeg.EU database: download
-
+* Prepare (3) Ellenberg indicator values (EIV) from the FloraVeg.EU database: download
 * Compare (4) submitted names with resolved names with the TNRS package
-
 * Produce (3) a traits and a species table with resolved species names
 
 # Preparation
 
 ## Load libraries
 
-You can always install missing libraries by `install.packages()` like `install.packages("here")`. We use the `tidyverse` package (Wickham et al. [2019](https://doi.org/10.21105/joss.01686)), the `GIFT` package (Denelle et al. [2023](https://doi.org/10.1111/2041-210X.14213)) and the package `TNRS` (Boyle et al.[2013](https://doi.org/10.1186/1471-2105-14-16))
+You can always install missing libraries by `install.packages()` like `install.packages("here")`. We use the `tidyverse` package (Wickham et al. [2019](https://doi.org/10.21105/joss.01686)), the `GIFT` package (Denelle et al. [2023](https://doi.org/10.1111/2041-210X.14213)) and the package `TNRS` (Boyle et al. [2013](https://doi.org/10.1186/1471-2105-14-16))
 
 ```{r libraries, message = FALSE, results = FALSE}
 library(here)
@@ -82,29 +78,30 @@ The dataset is also available on [Zenodo](https://doi.org/10.5281/zenodo.6054867
 
 ## Load data
 
-Put the data file in the data folder in your project and adapt the relative path below:
-
 ```{r load-data}
 species_ammer <- read_csv(
   here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_species.csv"),
-  col_names = TRUE, col_types = cols(.default = "?")
+  col_names = TRUE, col_types = cols(.default = "?") # let guess ('?') the column type (numeric, character, factor, date)
   ) %>%
   filter(layer == "h") %>% # select only the herbal layer, but not tree or shrub layer
   select(-layer)
 traits_ammer <- read_csv(
   here("data", "raw", "example_course_alluvial_forest_mb", "data_raw_traits.csv"),
   col_names = TRUE, col_types = cols(.default = "?")
-  ) %>%
-  mutate(accepted_name = str_replace_all(name, "_", " "))
+  )
 ```
+
+**Task**
+
+> Put the data files you receive in the data folder of 'my_project' and adapt and load these files.
 
 <a href="#top">Back to top</a>
 
-# Calculate traits from measured values
+# Understand the calclulation of traits
 
 A short example how to calculate functional traits by your own. For example the specific leaf area (SLA) of trees ([*Acer platanoides*](https://floraveg.eu/taxon/overview/Acer%20platanoides) and [*Tilia cordata*](https://floraveg.eu/taxon/overview/Tilia%20cordata)) in a greenhouse experiment in Dürnast (Bauer et al. [2023](https://doi.org/10.1007/s00468-023-02391-8)).
 
-Per tree, three leaves were chosen and the leaf area was measured and latter the dry weight (Perez-Harguindeguy et al. [2013](https://www.uv.es/jgpausas/papers/PerezHarguindeguy-2013-AJB_traits-handbook2.pdf), section 3.1).
+Per tree, three leaves were chosen and the leaf area was measured and latter the dry weight (Perez-Harguindeguy et al. [2013](https://www.uv.es/jgpausas/papers/PerezHarguindeguy-2013-AJB_traits-handbook2.pdf), section 3.1):
 
 ```{r echo = FALSE}
 traits_bricks <- read_csv(
@@ -117,17 +114,17 @@ traits_bricks %>%
   head()
 ```
 
-You can divide the leaf area by the leaf mass (Here, just for illustration and not reproduction):
+You can divide the leaf area by the leaf mass (Here, for illustration only and not for reproduction by yourself):
 
 ```{r}
 data <- traits_bricks %>%
-  mutate(
+  mutate( # create new columns or modify old ones
     sla1 = leaf1Area / leaf1Mass,
     sla2 = leaf2Area / leaf2Mass,
     sla3 = leaf3Area / leaf3Mass,
     sla_mean = (sla1 + sla2 + sla3) / 3
   ) %>%
-  select(1:3, 8, starts_with("leaf"), starts_with("sla"))
+  select(1:3, 8, starts_with("leaf"), starts_with("sla")) # select columns
 data %>%
   select(plot, species, starts_with("sla"))
 ```
@@ -149,9 +146,8 @@ There are many functional traits available in the GIFT database. Each of these t
 trait_meta <- GIFT::GIFT_traits_meta()
 
 trait_meta %>%
-  filter(str_detect(Trait2, "height")) %>%
-  select(-comment) %>%
-  head(n = 10)
+  filter(str_detect(Trait2, "height")) %>% # search for trait names containing 'height'
+  select(-comment)
 ```
 
 We can see that the ID of this trait is 1.6.2. Now that we have the ID, we can use `GIFT_traits()` to retrieve the growth form values for different plant species.
@@ -162,21 +158,23 @@ We can see that the ID of this trait is 1.6.2. Now that we have the ID, we can u
 
 ### Raw data and aggregated data
 
-There are two functions to access trait values. First, `GIFT_traits_raw()` returns all trait values for a given species and a given trait. These trait values can then vary. Second, `GIFT_traits()` returns an aggregated trait value at the species level. The aggregation simply takes the mean for continuous traits or the most frequent entry for categorical traits. However, for some specific cases, the aggregation takes either the minimum or the maximum, as for the trait we chose. Let’s retrieve the raw and aggregated values for the maximum vegetative height of plants (trait_ID 1.6.2).
+There are two functions to access trait values. First, `GIFT_traits_raw()` returns all trait values for a given species and a given trait. These trait values vary within a species. Second, `GIFT_traits()` returns an aggregated trait value at the species level. The aggregation simply takes the mean for continuous traits or the most frequent entry for categorical traits. However, for some specific cases, the aggregation takes either the minimum or the maximum, as for the trait we chose. You can retrieve the raw and aggregated values for the maximum vegetative height of plants (trait_ID 1.6.2).
 
-```{r download-traits-example, results = FALSE, message = FALSE}
-# height <- GIFT::GIFT_traits(
-#   trait_IDs = c("1.6.2"), agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
-#   ) # download aggreagted values
+Do not reproduce this code because it takes too much time. The result below is just for illustration of the code.
 
-# height_raw <- GIFT::GIFT_traits_raw(trait_IDs = c("1.6.2")) # download raw values
+```{r download-traits-example, message = FALSE}
+height <- GIFT::GIFT_traits(
+  trait_IDs = c("1.6.2"), agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
+  ) # download aggreagted values
 
-# height_raw %>% # Raw values
-#   select(work_species, trait_ID, trait_value) %>%
-#   filter(work_species == "Fagus sylvatica")
-# 
-# height %>% # Aggregated value
-#   filter(work_species == "Fagus sylvatica")
+height_raw <- GIFT::GIFT_traits_raw(trait_IDs = c("1.6.2")) # download raw values
+
+height_raw %>% # Raw values
+  select(work_species, trait_ID, trait_value) %>%
+  filter(work_species == "Fagus sylvatica")
+
+height %>% # Aggregated value
+  filter(work_species == "Fagus sylvatica")
 ```
 
 There were three maximum heights for Fagus sylvatica, 30, 35, and 50 meters, which led to an aggregated value of 50 meters.
@@ -185,37 +183,41 @@ There were three maximum heights for Fagus sylvatica, 30, 35, and 50 meters, whi
 
 ### Get the references of the measurements
 
-If you want to look up the references that led to the aggregated trait value, you can run this chunk:
+You can look up the references that led to the aggregated trait value. Do not run this code. It is just for illustration purposes.
 
-```{r trait-references, results = FALSE, message = FALSE}
-# references <- GIFT::GIFT_references(GIFT_version = "latest")
-# 
-# unique(unlist(strsplit(height$references_1.6.2, ",")))
-# 
-# references <- references[
-#   which(
-#     references$ref_ID %in% unique(
-#       unlist(strsplit(height$references_1.6.2, ","))
-#       )
-#     ), ]
-# references[1:2, ]
+```{r trait-references, message = FALSE}
+references <- GIFT::GIFT_references(GIFT_version = "latest")
+
+unique(unlist(strsplit(height$references_1.6.2, ",")))
+
+references <- references[
+  which(
+    references$ref_ID %in% unique(
+      unlist(strsplit(height$references_1.6.2, ","))
+      )
+    ), ]
+references[1:2, ]
 ```
 
 <a href="#top">Back to top</a>
 
 ### Download traits
 
-Here is an example how to download several traits (You can use this as an example for your own data later):
+Here is an example how to download several traits. Though, first have a look at the metadata of some traits:
 
-```{r get-traits, results = TRUE, message = FALSE}
+```{r get-traits-metadata, results = TRUE, message = FALSE}
 trait_ids <- c(
   "1.2.2", "1.5.1", "1.6.3", "3.2.3", "3.3.1", "3.6.1", "3.7.1", "3.21.1",
   "4.1.3", "4.5.1"
   )
-
 GIFT::GIFT_traits_meta() %>%
-  filter(Lvl3 %in% trait_ids) # Get an overview of selected traits
+  filter(Lvl3 %in% trait_ids) %>% # Get an overview of selected traits
+  select(-comment)
+```
 
+If you want to download the traits and then harmonize the species names of the GIFT database, you have to run the following code. We did that for you because it takes some time.
+
+```{r get-traits-original, results = FALSE, message = FALSE}
 # data_gift <- GIFT::GIFT_traits(
 #   trait_IDs = trait_ids,
 #   agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
@@ -237,18 +239,32 @@ GIFT::GIFT_traits_meta() %>%
 # write_csv(
 #   harmonized_names, here("data", "processed", "data_processed_tnrs_gift.csv")
 #   )
+```
 
+You can just use `fread` to read our prepared big data tables. The table 'data_processed_gift_total.csv' contains the trait values and the table 'data_processed_tnrs_gift.csv' the harmonized species names.
+
+```{r get-traits-local, results = FALSE, message = FALSE}
 data_gift <- data.table::fread(
   here("data", "processed", "data_processed_gift_total.csv")
-)
+) # Load the traits data from the GIFT database
 
 gift <- data.table::fread(
   here("data", "processed", "data_processed_tnrs_gift.csv")
-  ) %>%
+  ) %>% # Read in the resolved species names
   rename_with(tolower) %>%
-  full_join(data_gift, by = c("name_submitted" = "work_species")) %>%
+  full_join(data_gift, by = c("name_submitted" = "work_species")) %>% # join with GIFT traits data
   select(name_submitted, accepted_name, starts_with("trait_value_"))
 ```
+
+**Tasks**
+
+> Read in both files 'data_processed_gift_total.csv' and 'data_processed_tnrs_gift.csv' in your R project 'my_project'.
+
+> Select growth form (1.2.2), specific leaf area (4.1.3), height (1.6.3), and seed mass (3.2.3) as functional plant traits.
+
+> Note the categories, IDs, unit, and the version of the GIFT database for your material-and-methods section.
+
+> Get aggregated trait values from the GIFT database (later you merge it with your species table)
 
 <a href="#top">Back to top</a>
 
@@ -256,7 +272,7 @@ gift <- data.table::fread(
 
 [Original vignette](https://cran.r-project.org/web/packages/TNRS/vignettes/TNRS_vignette.html) by Maitner (2024)
 
-Use the Taxonomic Names Resolution Service ([TNRS](https://tnrs.biendata.org/)) with the package `TNRS` (Boyle et al.[2013](https://doi.org/10.1186/1471-2105-14-16)) for name resolving and the taxonoic resouces World Checklist of Vascular Plants of Kew Gardens (WCVP; Govaerts [2023](http://sftp.kew.org/pub/data-repositories/WCVP/)) and World Flora Online (WFO Consortium [2023](https://doi.org/10.5281/zenodo.8079052))
+Use the Taxonomic Names Resolution Service ([TNRS](https://tnrs.biendata.org/)) with the package `TNRS` (Boyle et al. [2013](https://doi.org/10.1186/1471-2105-14-16)) for name resolving and the taxonoic resouces World Checklist of Vascular Plants of Kew Gardens (WCVP; Govaerts [2023](http://sftp.kew.org/pub/data-repositories/WCVP/)) and World Flora Online (WFO Consortium [2023](https://doi.org/10.5281/zenodo.8079052))
 
 ```{r resolve-names-species}
 rm(list = setdiff(ls(), c("species_ammer", "traits_ammer", "data_gift")))
@@ -278,37 +294,56 @@ data_names <- data %>%
     Accepted_family, Overall_score
     ) %>%
   rename_with(tolower)
+
+table(data_names$taxonomic_status)
 ```
+
+**Tasks**
+
+> Do the name resolving with TNRS for the 'data_raw_species' table of your own dataset, which you use for the course.
+
+> Note the version of the database from `metadata$version` and the sources of the names with `metadata$citations` for the material-and-methods section
+
+> Note the range of 'Overall_score' for your submitted species names. It is written int thte `data_names` data frame. The overall scores is 1 if the algorithm is completely sure that the submitted and accepted name match. If it is lower than 1, the algorithm is less sure about the result.
+
+> Present the table of `table(data_names$taxonomic_status)` in the appendix and note illegitimate species names.
 
 <a href="#top">Back to top</a>
 
-# Merge
+# Merge resolved names with tables
 
-## Merge names with species matrix
+We have to integrate the resolved species names into and the traits table and the species table.
 
-Merge the resolved species names and the functional plant traits into the existing tables 'species' . First, you have to check for duplicates in the column 'accepted_name' created by name resolving. Second, summarize duplicates by summing the abundances.
+## Species table
+
+First, you have to check for duplicates in the column 'accepted_name' created by name resolving. Second, summarize duplicates by summing the abundances.
 
 ```{r merge-resolved-names-species}
 rm(list = setdiff(ls(), c("species_ammer", "traits_ammer", "data_names", "data_gift")))
 
 data <- species_ammer %>%
-  rename(name_submitted = name) %>%
+  rename(name_submitted = name) %>% # rename a column name
   full_join(
-    data_names %>% select(name_submitted, accepted_name), by = "name_submitted"
-    )
+    data_names %>% select(name_submitted, accepted_name),
+    by = "name_submitted"
+    ) # joins the dataset 'species_ammer' with the dataset 'data_names' by the column 'name_submitted'
 
-data %>% filter(duplicated(accepted_name))
+data %>% filter(duplicated(accepted_name)) # Check for duplicates, because two submitted species names could be only one species today
 
 data2 <- data %>%
   group_by(accepted_name) %>%
-  summarize(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)))
+  summarize(across(where(is.numeric), ~ sum(.x, na.rm = TRUE))) # summarize duplicates
 
 data2 %>% filter(duplicated(accepted_name))
 
 species_ammer <- data2
 ```
 
-## Create traits table
+**Task**
+
+> Merge the resolved names of your project into the species table of your project.
+
+## Traits table
 
 Create a new table 'traits' with the species of your dataset and their trait values.
 
@@ -319,121 +354,112 @@ data3 <- data_names %>%
   slice(1) %>% # use only 1 row of accepted name (e.g. of Mentha aquatica)
   left_join(
     data_gift %>% rename(accepted_name = work_species), by = "accepted_name"
-    )
+    ) # Join the trait data to the species list of your project. This left join integrateds only the data from the big 'data_gift' table which is needed in the species list of your project 'data_names'.
 
 traits_ammer <- data3 %>%
   select(starts_with("accepted_"), starts_with("trait_value")) %>%
   rename(
-    growth_form_2 = trait_value_1.2.2,
-    parasite_1 = trait_value_1.5.1,
+    growth_form_2 = trait_value_1.2.2, # rename column names
     plant_height_mean = trait_value_1.6.3,
     seed_mass_mean = trait_value_3.2.3,
-    dispersal_syndrome_1 = trait_value_3.3.1,
-    pollination_syndrome_1 = trait_value_3.6.1,
-    flowering_start = trait_value_3.7.1,
-    flower_colour = trait_value_3.21.1,
-    sla_mean = trait_value_4.1.3,
-    nitrogen_fix_1 = trait_value_4.5.1
+    sla_mean = trait_value_4.1.3
   )
 ```
+
+**Task**
+
+> Merge the resolved names of trait values with the GIFT traits data.
 
 <a href="#top">Back to top</a>
 
  
-# ALTERNATIVE: Ellenberg indicator values
+# Ellenberg indicator values
 
-An alternative in this course to functional plant traits is the analysis of Ellenberg indicator values (EIV).
-
-You can work with the classical Ellenberg indicator values like with functional plant traits. You have two possibilities to get the Ellenberg values (Ellenberg et al. [2001](https://search.worldcat.org/de/title/57545938)). One possibility is the [GermanSL database](https://germansl.infinitenature.org/) (Version 1.5.5, 2025; Jansen et al. [2008](https://www.tuexenia.de/publications/tuexenia/Tuexenia_2008_NS_028_0239-0253.pdf)) and the other opportunity is the European dataset of the [FloraVEG.EU database](https://floraveg.eu/download/) (Chytrý et al. [2024](https://doi.org/10.1111/avsc.12798)) which integrates the German indicator values (Tichý et al. [2023](https://doi.org/10.1111/jvs.13168)). You have to download the file "Ellenberg-type indicator values" (also on [Zenodo](https://doi.org/10.5281/zenodo.7427088)). Use the sheet "Tab-OriginalNamesValues" and filter "Source = Ellenberg" to get the German EIV. If you analyse data across several European countries, you should load the sheet "Tab-IVs-Tichy-et-al2022".
+You can work with the classical Ellenberg indicator values (EIV) like with functional plant traits. You have two possibilities to get the Ellenberg values (Ellenberg et al. [2001](https://search.worldcat.org/de/title/57545938)). One possibility is the [GermanSL database](https://germansl.infinitenature.org/) (Version 1.5.5, 2025; Jansen et al. [2008](https://www.tuexenia.de/publications/tuexenia/Tuexenia_2008_NS_028_0239-0253.pdf)) and the other opportunity is the European dataset of the [FloraVEG.EU database](https://floraveg.eu/download/) (Chytrý et al. [2024](https://doi.org/10.1111/avsc.12798)) which integrates the German indicator values (Tichý et al. [2023](https://doi.org/10.1111/jvs.13168)). You have to download the file "Ellenberg-type indicator values" (also on [Zenodo](https://doi.org/10.5281/zenodo.7427088)). Use the sheet "Tab-OriginalNamesValues" and filter "Source = Ellenberg" to get the German EIV. If you analyse data across several European countries, you should load the sheet "Tab-IVs-Tichy-et-al2022".
 
 ## Get Ellenberg values
 
 This time we do not harmonize the 'traits_ellenberg' table with `TNRS`, but join directly and then we rename the species by hand.
 
 ```{r results = FALSE}
+rm(list = setdiff(ls(), c("species_ammer", "traits_ammer", "data_gift")))
+
 library(readxl)
 traits_ellenberg <- readxl::read_excel(
   here("data", "raw", "tichy_etal-2023", "Indicator_values_Tichy_et_al 2022-11-29.xlsx"),
   sheet = "Tab-OriginalNamesValues",
   col_names = TRUE
   ) %>%
-  select(Taxon.Original, Taxon, Source, L, "T", M, R, N, S) %>%
-  rename_with(tolower)
+  select(Taxon.Original, Taxon, Source, L, "T", M, R, N, S) %>% # You have to write "T" because otherwise it would mean "TRUE".
+  rename_with(tolower) # writer all column names with lower case
+```
 
-# Join with 'taxon.original'
+Now, we have to join the Ellenberg table into our traits table:
+
+```{r results = FALSE}
+# 1. Integrate Ellenberg values into your traits table
 data <- traits_ammer %>%
-  left_join(
+  inner_join( # use only species names which exist in both datasets
     traits_ellenberg %>%
-      rename(accepted_name = taxon.original) %>%
-      filter(source == "Ellenberg") %>%
-      select(-taxon),
+      rename(accepted_name = taxon.original) %>% # First, the column 'taxon.original'
+      filter(source == "Ellenberg"), # source = Ellenberg = Germany
     by = "accepted_name"
     )
 
 # Join with 'taxon'
 data2 <- traits_ammer %>%
-  anti_join(
+  anti_join( # Exclude the species from the first try
     traits_ellenberg %>%
-      rename(accepted_name = taxon.original) %>% # Which have no counterpart in 'traits_ellenberg$taxon.original'
+      rename(accepted_name = taxon.original) %>% 
       filter(source == "Ellenberg"),
     by = "accepted_name"
     ) %>%
-  inner_join(
+  inner_join( # use only species names which exist in both datasets
     traits_ellenberg %>%
-      rename(accepted_name = taxon) %>%
-      filter(source == "Ellenberg") %>%
-      select(-taxon.original),
+      rename(accepted_name = taxon) %>% # Second try, the column 'taxon'
+      filter(source == "Ellenberg"),
     by = "accepted_name"
   )
+
+data3 <- data %>%
+  bind_rows(data2) # Combine both datasets
 ```
 
-## Check for duplicates and missing values
+## Check for duplicates
+
+First, we have to check for duplicates because two subspecies can be summarized to one species:
 
 ```{r results = FALSE}
-data2 %>%
-  filter(duplicated(accepted_name))
+data3 %>%
+  filter(duplicated(accepted_name)) # search for duplicates
 
-# Join with 'taxon' but account for duplicates
-data3 <- traits_ammer %>%
-  anti_join(
-    traits_ellenberg %>%
-      rename(accepted_name = taxon.original) %>% # Which have no counterpart in 'traits_ellenberg$taxon.original'
-      filter(source == "Ellenberg"),
-    by = "accepted_name"
-    ) %>%
-  inner_join(
-    traits_ellenberg %>%
-      rename(accepted_name = taxon) %>%
-      filter(
-        source == "Ellenberg" &
-          !(taxon.original == "Pimpinella major ssp. rubra") #  avoid duplicate
-        ) %>%
-      select(-taxon.original),
-    by = "accepted_name"
-  )
+data3 %>%
+  filter(accepted_name == "Pimpinella major") %>% # Filter specific species
+  select(accepted_name, taxon, taxon.original)
 
-missing_species <- traits_ammer %>%
-  select(accepted_name) %>%
-  anti_join(
-    traits_ellenberg %>%
-      rename(accepted_name = taxon.original) %>% # Which have no counterpart in 'traits_ellenberg$taxon.original'
-      filter(source == "Ellenberg"),
-    by = "accepted_name"
-    ) %>%
-  anti_join(
-    traits_ellenberg %>%
-      rename(accepted_name = taxon) %>% # Which have neither a counterpart in 'traits_ellenberg$taxon'
-      filter(source == "Ellenberg"),
-    by = "accepted_name"
-  )
+# Remove one subspecies
+data4 <- data3 %>%
+  filter(
+    taxon.original != "Pimpinella major ssp. rubra" |
+      is.na(taxon.original)
+    )
 ```
+
 
 ## Handle missing values
 
+We have to identify missing values:
+
+```{r missing-species-1, results = FALSE}
+missing_species <- traits_ammer %>%
+  anti_join(data4, by = "accepted_name")
+missing_species
+```
+
 From 'missing_species' you know the species which have no match in 'traits_ellenberg'. Therefore, you have to search this dataset by hand and rename the species names:
 
-```{r results = FALSE}
-data4 <- traits_ellenberg %>%
+```{r missing-species-2, results = FALSE}
+traits_ellenberg_2 <- traits_ellenberg %>%
   mutate(
     taxon.original = factor(taxon.original),
     taxon.original = fct_recode(
@@ -452,25 +478,28 @@ data4 <- traits_ellenberg %>%
 
 Now, we merge the datasets.
 
-```{r}
-data5 <- traits_ammer %>%
-  inner_join(
-    data4 %>% # Use data4 with renamed taxon names of column 'taxon.original'
+```{r missing-species-3, results = FALSE}
+data5 <- missing_species %>%
+  left_join(
+    traits_ellenberg_2 %>%
       filter(source == "Ellenberg") %>%
-      rename(accepted_name = taxon.original) %>%
-      select(-taxon),
+      rename(accepted_name = taxon.original),
     by = "accepted_name"
-    ) %>%
-  bind_rows(data3) # Join with matched species of column 'taxon'
+    )
 
-missing_completely <- traits_ammer %>%
-  anti_join(data5, by = "accepted_name")
+data6 <- data4 %>%
+  bind_rows(data5) %>%
+  select(-taxon, -taxon.original)
 
-data6 <- data5 %>%
-  bind_rows(missing_completely)
+data6 %>%
+  filter(duplicated(accepted_name)) # search duplicates
 
 traits_ammer <- data6
 ```
+
+**Task**
+
+> Add to the traits table of your project the Ellenberg indicator values
 
 <a href="#top">Back to top</a>
 
@@ -478,30 +507,24 @@ traits_ammer <- data6
 
 ```{r save-files}
 rm(list = setdiff(ls(), c("species_ammer", "traits_ammer")))
+
 write_csv(
   species_ammer, here("data", "processed", "data_processed_species_ammer_4.1.csv")
   )
+
 write_csv(
   traits_ammer, here("data", "processed", "data_processed_traits_ammer_4.1.csv")
   )
 ```
 
-<a href="#top">Back to top</a>
+**Tasks**
 
-# Tasks
+> Save the above files of the Ammer data for the next section
 
-* Select specific leaf area (4.1.3), height (1.6.3), and seed mass (3.2.3) as functional plant traits.
-* Note the categories, IDs, unit, and the version of the GIFT database for your material-and-methods section.
-* Get aggregated trait values from the GIFT database (later you merge it with your species matrix)
-
-* Resolve names with TNRS
-* Note the version of the database from `metadata$version` and the sources of the names with `metadata$citations` for the material-and-methods section
-* Note the range of 'Overall_score' for your submitted species names. It is written int thte `data_names` data frame. The overall scores is 1 if the algorithm is completely sure that the submitted and accepted name match. If it is lower than 1, the algorithm is less sure about the result.
-
-* Merge the overall traits table with your column of species names from the species matrix.
-
-# Session info
+> Save your species and traits table in the data/processed folder
 
 ```{r}
 sessionInfo()
 ```
+
+<a href="#top">Back to top</a>

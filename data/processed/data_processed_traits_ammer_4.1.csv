@@ -1,4 +1,4 @@
-accepted_name,accepted_name_url,accepted_family,growth_form_2,parasite_1,plant_height_mean,seed_mass_mean,dispersal_syndrome_1,pollination_syndrome_1,flowering_start,flower_colour,sla_mean,nitrogen_fix_1,source,l,t,m,r,n,s
+accepted_name,accepted_name_url,accepted_family,growth_form_2,trait_value_1.5.1,plant_height_mean,seed_mass_mean,trait_value_3.3.1,trait_value_3.6.1,trait_value_3.7.1,trait_value_3.21.1,sla_mean,trait_value_4.5.1,source,l,t,m,r,n,s
 Acer pseudoplatanus,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:781462-1,Sapindaceae,tree,independent,21.9333333333333,0.0946594776,anemochorous,biotic,NA,NA,166.8,no,Ellenberg,4,NA,6,NA,7,0
 Aegopodium podagraria,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:5849-2,Apiaceae,forb,independent,0.479,0.00188225,autochorous,biotic,Jun,NA,287.97,NA,Ellenberg,5,5,6,7,8,0
 Agrostis stolonifera,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:386353-1,Poaceae,NA,independent,0.605,6.16e-5,NA,abiotic,NA,NA,313.29,no,Ellenberg,8,NA,7,NA,5,0
@@ -30,7 +30,6 @@ Corydalis cava,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:672129
 Dactylis glomerata,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:397309-1,Poaceae,NA,independent,0.704666666666667,9.18702666666667e-4,NA,abiotic,NA,NA,247.66,NA,Ellenberg,7,NA,5,NA,6,0
 Daphne mezereum,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:831294-1,Thymelaeaceae,NA,independent,0.762,0.0672833335,zoochorous,biotic,Mar,NA,289.16,NA,Ellenberg,4,NA,5,7,5,0
 Deschampsia cespitosa,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:397953-1,Poaceae,NA,independent,0.515666666666667,0.0055817076,anemochorous,abiotic,NA,NA,202.045,no,Ellenberg,6,NA,7,NA,3,0
-Dryopteris carthusiana,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:17390210-1,Dryopteridaceae,forb,independent,0.375,NA,anemochorous,abiotic,Jul,NA,251,NA,Ellenberg,5,NA,NA,4,3,0
 Equisetum arvense,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:300073-2,Equisetaceae,forb,independent,0.2975,NA,NA,abiotic,Mar,NA,103.54,NA,Ellenberg,6,NA,NA,NA,3,0
 Equisetum hyemale,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:92939-2,Equisetaceae,forb,independent,0.95,NA,NA,NA,NA,NA,28.8,NA,Ellenberg,5,5,7,7,6,0
 Eupatorium cannabinum,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:205581-1,Asteraceae,forb,independent,1,3.048335e-4,anemochorous,biotic,Jul,NA,292.26,NA,Ellenberg,7,5,7,7,8,0
@@ -38,7 +37,6 @@ Fagus sylvatica,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:30583
 Filipendula ulmaria,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:724943-1,Rosaceae,forb,independent,0.896,7.55e-4,NA,biotic,Jun,NA,243,NA,Ellenberg,7,5,8,NA,5,0
 Fraxinus excelsior,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:609009-1,Oleaceae,tree,independent,28.6,0.064259159,anemochorous,abiotic,Apr,NA,136.51,NA,Ellenberg,4,5,NA,7,7,0
 Galium aparine,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:30007294-2,Rubiaceae,NA,independent,0.559333333333333,0.006411909,zoochorous,biotic,NA,white,346.79,no,Ellenberg,7,6,NA,6,8,0
-Galium mollugo,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:750253-1,Rubiaceae,NA,independent,0.7,7.055e-4,unspecialized,biotic,NA,NA,268.76,no,Ellenberg,7,6,4,7,NA,0
 Geranium phaeum,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:373470-1,Geraniaceae,herb,independent,0.392,0.00388,NA,biotic,May,NA,343.7,NA,Ellenberg,6,NA,5,6,5,0
 Geranium robertianum,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:109269-2,Geraniaceae,NA,independent,0.2585,0.0014619545,unspecialized,biotic,May,NA,326.83,no,Ellenberg,5,NA,NA,NA,7,0
 Geum urbanum,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:725399-1,Rosaceae,forb,independent,0.3835,0.0019582,zoochorous,biotic,May,NA,384.64,NA,Ellenberg,4,5,5,NA,7,0
@@ -54,7 +52,6 @@ Impatiens noli-tangere,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:name
 Knautia dipsacifolia,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:319367-1,Caprifoliaceae,forb,independent,0.4,0.00487,zoochorous,biotic,Jun,NA,220.7,NA,Ellenberg,5,4,6,6,6,0
 Lamium maculatum,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:448886-1,Lamiaceae,forb,independent,0.375,0.00167,autochorous,biotic,Apr,NA,316.2,NA,Ellenberg,5,NA,6,7,8,0
 Lathyrus pratensis,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:501954-1,Fabaceae,forb,independent,0.567,0.01205385,autochorous,biotic,Jun,NA,254.16,NA,Ellenberg,7,5,6,7,6,0
-Leucanthemum vulgare,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:30296198-2,Asteraceae,NA,independent,0.50975,8.119666e-4,NA,biotic,May,NA,192.73,no,Ellenberg,7,NA,4,NA,3,0
 Ligustrum vulgare,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:610130-1,Oleaceae,shrub,independent,3.73333333333333,0.025908389,zoochorous,biotic,Jun,white,111.5,no,Ellenberg,7,6,4,8,3,0
 Lonicera xylosteum,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:149194-1,Caprifoliaceae,shrub,independent,1.873,0.0576826666666667,zoochorous,biotic,May,NA,241.09,NA,Ellenberg,5,6,5,7,6,0
 Lysimachia vulgaris,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:701414-1,Primulaceae,forb,independent,0.898,2.36e-4,autochorous,biotic,Jun,NA,263.16,NA,Ellenberg,6,NA,8,NA,NA,0
@@ -62,7 +59,6 @@ Melica nutans,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:408086-
 Mentha aquatica,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:450192-1,Lamiaceae,NA,independent,0.383,1.16583333333333e-4,hydrochorous,biotic,Jul,NA,299.64,NA,Ellenberg,7,5,9,7,5,0
 Molinia arundinacea,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:408807-1,Poaceae,graminoid,independent,NA,NA,NA,NA,Jul,NA,NA,NA,Ellenberg,7,6,NA,NA,3,0
 Molinia caerulea,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:98382-3,Poaceae,graminoid,independent,0.788,7.42666666666667e-4,anemochorous,abiotic,Jul,NA,196.37,NA,Ellenberg,7,NA,7,NA,2,0
-Myosotis scorpioides,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:119235-1,Boraginaceae,NA,independent,0.369,8.75666666666667e-4,hydrochorous,biotic,NA,NA,430.63,no,Ellenberg,7,NA,8,NA,5,0
 Phalaris arundinacea,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:415571-1,Poaceae,NA,independent,1.41666666666667,7.14878666666667e-4,NA,abiotic,Jun,NA,244.18,no,Ellenberg,7,5,8,7,7,0
 Pleurospermum austriacum,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:847217-1,Apiaceae,herb,independent,0.825,0.00421,hydrochorous,biotic,NA,NA,NA,NA,Ellenberg,5,4,6,8,4,0
 Poa compressa,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:204172-2,Poaceae,NA,independent,0.415,2.01866666666667e-4,unspecialized,abiotic,Jun,NA,194.2,NA,Ellenberg,9,NA,3,9,3,0
@@ -73,7 +69,6 @@ Prunella vulgaris,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:455
 Pulmonaria officinalis,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:120402-1,Boraginaceae,forb,independent,0.15,0.00364,zoochorous,biotic,NA,NA,296.95,NA,Ellenberg,5,6,5,8,6,0
 Quercus robur,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:304293-2,Fagaceae,tree,independent,30,3.432486625,NA,abiotic,Apr,NA,148.43,no,Ellenberg,7,6,NA,NA,NA,0
 Ranunculus repens,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:713678-1,Ranunculaceae,NA,independent,0.426,0.00586225,hydrochorous,biotic,May,yellow,247.25,no,Ellenberg,6,NA,7,NA,7,1
-Rosa canina,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:731955-1,Rosaceae,NA,independent,1.75,0.139688968333333,zoochorous,biotic,NA,NA,122.58,no,Ellenberg,8,5,4,NA,NA,0
 Rubus caesius,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:735608-1,Rosaceae,NA,independent,0.9875,0.003694625,zoochorous,biotic,NA,NA,193,NA,Ellenberg,6,5,NA,8,7,0
 Rubus idaeus,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:298089-2,Rosaceae,subshrub,independent,1.42142857142857,0.0167451632857143,zoochorous,biotic,May,NA,246.95,NA,Ellenberg,7,NA,NA,NA,6,0
 Salix alba,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:776974-1,Salicaceae,tree,independent,19.04175,1.2e-4,NA,biotic,Apr,NA,118.94,no,Ellenberg,5,6,8,8,7,0
@@ -81,14 +76,11 @@ Salvia glutinosa,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:4562
 Scirpus sylvaticus,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:314368-1,Cyperaceae,graminoid,independent,0.775,1.255835e-4,NA,abiotic,May,NA,223.85,NA,Ellenberg,6,5,8,4,4,0
 Scrophularia nodosa,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:30088899-2,Scrophulariaceae,forb,independent,0.583,9.9e-5,anemochorous,biotic,Jun,NA,260,NA,Ellenberg,4,5,6,6,7,0
 Scutellaria galericulata,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:458280-1,Lamiaceae,forb,independent,0.242,7.065e-4,hydrochorous,biotic,Jun,NA,395.07,NA,Ellenberg,7,6,9,7,6,0
-Senecio ovatus,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:246691-1,Asteraceae,herb,independent,NA,0.00117,NA,biotic,Jul,NA,NA,NA,Ellenberg,7,NA,5,NA,8,0
 Solidago gigantea,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:249575-1,Asteraceae,forb,independent,1.9375,2.8783325e-4,anemochorous,biotic,Jul,NA,202.5,NA,Ellenberg,8,6,6,NA,7,0
 Stachys sylvatica,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:460020-1,Lamiaceae,forb,independent,0.646,0.0011995,NA,biotic,Jun,NA,418.02,no,Ellenberg,4,NA,7,7,7,0
 Thalictrum aquilegiifolium,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:714234-1,Ranunculaceae,forb,independent,0.675,0.002,anemochorous,NA,May,NA,342.7,NA,Ellenberg,5,NA,8,7,7,0
 Urtica dioica,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:260630-2,Urticaceae,NA,independent,0.987333333333333,9.2e-5,NA,abiotic,NA,NA,284.8,no,Ellenberg,NA,NA,6,7,9,0
 Valeriana dioica,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:30028947-2,Caprifoliaceae,forb,independent,0.18,6.761665e-4,anemochorous,biotic,May,NA,303,NA,Ellenberg,7,NA,8,5,2,0
-Valeriana excelsa subsp. excelsa,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:77225625-1,Caprifoliaceae,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Ellenberg,7,6,8,6,6,0
-Valeriana officinalis,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:860012-1,Caprifoliaceae,forb,independent,0.525,9.0625e-4,anemochorous,biotic,NA,NA,411.975,NA,Ellenberg,7,6,8,7,5,0
 Viburnum lantana,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:326265-2,Viburnaceae,NA,independent,3.225,0.0407194375,zoochorous,biotic,May,NA,155.65,NA,Ellenberg,7,5,4,8,4,0
 Vicia cracca,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:30263827-2,Fabaceae,NA,independent,0.6715,0.57659609375,autochorous,biotic,Jun,NA,254.33,yes,Ellenberg,7,5,6,NA,NA,1
 Vinca minor,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:82701-1,Apocynaceae,forb,independent,0.339,0.00613,unspecialized,biotic,Apr,NA,247,no,Ellenberg,4,6,5,7,6,0
@@ -112,4 +104,12 @@ Salix eleagnos,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:777510
 Symphytum officinale,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:120815-1,Boraginaceae,NA,independent,0.5835,0.0097245,zoochorous,biotic,May,NA,250.23,NA,Ellenberg,7,6,7,NA,8,0
 Ulmus glabra,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:302887-2,Ulmaceae,tree,independent,35,0.011879125,anemochorous,abiotic,Mar,NA,219.53,NA,Ellenberg,4,5,6,7,7,0
 Carex,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:330029-2,Cyperaceae,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Dryopteris carthusiana,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:17390210-1,Dryopteridaceae,forb,independent,0.375,NA,anemochorous,abiotic,Jul,NA,251,NA,Ellenberg,5,NA,NA,4,3,0
+Galium mollugo,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:750253-1,Rubiaceae,NA,independent,0.7,7.055e-4,unspecialized,biotic,NA,NA,268.76,no,Ellenberg,7,6,4,7,NA,0
+Leucanthemum vulgare,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:30296198-2,Asteraceae,NA,independent,0.50975,8.119666e-4,NA,biotic,May,NA,192.73,no,Ellenberg,7,NA,4,NA,3,0
+Myosotis scorpioides,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:119235-1,Boraginaceae,NA,independent,0.369,8.75666666666667e-4,hydrochorous,biotic,NA,NA,430.63,no,Ellenberg,7,NA,8,NA,5,0
 Patzkea paniculata subsp. paniculata,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:77173334-1,Poaceae,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+Rosa canina,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:731955-1,Rosaceae,NA,independent,1.75,0.139688968333333,zoochorous,biotic,NA,NA,122.58,no,Ellenberg,8,5,4,NA,NA,0
+Senecio ovatus,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:246691-1,Asteraceae,herb,independent,NA,0.00117,NA,biotic,Jul,NA,NA,NA,Ellenberg,7,NA,5,NA,8,0
+Valeriana excelsa subsp. excelsa,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:77225625-1,Caprifoliaceae,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Ellenberg,7,6,8,6,6,0
+Valeriana officinalis,https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:860012-1,Caprifoliaceae,forb,independent,0.525,9.0625e-4,anemochorous,biotic,NA,NA,411.975,NA,Ellenberg,7,6,8,7,5,0

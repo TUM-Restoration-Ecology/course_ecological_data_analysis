@@ -32,16 +32,24 @@ knitr::opts_chunk$set(
 
 [christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
 
-[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://www.researchgate.net/profile/Christina-Hartung)
+[![ResearchGate](https://img.shields.io/badge/ResearchGate-00CCBB?style=for-the-badge&logo=ResearchGate&logoColor=white)](https://www.researchgate.net/profile/Christina-Hartung).
 
 ::: {.content-hidden when-format="html"}
 
 # Tasks
 
 * Subsitute NA values of Ammer dataset
-* Write learning objectives
 
 :::
+
+# Learning outcomes
+
+The students are able to...
+
+* Explain (2) different data types: integer, double, factor, logical, character, date
+* Identify (3) not avialbale (NA) values in the traits table
+* Describe (3) different ways to handle missing traits: remove, average, measure yourself, values from cloesly related species
+
 
 # Preparation
 
@@ -84,13 +92,15 @@ rm(list = setdiff(ls(), c("species_ammer", "traits_ammer", "traits_invented")))
 
 Reload the metadata of the GIFT traits:
 
-```{r}
+```{r traits-metadata}
 trait_meta <- GIFT::GIFT_traits_meta()
 ```
 
 We have qualitative (binary, nominal), semi-quantitative (ordinal), and quantiative data (discrete, continuous, proportional, circular traits).
 
-* Reload the traits table and define the column type with the following experessions:
+**Task**
+
+> Reload the traits table and define the column type with the following experessions:
 
 > `col_logical()` = binary: yes/no data or presence-absence data<br>
 `col_integer()` = whole numbers: counting data or rounded data<br>
@@ -104,13 +114,11 @@ data_traits <- read_csv(
   here("data", "processed", "data_processed_traits_ammer_4.1.csv"),
   col_names = TRUE, col_types = cols(
     .default = "?",
-    name_submitted = col_character()#,
+    growth_form_2 = col_factor()
     # go on here
     )
   )
 ```
-
-Fuzzy coding: Different individaulas of the same species belong to different levels of a factor (some individuals are "brown" and some are "black").
 
 <a href="#top">Back to top</a>
 
@@ -118,7 +126,7 @@ Fuzzy coding: Different individaulas of the same species belong to different lev
 
 With the package `naniar` (Cook [2023](https://doi.org/10.18637/jss.v105.i07)) you can get an overview of missing data ([Vignette](https://naniar.njtierney.com/)):
 
-```{r check-completeness, results = FALSE, fig.show = 'hide', message = FALSE}
+```{r check-completeness, message = FALSE}
 traits_ammer %>%
   select(starts_with("trait_value")) %>%
   naniar::miss_var_summary(order = TRUE)
@@ -130,13 +138,15 @@ traits_ammer %>%
   filter(if_any(-accepted_name, is.na))
 ```
 
-* Note the number of missing traits in your data and calculate the ratio of missing traits.
+**Task**
+
+> Note the number of missing traits in your data for your materials and methods section. Furthermore, calculate the ratio of missing traits.
 
 <a href="#top">Back to top</a>
 
 # Handle missing traits
 
-Identify missing traits
+Identify missing traits:
 
 ```{r identify-missing-traits}
 traits_ammer %>%
@@ -146,13 +156,10 @@ traits_ammer %>%
 
 What to do with missing values?
 
-Possibility 1: Remove the row.
-
-Possibility 2: Use the sample average
-
-Possibility 3: Measure the value yourself in the field
-
-Possibility 4: Use trait values from phylogenetically close species. (Recommended)
+* Possibility 1: Remove the row.
+* Possibility 2: Use the sample average
+* Possibility 3: Measure the value yourself in the field
+* Possibility 4: Use trait values from phylogenetically close species. (Recommended)
 
 Get again an overview of selected species:
 
@@ -165,42 +172,45 @@ trait_ids <- c(
 trait_meta %>%
   filter(Lvl3 %in% trait_ids) # Get an overview of selected traits
 ```
+
 You can check for synonyms and closely related species which might have a trait value:
 
-```{r lookup-synonyms, results = FALSE, message = FALSE}
-GIFT::GIFT_species_lookup(genus = "Aconitum", epithet = "lycoctonum")
-GIFT::GIFT_species_lookup(genus = "Molinia", epithet = "arundinacea")
+```{r lookup-synonyms, message = FALSE}
+GIFT::GIFT_species_lookup(genus = "Aconitum", epithet = "lycoctonum") %>%
+  tibble()
 ```
 
-* Check the list for species occuring in Germany:
+**Task**
+
+> Check the list for species occuring in Germany:
 
 e.g. [FloraWeb](https://www.floraweb.de/php/systematik1.php?suchnr=61135) (BfN) or  [FloraVeg.EU](https://floraveg.eu/taxon/) (Chytrý et al. [2020](https://doi.org/10.1111/avsc.12519))
 
-* Search for the trait values of closely related species:
+**Task**
 
-```{r search-species, results = FALSE, message = FALSE}
-data_gift <- GIFT::GIFT_traits(
-  trait_IDs = trait_ids,
-  agreement = 0.66, bias_ref = FALSE, bias_deriv = FALSE
-  )
-(data <- data_gift %>%
-  filter(str_detect(work_species, "Aconitum")))
+> Search for the trait values of closely related species and use these values, if sensible.
+
+
+```{r search-species, message = FALSE}
+data_gift <- data.table::fread(
+  here("data", "processed", "data_processed_gift_total.csv")
+) # read in the trait values from the GIFT database
+data <- data_gift %>%
+  filter(str_detect(work_species, "Aconitum")) %>%
+  tibble()
+data
 ```
 
 <a href="#top">Back to top</a>
 
 # Save
 
-```{r save}
-write_csv(
-  traits_invented, here("data", "processed", "data_processed_traits_invented_4.2.csv")
-)
-```
+**Task**
 
-<a href="#top">Back to top</a>
-
-# Session info
+> Save your updated traits table
 
 ```{r}
 sessionInfo()
 ```
+
+<a href="#top">Back to top</a>
