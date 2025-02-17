@@ -45,9 +45,10 @@ This tutorial uses Bello et al. ([2021](https://doi.org/10.1017/9781108628426))
 
 # Learning outcomes
 
-* Understanding how community weighted means (CWM) are calculated
-* Ability to calculate CWMs with the example of the functional trait specific leaf area (SLA)
-* Knowledge that one can do the same with Ellenberg values
+The students are able to...
+
+* Describe (2) how community weighted means (CWM) are calculated
+* Show (3) the CWM distribution of two functional plant traits and two Ellenberg indicator values of a dataset 
 
 # Preparation
 
@@ -153,7 +154,7 @@ To compute CWM we first need the relative abundance of the species in each commu
 
 ```{r}
 totalabb <- species_invented %>%
-  summarize(across(where(is.numeric), ~ sum(.x, na.rm = TRUE)))
+  summarize(across(where(is.numeric), ~ sum(.x, na.rm = TRUE))) # across selects several columns. In this case all numeric columns
 totalabb
 ```
 
@@ -425,6 +426,8 @@ write_csv(
 
 ## Ammer data
 
+This section is optional, but you should read it and do the task at the end.
+
 ### Preparation
 
 ```{r}
@@ -433,18 +436,29 @@ data_traits <- traits_ammer %>%
   select(accepted_name, sla_mean, growth_form_2) %>%
   filter(!is.na(sla_mean) & !(growth_form_2 %in% c("shrub", "tree"))) %>% # remove NAs of SLA and shrubs and trees
   mutate(sla_log = log(sla_mean)) %>%
-  arrange(accepted_name) %>%
-  select(accepted_name, sla_log)
+  arrange(accepted_name) %>% # sort dataset by the column 'accepted_name'
+  select(accepted_name, sla_log, growth_form_2)
+```
+
+Remove shrubs by hand which had a NA in the 'growth_from_2' column:
+
+```{r}
+data_traits2 <- data_traits %>%
+  filter(
+    !(accepted_name %in% c("Alnus incana", "Rosa canina", "Viburnum lantana"))
+    ) %>%
+  select(-growth_form_2)
 
 data_species <- species_ammer %>%
-  semi_join(data_traits, by = "accepted_name") %>%
+  semi_join(data_traits2, by = "accepted_name") %>% # use only species which are no shrubs, by filter only species which are present in the data_traits table
   arrange(accepted_name) %>%
   pivot_longer(-accepted_name, names_to = "plot_id", values_to = "value") %>%
   pivot_wider(names_from = "accepted_name", values_from = "value") %>%
-  column_to_rownames(var = "plot_id")
+  column_to_rownames(var = "plot_id") # this is necessary for the FD package
 
-data_traits <- data_traits %>%
-  column_to_rownames("accepted_name")
+data_traits <- data_traits2 %>%
+  column_to_rownames("accepted_name") # this is necessary for the FD package
+  
 ```
 
 ### Calculation
@@ -452,7 +466,7 @@ data_traits <- data_traits %>%
 ```{r}
 data_abundance <- FD::dbFD(
   data_traits, data_species,
-  calc.CWM = TRUE, w.abun = TRUE, # abundance data
+  calc.CWM = TRUE, w.abun = TRUE, # abundance data = TRUE
   calc.FRic = FALSE, calc.FDiv = FALSE, corr = "none"
 )
 data_presence <- FD::dbFD(
@@ -533,18 +547,18 @@ write_csv(
   )
 ```
 
-# Tasks
+# **Task**
 
-* Calculate CWMs of SLA
-  * Check that species names of the traits table are rownames
-  * Check that only the SLA column remains in the traits table
-  * Check that no NAs are in your SLA column
-    * If you have NAs, you have to reduce your species table as well
-  * Check that the plot ID of the species table are rownmames and species names are column names
+> Calculate CWMs of two functional plant traits and two Ellenberg indicator values for your own dataset and present a frequency or density figure like in the examples in your appendix.
+
+* Remove all trees and shrub species which are in the herb layer
+* Check that species names of the traits table are rownames
+* Check that only one trait column remains in the traits table
+* Check that no NAs are in your trait column
+* If you have NAs, you have to reduce your species table as well
+* Check that the plot ID of the species table are rownmames and species names are column names
 
 <a href="#top">Back to top</a>
-
-# Session info
 
 ```{r}
 sessionInfo()

@@ -50,7 +50,7 @@ We will meet on Monday (**03.03.2025**) at **9 am** in the forestry building of 
 
 [Location](https://geoportal.bayern.de/bayernatlas/index.html?zoom=15&lang=de&topic=umwe&bgLayer=tk&E=701239.38&N=5364338.42&layers=e528a2a8-44e7-46e9-9069-1a8295b113b5,86e82390-1739-4d21-bf78-e8b189c1a35d,2dce0ec9-927f-450c-9d2c-5a92da91ab62&layers_visibility=false,false,false&catalogNodes=110)
 
-It is possible to evaluate your own data sets directly during the course. If you do not have your own data sets, we will provide you with sample data sets. 
+It is possible to evaluate your own datasets directly during the course. If you do not have your own data sets, we will provide you with sample data sets. If you need a dataset, please inform us until the **21.02.2025**. If you have a dataset format the dataset according to the instruction file **before the course starts** (create a species and environment matrix). Please ask us, if the dataset you want to use is suitable.
 
 Computers are available for the exercises. You can also bring your own laptop. Please install R and RStudio before the course (see tutorial in the appendix). In the building you have internet access via eduroam. Those who want to use the PCs in the building should also read the tutorial. 
 
@@ -349,8 +349,6 @@ species_ammer <- read_csv(
 Go through this [tutorial](https://medium.com/@vanessa.trujillo/an-introduction-to-github-and-github-desktop-74846a76e124) of Vanessa Trujillo to be prepared for track-and-change mode in R.
 
 <a href="#top">Back to top</a>
-
-# Session info
 
 ```{r}
 sessionInfo()

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Markus Bauer 1 &amp; Christina Hartung 2  ">
-<meta name="dcterms.date" content="2025-02-13">
+<meta name="dcterms.date" content="2025-02-17">
 
 <title>Analysis of Ecological Data   Select and prepare traits</title>
 <style>
@@ -87,10 +87,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#load-libraries" id="toc-load-libraries" class="nav-link" data-scroll-target="#load-libraries"><span class="header-section-number">2.1</span> Load libraries</a></li>
   <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data"><span class="header-section-number">2.2</span> Load data</a></li>
   </ul></li>
-  <li><a href="#different-trait-types" id="toc-different-trait-types" class="nav-link" data-scroll-target="#different-trait-types"><span class="header-section-number">3</span> Different trait types</a></li>
-  <li><a href="#check-completeness" id="toc-check-completeness" class="nav-link" data-scroll-target="#check-completeness"><span class="header-section-number">4</span> Check completeness</a></li>
-  <li><a href="#handle-missing-traits" id="toc-handle-missing-traits" class="nav-link" data-scroll-target="#handle-missing-traits"><span class="header-section-number">5</span> Handle missing traits</a></li>
-  <li><a href="#save" id="toc-save" class="nav-link" data-scroll-target="#save"><span class="header-section-number">6</span> Save</a></li>
+  <li><a href="#data-overview" id="toc-data-overview" class="nav-link" data-scroll-target="#data-overview"><span class="header-section-number">3</span> Data overview</a></li>
+  <li><a href="#different-trait-types" id="toc-different-trait-types" class="nav-link" data-scroll-target="#different-trait-types"><span class="header-section-number">4</span> Different trait types</a></li>
+  <li><a href="#check-completeness" id="toc-check-completeness" class="nav-link" data-scroll-target="#check-completeness"><span class="header-section-number">5</span> Check completeness</a></li>
+  <li><a href="#handle-missing-traits" id="toc-handle-missing-traits" class="nav-link" data-scroll-target="#handle-missing-traits"><span class="header-section-number">6</span> Handle missing traits</a></li>
+  <li><a href="#save" id="toc-save" class="nav-link" data-scroll-target="#save"><span class="header-section-number">7</span> Save</a></li>
   </ul>
 </nav>
 </div>
@@ -115,7 +116,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-02-13</p>
+      <p class="date">2025-02-17</p>
     </div>
   </div>
   
@@ -138,6 +139,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1 data-number="1"><span class="header-section-number">1</span> Learning outcomes</h1>
 <p>The students are able to…</p>
 <ul>
+<li>Apply (3) the skimr::skim function to get an overview of their data</li>
 <li>Explain (2) different data types: integer, double, factor, logical, character, date</li>
 <li>Identify (3) not avialbale (NA) values in the traits table</li>
 <li>Describe (3) different ways to handle missing traits: remove, average, measure yourself, values from cloesly related species</li>
@@ -177,14 +179,355 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">setdiff</span>(<span class="fu">ls</span>(), <span class="fu">c</span>(<span class="st">"species_ammer"</span>, <span class="st">"traits_ammer"</span>, <span class="st">"traits_invented"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+</section>
+<section id="data-overview" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Data overview</h1>
+<p>Get an overview of your data with the <code>skimr::skim</code> function (<a href="https://docs.ropensci.org/skimr/index.html">Vignette</a>; Waringet al.&nbsp;<a href="https://CRAN.R-project.org/package=skimr">2022</a>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(traits_ammer) <span class="co"># You have to install the skimr package before</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">traits_ammer</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">114</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 12%">
+<col style="width: 18%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 7%">
+<col style="width: 11%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">accepted_name</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">114</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">accepted_name_url</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">114</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">accepted_family</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">growth_form_2</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">0.64</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">trait_value_1.5.1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.96</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">trait_value_3.3.1</td>
+<td style="text-align: right;">46</td>
+<td style="text-align: right;">0.60</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">trait_value_3.6.1</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">trait_value_3.7.1</td>
+<td style="text-align: right;">42</td>
+<td style="text-align: right;">0.63</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">trait_value_3.21.1</td>
+<td style="text-align: right;">109</td>
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">trait_value_4.5.1</td>
+<td style="text-align: right;">82</td>
+<td style="text-align: right;">0.28</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">source</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 10%">
+<col style="width: 14%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">plant_height_mean</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.94</td>
+<td style="text-align: right;">3.11</td>
+<td style="text-align: right;">7.85</td>
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">0.38</td>
+<td style="text-align: right;">0.58</td>
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">45.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">seed_mass_mean</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.91</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">3.43</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sla_mean</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">264.68</td>
+<td style="text-align: right;">101.51</td>
+<td style="text-align: right;">28.80</td>
+<td style="text-align: right;">203.16</td>
+<td style="text-align: right;">252.58</td>
+<td style="text-align: right;">305.12</td>
+<td style="text-align: right;">633.50</td>
+<td style="text-align: left;">▂▇▅▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">l</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0.97</td>
+<td style="text-align: right;">5.89</td>
+<td style="text-align: right;">1.46</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: left;">▂▂▆▇▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">t</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">0.66</td>
+<td style="text-align: right;">5.21</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: left;">▁▂▇▆▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">m</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">0.87</td>
+<td style="text-align: right;">6.24</td>
+<td style="text-align: right;">1.64</td>
+<td style="text-align: right;">3.00</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">8.00</td>
+<td style="text-align: right;">10.00</td>
+<td style="text-align: left;">▃▅▇▅▂</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">r</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">0.69</td>
+<td style="text-align: right;">6.97</td>
+<td style="text-align: right;">1.14</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">8.00</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: left;">▁▁▂▇▅</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">n</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.89</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">1.82</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: left;">▅▂▇▇▃</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">s</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.98</td>
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Task</strong></p>
+<blockquote class="blockquote">
+<p>Note how many species are in your dataset in your material-and-methods section</p>
+</blockquote>
 <p><a href="#top">Back to top</a></p>
 </section>
-</section>
-<section id="different-trait-types" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Different trait types</h1>
+<section id="different-trait-types" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Different trait types</h1>
 <p>Reload the metadata of the GIFT traits:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>trait_meta <span class="ot">&lt;-</span> GIFT<span class="sc">::</span><span class="fu">GIFT_traits_meta</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>trait_meta <span class="ot">&lt;-</span> GIFT<span class="sc">::</span><span class="fu">GIFT_traits_meta</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>You are asking for the latest stable version of GIFT which is 3.2.</code></pre>
 </div>
@@ -198,24 +541,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><code>col_logical()</code> = binary: yes/no data or presence-absence data<br> <code>col_integer()</code> = whole numbers: counting data or rounded data<br> <code>col_double()</code> = continous numbers: measured values<br> <code>col_factor()</code> or specify further “col_factor(levels, ordered)”: ordinal traits are hierarchically and nominal traits not<br> <code>col_date()</code> or specify further “col_date(”%Y-%m-%d”)“: phenological traits are such circular traits<br> <code>col_character()</code> = text</p>
 </blockquote>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data_traits <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_traits_ammer_4.1.csv"</span>),</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="cn">TRUE</span>, <span class="at">col_types =</span> <span class="fu">cols</span>(</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> <span class="st">"?"</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">growth_form_2 =</span> <span class="fu">col_factor</span>()</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># go on here</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data_traits <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_traits_ammer_4.1.csv"</span>),</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="cn">TRUE</span>, <span class="at">col_types =</span> <span class="fu">cols</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> <span class="st">"?"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">growth_form_2 =</span> <span class="fu">col_factor</span>()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># go on here</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><a href="#top">Back to top</a></p>
 </section>
-<section id="check-completeness" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Check completeness</h1>
+<section id="check-completeness" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Check completeness</h1>
 <p>With the package <code>naniar</code> (Cook <a href="https://doi.org/10.18637/jss.v105.i07">2023</a>) you can get an overview of missing data (<a href="https://naniar.njtierney.com/">Vignette</a>):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"trait_value"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  naniar<span class="sc">::</span><span class="fu">miss_var_summary</span>(<span class="at">order =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"trait_value"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  naniar<span class="sc">::</span><span class="fu">miss_var_summary</span>(<span class="at">order =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
   variable           n_miss pct_miss
@@ -227,9 +570,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 5 trait_value_3.6.1      12    10.5 
 6 trait_value_1.5.1       5     4.39</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="sc">%&gt;%</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"trait_value"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  naniar<span class="sc">::</span><span class="fu">vis_miss</span>(<span class="at">cluster =</span> <span class="cn">FALSE</span>, <span class="at">sort_miss =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"trait_value"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  naniar<span class="sc">::</span><span class="fu">vis_miss</span>(<span class="at">cluster =</span> <span class="cn">FALSE</span>, <span class="at">sort_miss =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -237,9 +580,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(accepted_name, <span class="fu">starts_with</span>(<span class="st">"trait_value"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">if_any</span>(<span class="sc">-</span>accepted_name, is.na))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(accepted_name, <span class="fu">starts_with</span>(<span class="st">"trait_value"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">if_any</span>(<span class="sc">-</span>accepted_name, is.na))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 112 × 7
    accepted_name           trait_value_1.5.1 trait_value_3.3.1 trait_value_3.6.1
@@ -265,13 +608,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </blockquote>
 <p><a href="#top">Back to top</a></p>
 </section>
-<section id="handle-missing-traits" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Handle missing traits</h1>
+<section id="handle-missing-traits" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Handle missing traits</h1>
 <p>Identify missing traits:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="sc">%&gt;%</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(accepted_name, plant_height_mean) <span class="sc">%&gt;%</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(plant_height_mean))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(accepted_name, plant_height_mean) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(plant_height_mean))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 7 × 2
   accepted_name                        plant_height_mean
@@ -294,18 +637,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>Get again an overview of selected species:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>trait_ids <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"1.2.2"</span>, <span class="st">"1.5.1"</span>, <span class="st">"1.6.3"</span>, <span class="st">"3.2.3"</span>, <span class="st">"3.3.1"</span>, <span class="st">"3.6.1"</span>, <span class="st">"3.7.1"</span>, <span class="st">"3.21.1"</span>,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"4.1.3"</span>, <span class="st">"4.5.1"</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>trait_meta <span class="sc">%&gt;%</span></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Lvl3 <span class="sc">%in%</span> trait_ids) <span class="co"># Get an overview of selected traits</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>trait_ids <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"1.2.2"</span>, <span class="st">"1.5.1"</span>, <span class="st">"1.6.3"</span>, <span class="st">"3.2.3"</span>, <span class="st">"3.3.1"</span>, <span class="st">"3.6.1"</span>, <span class="st">"3.7.1"</span>, <span class="st">"3.21.1"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"4.1.3"</span>, <span class="st">"4.5.1"</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>trait_meta <span class="sc">%&gt;%</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Lvl3 <span class="sc">%in%</span> trait_ids) <span class="co"># Get an overview of selected traits</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>You can check for synonyms and closely related species which might have a trait value:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>GIFT<span class="sc">::</span><span class="fu">GIFT_species_lookup</span>(<span class="at">genus =</span> <span class="st">"Aconitum"</span>, <span class="at">epithet =</span> <span class="st">"lycoctonum"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>GIFT<span class="sc">::</span><span class="fu">GIFT_species_lookup</span>(<span class="at">genus =</span> <span class="st">"Aconitum"</span>, <span class="at">epithet =</span> <span class="st">"lycoctonum"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 22 × 19
    name_ID genus    species_epithet subtaxon         author matched epithetscore
@@ -337,13 +680,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Search for the trait values of closely related species and use these values, if sensible.</p>
 </blockquote>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>data_gift <span class="ot">&lt;-</span> data.table<span class="sc">::</span><span class="fu">fread</span>(</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_gift_total.csv"</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>) <span class="co"># read in the trait values from the GIFT database</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data_gift <span class="sc">%&gt;%</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(work_species, <span class="st">"Aconitum"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>()</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>data_gift <span class="ot">&lt;-</span> data.table<span class="sc">::</span><span class="fu">fread</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_gift_total.csv"</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>) <span class="co"># read in the trait values from the GIFT database</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data_gift <span class="sc">%&gt;%</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">str_detect</span>(work_species, <span class="st">"Aconitum"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>()</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 171 × 43
    work_ID work_species          work_author trait_value_1.2.2 trait_value_1.5.1
@@ -369,14 +712,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p><a href="#top">Back to top</a></p>
 </section>
-<section id="save" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Save</h1>
+<section id="save" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Save</h1>
 <p><strong>Task</strong></p>
 <blockquote class="blockquote">
 <p>Save your updated traits table</p>
 </blockquote>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.4.2 (2024-10-31 ucrt)
 Platform: x86_64-w64-mingw32/x64
@@ -408,28 +751,29 @@ loaded via a namespace (and not attached):
 [10] sf_1.0-19               magrittr_2.0.3          compiler_4.4.2         
 [13] rlang_1.1.5             tools_4.4.2             utf8_1.2.4             
 [16] igraph_2.1.4            yaml_2.3.10             data.table_1.16.4      
-[19] knitr_1.49              phangorn_2.12.1         clusterGeneration_1.3.8
-[22] labeling_0.4.3          htmlwidgets_1.6.4       curl_6.2.0             
-[25] bit_4.5.0.1             classInt_0.4-11         mnormt_2.1.1           
-[28] scatterplot3d_0.3-44    KernSmooth_2.23-26      expm_1.0-0             
-[31] withr_3.0.2             numDeriv_2016.8-1.1     grid_4.4.2             
-[34] e1071_1.7-16            colorspace_2.1-1        scales_1.3.0           
-[37] iterators_1.0.14        MASS_7.3-64             cli_3.6.3              
-[40] rmarkdown_2.29          crayon_1.5.3            generics_0.1.3         
-[43] rstudioapi_0.17.1       tzdb_0.4.0              DBI_1.2.3              
-[46] ape_5.8-1               proxy_0.4-27            maps_3.4.2.1           
-[49] parallel_4.4.2          BiocManager_1.30.25     vctrs_0.6.5            
-[52] Matrix_1.7-2            jsonlite_1.8.9          naniar_1.1.0           
-[55] hms_1.1.3               visdat_0.6.0            bit64_4.6.0-1          
-[58] foreach_1.5.2           units_0.8-5             glue_1.8.0             
-[61] codetools_0.2-20        DEoptim_2.2-8           stringi_1.8.4          
-[64] gtable_0.3.6            quadprog_1.5-8          munsell_0.5.1          
-[67] pillar_1.10.1           rappdirs_0.3.3          htmltools_0.5.8.1      
-[70] httr2_1.1.0             R6_2.5.1                doParallel_1.0.17      
-[73] rprojroot_2.0.4         vroom_1.6.5             evaluate_1.0.3         
-[76] lattice_0.22-6          renv_1.1.0              class_7.3-23           
-[79] Rcpp_1.0.14             fastmatch_1.1-6         coda_0.19-4.1          
-[82] nlme_3.1-167            xfun_0.50               pkgconfig_2.0.3        </code></pre>
+[19] skimr_2.1.5             knitr_1.49              phangorn_2.12.1        
+[22] clusterGeneration_1.3.8 labeling_0.4.3          htmlwidgets_1.6.4      
+[25] curl_6.2.0              bit_4.5.0.1             classInt_0.4-11        
+[28] mnormt_2.1.1            scatterplot3d_0.3-44    repr_1.1.7             
+[31] KernSmooth_2.23-26      expm_1.0-0              withr_3.0.2            
+[34] numDeriv_2016.8-1.1     grid_4.4.2              e1071_1.7-16           
+[37] colorspace_2.1-1        scales_1.3.0            iterators_1.0.14       
+[40] MASS_7.3-64             cli_3.6.3               rmarkdown_2.29         
+[43] crayon_1.5.3            generics_0.1.3          rstudioapi_0.17.1      
+[46] tzdb_0.4.0              DBI_1.2.3               ape_5.8-1              
+[49] proxy_0.4-27            maps_3.4.2.1            parallel_4.4.2         
+[52] BiocManager_1.30.25     base64enc_0.1-3         vctrs_0.6.5            
+[55] Matrix_1.7-2            jsonlite_1.8.9          naniar_1.1.0           
+[58] hms_1.1.3               visdat_0.6.0            bit64_4.6.0-1          
+[61] foreach_1.5.2           units_0.8-5             glue_1.8.0             
+[64] codetools_0.2-20        DEoptim_2.2-8           stringi_1.8.4          
+[67] gtable_0.3.6            quadprog_1.5-8          munsell_0.5.1          
+[70] pillar_1.10.1           rappdirs_0.3.3          htmltools_0.5.8.1      
+[73] httr2_1.1.0             R6_2.5.1                doParallel_1.0.17      
+[76] rprojroot_2.0.4         vroom_1.6.5             evaluate_1.0.3         
+[79] lattice_0.22-6          renv_1.1.0              class_7.3-23           
+[82] Rcpp_1.0.14             fastmatch_1.1-6         coda_0.19-4.1          
+[85] nlme_3.1-167            xfun_0.50               pkgconfig_2.0.3        </code></pre>
 </div>
 </div>
 <p><a href="#top">Back to top</a></p>

@@ -46,10 +46,10 @@ knitr::opts_chunk$set(
 
 The students are able to...
 
+* Apply (3) the skimr::skim function to get an overview of their data
 * Explain (2) different data types: integer, double, factor, logical, character, date
 * Identify (3) not avialbale (NA) values in the traits table
 * Describe (3) different ways to handle missing traits: remove, average, measure yourself, values from cloesly related species
-
 
 # Preparation
 
@@ -85,6 +85,19 @@ traits_ammer <- read_csv(
 
 rm(list = setdiff(ls(), c("species_ammer", "traits_ammer", "traits_invented")))
 ```
+
+# Data overview
+
+Get an overview of your data with the `skimr::skim` function ([Vignette](https://docs.ropensci.org/skimr/index.html); Waringet al. [2022](https://CRAN.R-project.org/package=skimr)).
+
+```{r use-skim}
+skimr::skim(traits_ammer) # You have to install the skimr package before
+
+```
+
+**Task**
+
+> Note how many species are in your dataset in your material-and-methods section
 
 <a href="#top">Back to top</a>
 
