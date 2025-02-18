@@ -1,0 +1,169 @@
+---
+title: "Analysis of Ecological Data <br> Hill numbers"
+author: "<b>Markus Bauer ^1^ & Christina Hartung ^2^</b> <br>"
+date: today
+date-format: iso
+format: html
+toc: true
+toc-depth: 3
+toc-expand: 2
+number-sections: true
+dev: png
+fig-width: 7
+fig-height: 5
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE
+  )
+```
+
+^1^ Technichal University of Munich, TUM School of Life Sciences, Chair of Restoration Ecology, Emil-Ramann-Straße 6, 85354 Freising, Germany
+
+[markus1.bauer\@tum.de](mailto:markus1.bauer@tum.de)
+
+<img src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" alt="ORCID logo" width="20" height="20"/><https://orcid.org/0000-0001-5372-4174>
+
+[![Google Scholar](https://img.shields.io/badge/Google%20Scholar-4285F4?style=for-the-badge&logo=google-scholar&logoColor=white)](https://scholar.google.de/citations?user=oHhmOkkAAAAJ&hl=de&oi=ao)
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/markus1bauer)
+
+^2^ University of Applied Sciences Weihenstephan-Triesdorf, Institute of Ecology and Landscape, Am Hofgarten 1, Building A10, 85354 Freising, Germany
+
+[christina.hartung\@hswt.de](mailto:christina.hartung@hswt.de)
+
+::: {.content-hidden when-format="html"}
+
+# Tasks
+
+:::
+
+The tutorial uses Zelený ([2023](https://www.davidzeleny.net/anadat-r/doku.php/en:div-ind_examples))
+
+# Learning outcomes
+
+The students are able to...
+
+* Calculate (3) species richness, Shannon and Simpson diversity and the effective number of species
+
+# Preparation
+
+```{r libraries, message = FALSE}
+library(here)
+library(tidyverse)
+rm(list = ls())
+```
+
+## Load data
+
+For some of the follow-up formulas, we will need the relative abundances $p_{ij}$, so let's prepare them: 
+
+```{r load-data}
+species_ammer <- read_csv(
+  here("data", "processed", "data_processed_species_ammer_4.1.csv"),
+  col_names = TRUE, col_types = cols(
+    .default = "?",
+    accepted_name = "f"
+    )
+  ) %>%
+  pivot_longer(-accepted_name, names_to = "plot_id", values_to = "abundance") %>%
+  filter(abundance > 0) %>%
+  group_by(plot_id) %>%
+  mutate(
+    abundance = abundance / 100, # Transform from percent to ratio
+    plot_abundance = sum(abundance), # Calculate vegetation cover of a plot
+    relative_abundance = abundance / plot_abundance # Calculate relative abundance
+    )
+  
+sites_ammer <- read_csv(
+  here("data", "processed", "data_processed_sites_ammer_4.3.csv"),
+  col_names = TRUE, col_types = cols(.default = "?")
+  )
+```
+
+ <a href="#top">Back to top</a>
+
+# Effective number of species (ENS)
+
+## Calculation
+
+Let's first calculate the basic indices of diversity by hand: species richness, Shannon entropy index and Simpson's concentration index: 
+
+```{r}
+species_richness <- species_ammer %>%
+  mutate(presence = if_else(abundance > 0, 1, 0)) %>%
+  summarise(species_richness = sum(presence))
+
+shannon <- species_ammer %>%
+  summarise(
+    shannon = -sum(relative_abundance * log(relative_abundance))
+    ) %>% # Calculate the Shannon diversity
+  mutate(
+    shannon_ens = exp(shannon), # Transform to effective number of species 1D
+    shannon = round(shannon, digits = 2),
+    shannon_ens = round(shannon_ens, digits = 2)
+    )
+
+simpson <- species_ammer %>%
+  summarise(
+    simpson = sum(relative_abundance^2)
+    ) %>% # Calculate the Simpson diversity
+  mutate(
+    simpson_ens = 1 / simpson, # Transform to effective number of species 2D
+    simpson = round(simpson, digits = 2),
+    simpson_ens = round(simpson_ens, digits = 3)
+    )
+```
+
+Integrate your calculations in the sites dataset:
+
+```{r}
+data <- sites_ammer %>%
+  left_join(species_richness, by = c("id.plot" = "plot_id")) %>% # you can join tables even if the columns are named differently
+  left_join(shannon, by = c("id.plot" = "plot_id")) %>%
+  left_join(simpson, by = c("id.plot" = "plot_id"))
+sites_ammer <- data
+```
+
+## Show graph
+
+We can plot the relationship of [q]*D* and q.
+
+```{r}
+sites_ammer %>%
+  select(id.plot, species_richness, shannon_ens, simpson_ens) %>%
+  pivot_longer(-id.plot, names_to = "index", values_to = "qD") %>%
+  mutate(
+    q = str_replace(index, "species_richness", "0"),
+    q = str_replace(q, "shannon_ens", "1"),
+    q = str_replace(q, "simpson_ens", "2"),
+    q = as.double(q)
+  ) %>% # create a numeric vector "q"
+  ggplot(aes(x = q, y = qD, color = id.plot, group = id.plot)) +
+  geom_point() + # for ggplot you need "*" to connect lines
+  geom_line() +
+  scale_x_continuous(limits = c(0,2), breaks = seq(0, 10, 1)) +
+  labs(y = expression(""^"q"*italic(D))) +
+  theme_classic()
+```
+On the diversity profile above, we see the diversity values for the three main indices, species richness (0), Shannon diversity (1) and Simpson diversity (2). You can see that some lines are crossing. This means that some plots are more diverse when the richness of all species is considered, but when the focus is shifted on common or only dominant species (i.e. Shannon or Simpson diversity), other plots becomes more diverse. The main reason is the difference in species abundance distribution, i.e. that some plots have more even abundances than others.
+
+## Save
+
+Now, save your updated sites table with the CWMs from the previous section and the ENSs of this section:
+
+```{r}
+write_csv(
+  sites_ammer, here::here("data", "processed", "data_processed_sites_ammer_4.4.csv")
+  )
+```
+
+> **Task**
+
+* Calculate the species richness and effective number of species for Shannon and Simpson diversity for your own data.
+
+<a href="#top">Back to top</a>
+
+```{r}
+sessionInfo()
+```

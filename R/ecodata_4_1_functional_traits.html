@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Markus Bauer 1 &amp; Christina Hartung 2  ">
-<meta name="dcterms.date" content="2025-02-13">
+<meta name="dcterms.date" content="2025-02-18">
 
 <title>Analysis of Ecological Data   How to get functional traits?</title>
 <style>
@@ -136,7 +136,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2025-02-13</p>
+      <p class="date">2025-02-18</p>
     </div>
   </div>
   
@@ -200,10 +200,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="cn">TRUE</span>, <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">.default =</span> <span class="st">"?"</span>)</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong>Task</strong></p>
 <blockquote class="blockquote">
-<p>Put the data files you receive in the data folder of ‘my_project’ and adapt and load these files.</p>
+<p><strong>Task</strong></p>
 </blockquote>
+<ul>
+<li>Put the data files you receive in the data folder of ‘my_project’ and adapt and load these files.</li>
+</ul>
 <p><a href="#top">Back to top</a></p>
 </section>
 </section>
@@ -462,19 +464,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(data_gift, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"name_submitted"</span> <span class="ot">=</span> <span class="st">"work_species"</span>)) <span class="sc">%&gt;%</span> <span class="co"># join with GIFT traits data</span></span>
 <span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name_submitted, accepted_name, <span class="fu">starts_with</span>(<span class="st">"trait_value_"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<blockquote class="blockquote">
 <p><strong>Tasks</strong></p>
-<blockquote class="blockquote">
-<p>Read in both files ‘data_processed_gift_total.csv’ and ‘data_processed_tnrs_gift.csv’ in your R project ‘my_project’.</p>
 </blockquote>
-<blockquote class="blockquote">
-<p>Select growth form (1.2.2), specific leaf area (4.1.3), height (1.6.3), and seed mass (3.2.3) as functional plant traits.</p>
-</blockquote>
-<blockquote class="blockquote">
-<p>Note the categories, IDs, unit, and the version of the GIFT database for your material-and-methods section.</p>
-</blockquote>
-<blockquote class="blockquote">
-<p>Get aggregated trait values from the GIFT database (later you merge it with your species table)</p>
-</blockquote>
+<ul>
+<li>Read in both files ‘data_processed_gift_total.csv’ and ‘data_processed_tnrs_gift.csv’ in your R project ‘my_project’.</li>
+<li>Select growth form (1.2.2), specific leaf area (4.1.3), height (1.6.3), and seed mass (3.2.3) as functional plant traits.</li>
+<li>Note the categories, IDs, unit, and the version of the GIFT database for your material-and-methods section.</li>
+<li>Get aggregated trait values from the GIFT database (later you merge it with your species table)</li>
+</ul>
 <p><a href="#top">Back to top</a></p>
 </section>
 </section>
@@ -511,19 +509,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
          114            1 </code></pre>
 </div>
 </div>
+<blockquote class="blockquote">
 <p><strong>Tasks</strong></p>
-<blockquote class="blockquote">
-<p>Do the name resolving with TNRS for the ‘data_raw_species’ table of your own dataset, which you use for the course.</p>
 </blockquote>
-<blockquote class="blockquote">
-<p>Note the version of the database from <code>metadata$version</code> and the sources of the names with <code>metadata$citations</code> for the material-and-methods section</p>
-</blockquote>
-<blockquote class="blockquote">
-<p>Note the range of ‘Overall_score’ for your submitted species names. It is written int thte <code>data_names</code> data frame. The overall scores is 1 if the algorithm is completely sure that the submitted and accepted name match. If it is lower than 1, the algorithm is less sure about the result.</p>
-</blockquote>
-<blockquote class="blockquote">
-<p>Present the table of <code>table(data_names$taxonomic_status)</code> in the appendix and note illegitimate species names.</p>
-</blockquote>
+<ul>
+<li>Do the name resolving with TNRS for the ‘data_raw_species’ table of your own dataset, which you use for the course.</li>
+<li>Note the version of the database from <code>metadata$version</code> and the sources of the names with <code>metadata$citations</code> for the material-and-methods section</li>
+<li>Note the range of ‘Overall_score’ for your submitted species names. It is written int thte <code>data_names</code> data frame. The overall scores is 1 if the algorithm is completely sure that the submitted and accepted name match. If it is lower than 1, the algorithm is less sure about the result.</li>
+<li>Present the table of <code>table(data_names$taxonomic_status)</code> in the appendix and note illegitimate species names.</li>
+</ul>
 <p><a href="#top">Back to top</a></p>
 </section>
 <section id="merge-resolved-names-with-tables" class="level1" data-number="6">
@@ -565,10 +559,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>species_ammer <span class="ot">&lt;-</span> data2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong>Task</strong></p>
 <blockquote class="blockquote">
-<p>Merge the resolved names of your project into the species table of your project.</p>
+<p><strong>Task</strong></p>
 </blockquote>
+<ul>
+<li>Merge the resolved names of your project into the species table of your project.</li>
+</ul>
 </section>
 <section id="traits-table" class="level2" data-number="6.2">
 <h2 data-number="6.2" class="anchored" data-anchor-id="traits-table"><span class="header-section-number">6.2</span> Traits table</h2>
@@ -591,10 +587,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">sla_mean =</span> trait_value_4.<span class="fl">1.3</span></span>
 <span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong>Task</strong></p>
 <blockquote class="blockquote">
-<p>Merge the resolved names of trait values with the GIFT traits data.</p>
+<p><strong>Task</strong></p>
 </blockquote>
+<ul>
+<li>Merge the resolved names of trait values with the GIFT traits data.</li>
+</ul>
 <p><a href="#top">Back to top</a></p>
 </section>
 </section>
@@ -710,10 +708,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>traits_ammer <span class="ot">&lt;-</span> data6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong>Task</strong></p>
 <blockquote class="blockquote">
-<p>Add to the traits table of your project the Ellenberg indicator values</p>
+<p><strong>Task</strong></p>
 </blockquote>
+<ul>
+<li>Add to the traits table of your project the Ellenberg indicator values</li>
+</ul>
 <p><a href="#top">Back to top</a></p>
 </section>
 </section>
@@ -730,11 +730,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>  traits_ammer, <span class="fu">here</span>(<span class="st">"data"</span>, <span class="st">"processed"</span>, <span class="st">"data_processed_traits_ammer_4.1.csv"</span>)</span>
 <span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong>Tasks</strong></p>
 <blockquote class="blockquote">
-<p>Save your species and traits table in the data/processed folder</p>
+<p><strong>Tasks</strong></p>
 </blockquote>
-<p><a href="#top">Back to top</a></p>
+<ul>
+<li>Save the above files of the Ammer data for the next section</li>
+<li>Save your species and traits table in the data/processed folder</li>
+</ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -793,6 +795,7 @@ loaded via a namespace (and not attached):
 [82] pkgconfig_2.0.3        </code></pre>
 </div>
 </div>
+<p><a href="#top">Back to top</a></p>
 </section>
 
 </main>

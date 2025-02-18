@@ -95,9 +95,9 @@ skimr::skim(traits_ammer) # You have to install the skimr package before
 
 ```
 
-**Task**
+> **Task**
 
-> Note how many species are in your dataset in your material-and-methods section
+* Note how many species are in your dataset in your material-and-methods section
 
 <a href="#top">Back to top</a>
 
@@ -111,16 +111,15 @@ trait_meta <- GIFT::GIFT_traits_meta()
 
 We have qualitative (binary, nominal), semi-quantitative (ordinal), and quantiative data (discrete, continuous, proportional, circular traits).
 
-**Task**
+> **Task**
 
-> Reload the traits table and define the column type with the following experessions:
-
-> `col_logical()` = binary: yes/no data or presence-absence data<br>
-`col_integer()` = whole numbers: counting data or rounded data<br>
-`col_double()` = continous numbers: measured values<br>
-`col_factor()` or specify further "col_factor(levels, ordered)": ordinal traits are hierarchically and nominal traits not<br>
-`col_date()` or specify further "col_date("%Y-%m-%d")": phenological traits are such circular traits<br>
-`col_character()` = text
+* Reload the traits table and define the column type with the following experessions:
+  * `col_logical()` = binary: yes/no data or presence-absence data<br>
+  * `col_integer()` = whole numbers: counting data or rounded data<br>
+  * `col_double()` = continous numbers: measured values<br>
+  * `col_factor()` or specify further "col_factor(levels, ordered)": ordinal traits are hierarchically and nominal traits not<br>
+  * `col_date()` or specify further "col_date("%Y-%m-%d")": phenological traits are such circular traits<br>
+  * `col_character()` = text
 
 ```{r different-trait-types}
 data_traits <- read_csv(
@@ -151,9 +150,9 @@ traits_ammer %>%
   filter(if_any(-accepted_name, is.na))
 ```
 
-**Task**
+> **Task**
 
-> Note the number of missing traits in your data for your materials and methods section. Furthermore, calculate the ratio of missing traits.
+* Note the number of missing traits in your data for your materials and methods section. Furthermore, calculate the ratio of missing traits.
 
 <a href="#top">Back to top</a>
 
@@ -193,15 +192,10 @@ GIFT::GIFT_species_lookup(genus = "Aconitum", epithet = "lycoctonum") %>%
   tibble()
 ```
 
-**Task**
+> **Tasks**
 
-> Check the list for species occuring in Germany:
-
-e.g. [FloraWeb](https://www.floraweb.de/php/systematik1.php?suchnr=61135) (BfN) or  [FloraVeg.EU](https://floraveg.eu/taxon/) (Chytrý et al. [2020](https://doi.org/10.1111/avsc.12519))
-
-**Task**
-
-> Search for the trait values of closely related species and use these values, if sensible.
+* Check the list for species occuring in Germany: e.g. [FloraWeb](https://www.floraweb.de/php/systematik1.php?suchnr=61135) (BfN) or  [FloraVeg.EU](https://floraveg.eu/taxon/) (Chytrý et al. [2020](https://doi.org/10.1111/avsc.12519))
+* Search for the trait values of closely related species and use these values, if sensible.
 
 
 ```{r search-species, message = FALSE}
@@ -218,9 +212,9 @@ data
 
 # Save
 
-**Task**
+> **Task**
 
-> Save your updated traits table
+* Save your updated traits table
 
 ```{r}
 sessionInfo()

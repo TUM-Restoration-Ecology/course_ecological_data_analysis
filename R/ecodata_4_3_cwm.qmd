@@ -37,7 +37,6 @@ knitr::opts_chunk$set(
 # Tasks
 
 * Make Ammer working also with categorical traits
-* Write learning objectives
 
 :::
 
@@ -417,7 +416,7 @@ sites_spain %>%
 ```{r}
 write_csv(
   sites_spain, here::here(
-    "data", "processed", "data_processed_sites_spain_4.4.csv"
+    "data", "processed", "data_processed_sites_spain_4.3.csv"
     )
   )
 ```
@@ -543,20 +542,19 @@ The Spain vegetation seems to have species with lower SLA values. However, the S
 
 ```{r}
 write_csv(
-  sites_ammer, here::here("data", "processed", "data_processed_sites_ammer_4.4.csv")
+  sites_ammer, here::here("data", "processed", "data_processed_sites_ammer_4.3.csv")
   )
 ```
 
-# **Task**
+> **Task**
 
-> Calculate CWMs of two functional plant traits and two Ellenberg indicator values for your own dataset and present a frequency or density figure like in the examples in your appendix.
-
-* Remove all trees and shrub species which are in the herb layer
-* Check that species names of the traits table are rownames
-* Check that only one trait column remains in the traits table
-* Check that no NAs are in your trait column
-* If you have NAs, you have to reduce your species table as well
-* Check that the plot ID of the species table are rownmames and species names are column names
+* Calculate CWMs of two functional plant traits and two Ellenberg indicator values for your own dataset and present a frequency or density figure like in the examples in your appendix.
+  * Remove all trees and shrub species which are in the herb layer
+  * Check that species names of the traits table are rownames
+  * Check that only one trait column remains in the traits table
+  * Check that no NAs are in your trait column
+  * If you have NAs, you have to reduce your species table as well
+  * Check that the plot ID of the species table are rownmames and species names are column names
 
 <a href="#top">Back to top</a>
 

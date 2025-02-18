@@ -91,9 +91,9 @@ traits_ammer <- read_csv(
   )
 ```
 
-**Task**
+> **Task**
 
-> Put the data files you receive in the data folder of 'my_project' and adapt and load these files.
+* Put the data files you receive in the data folder of 'my_project' and adapt and load these files.
 
 <a href="#top">Back to top</a>
 
@@ -256,15 +256,12 @@ gift <- data.table::fread(
   select(name_submitted, accepted_name, starts_with("trait_value_"))
 ```
 
-**Tasks**
+> **Tasks**
 
-> Read in both files 'data_processed_gift_total.csv' and 'data_processed_tnrs_gift.csv' in your R project 'my_project'.
-
-> Select growth form (1.2.2), specific leaf area (4.1.3), height (1.6.3), and seed mass (3.2.3) as functional plant traits.
-
-> Note the categories, IDs, unit, and the version of the GIFT database for your material-and-methods section.
-
-> Get aggregated trait values from the GIFT database (later you merge it with your species table)
+* Read in both files 'data_processed_gift_total.csv' and 'data_processed_tnrs_gift.csv' in your R project 'my_project'.
+* Select growth form (1.2.2), specific leaf area (4.1.3), height (1.6.3), and seed mass (3.2.3) as functional plant traits.
+* Note the categories, IDs, unit, and the version of the GIFT database for your material-and-methods section.
+* Get aggregated trait values from the GIFT database (later you merge it with your species table)
 
 <a href="#top">Back to top</a>
 
@@ -298,15 +295,12 @@ data_names <- data %>%
 table(data_names$taxonomic_status)
 ```
 
-**Tasks**
+> **Tasks**
 
-> Do the name resolving with TNRS for the 'data_raw_species' table of your own dataset, which you use for the course.
-
-> Note the version of the database from `metadata$version` and the sources of the names with `metadata$citations` for the material-and-methods section
-
-> Note the range of 'Overall_score' for your submitted species names. It is written int thte `data_names` data frame. The overall scores is 1 if the algorithm is completely sure that the submitted and accepted name match. If it is lower than 1, the algorithm is less sure about the result.
-
-> Present the table of `table(data_names$taxonomic_status)` in the appendix and note illegitimate species names.
+* Do the name resolving with TNRS for the 'data_raw_species' table of your own dataset, which you use for the course.
+* Note the version of the database from `metadata$version` and the sources of the names with `metadata$citations` for the material-and-methods section
+* Note the range of 'Overall_score' for your submitted species names. It is written int thte `data_names` data frame. The overall scores is 1 if the algorithm is completely sure that the submitted and accepted name match. If it is lower than 1, the algorithm is less sure about the result.
+* Present the table of `table(data_names$taxonomic_status)` in the appendix and note illegitimate species names.
 
 <a href="#top">Back to top</a>
 
@@ -339,9 +333,9 @@ data2 %>% filter(duplicated(accepted_name))
 species_ammer <- data2
 ```
 
-**Task**
+> **Task**
 
-> Merge the resolved names of your project into the species table of your project.
+* Merge the resolved names of your project into the species table of your project.
 
 ## Traits table
 
@@ -366,9 +360,9 @@ traits_ammer <- data3 %>%
   )
 ```
 
-**Task**
+> **Task**
 
-> Merge the resolved names of trait values with the GIFT traits data.
+* Merge the resolved names of trait values with the GIFT traits data.
 
 <a href="#top">Back to top</a>
 
@@ -497,9 +491,9 @@ data6 %>%
 traits_ammer <- data6
 ```
 
-**Task**
+> **Task**
 
-> Add to the traits table of your project the Ellenberg indicator values
+* Add to the traits table of your project the Ellenberg indicator values
 
 <a href="#top">Back to top</a>
 
@@ -517,11 +511,10 @@ write_csv(
   )
 ```
 
-**Tasks**
+> **Tasks**
 
-> Save the above files of the Ammer data for the next section
-
-> Save your species and traits table in the data/processed folder
+* Save the above files of the Ammer data for the next section
+* Save your species and traits table in the data/processed folder
 
 ```{r}
 sessionInfo()
